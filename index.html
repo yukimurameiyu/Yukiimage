@@ -202,138 +202,6 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .shbtn.p{background:linear-gradient(135deg,var(--p600),var(--p400))}
 
 
-/* ── MiniMax TTS ── */
-async function genVoice(text){
-  const s=S.set;
-  if(!s.voiceOn){return null;}
-  if(!s.mmkey||!s.mmgid) return null;
-  const vid=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
-  try{
-    const r=await fetch('/.netlify/functions/tts',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid})
-    });
-    const d=await r.json();
-    if(d.base_resp?.status_code!==0){toast('❌ TTS:'+d.base_resp?.status_msg);return null;}
-    if(!d.data?.audio) return null;
-    return d.data.audio;
-  }catch(e){return null;}
-}
-
-async function translateToJP(text){
-  // use chat API to translate Chinese→Japanese
-  const s=S.set;if(!s.key) return text;
-  const pc=PC[s.prov];if(!pc) return text;
-  try{
-    const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
-      body:JSON.stringify(pc.body('翻译助手，只输出日文翻译，不加任何解释。',[{role:'user',content:'翻译成自然的日语：'+text}]))});
-    const d=await r.json();return pc.parse(d)||text;
-  }catch(e){return text}
-}
-
-function makeAudioBubble(b, audioB64, jpText, cnText, mine){
-  b.style.cssText='padding:0;background:transparent;border:none;box-shadow:none';
-  const wrap=document.createElement('div');
-  const vc=document.createElement('div');
-  vc.className='voice-bub'+(mine?' me':'');
-  vc.innerHTML=`<div class="voice-play">▶</div><div class="voice-wave"></div><span style="font-size:11px;color:${mine?'rgba(45,26,90,.7)':'var(--muted)'}">语音</span>`;
-  const sub=document.createElement('div');
-  sub.className='voice-sub';
-  sub.innerHTML=`🇯🇵 ${esc(jpText)}<br/><span style="color:var(--text)">📝 ${esc(cnText)}</span>`;
-  let audio=null;
-  vc.addEventListener('click',()=>{
-    if(!audio){
-      audio=new Audio('data:audio/mp3;base64,'+audioB64);
-      const dur=audio.duration||3;
-      vc.style.setProperty('--dur',dur+'s');
-      audio.addEventListener('ended',()=>{vc.classList.remove('playing');vc.querySelector('.voice-play').textContent='▶'});
-    }
-    if(vc.classList.contains('playing')){audio.pause();audio.currentTime=0;vc.classList.remove('playing');vc.querySelector('.voice-play').textContent='▶';}
-    else{audio.play();vc.classList.add('playing');vc.querySelector('.voice-play').textContent='⏸';}
-  });
-  wrap.appendChild(vc);wrap.appendChild(sub);b.appendChild(wrap);
-}
-
-
-
-
-/* ── 按需语音播放 ── */
-async function playMsgVoice(m, btn){
-  const s=S.set;
-  alert('▶ 点击成功！voiceOn='+s.voiceOn+' key='+!!s.mmkey+' gid='+!!s.mmgid);
-  if(!s.voiceOn){toast('⚠️ 请去设置开启语音');return;}
-  if(!s.mmkey||!s.mmgid){toast('⚠️ 请填写MiniMax信息');return;}
-  btn.innerHTML='⏳';
-  try{
-    const jp=await translateToJP(m.text);
-    alert('翻译结果：'+jp);
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
-    const d=await r.json();
-    alert('TTS返回：'+JSON.stringify(d).slice(0,300));
-    if(!d.data?.audio){btn.innerHTML='▶';return;}
-    const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
-    btn.innerHTML='⏸';
-    audio.addEventListener('ended',()=>{btn.innerHTML='▶';});
-    audio.play();
-  }catch(e){
-    alert('报错：'+e.message);
-    btn.innerHTML='▶';
-  }
-}
-
-
-window._playVoice=function(mid){
-  const m=window._voiceMsgs&&window._voiceMsgs[mid];
-  alert('▶ mid='+mid+' found='+!!m+' voiceOn='+S.set.voiceOn+' key='+!!S.set.mmkey);
-  if(!m)return;
-  const btn=document.getElementById('vb_'+mid);
-  playMsgVoice(m,btn);
-};
-/* _pv removed */
-window._pv=function(mid){
-  alert('点击！mid='+mid+' voiceOn='+S.set.voiceOn+' key='+!!S.set.mmkey+' gid='+!!S.set.mmgid);
-  const m=window._vm&&window._vm[mid];
-  if(!m){alert('找不到消息');return;}
-  const btn=event.target;
-  playMsgVoice(m,btn);
-};
-
-
-/* ── 气泡菜单 ── */
-let _curMid=null,_curBub=null;
-function showBubbleMenu(mid,bub){
-  _curMid=mid;_curBub=bub;
-  const menu=document.getElementById('bubbleMenu');
-  const r=bub.getBoundingClientRect();
-  menu.style.left=Math.min(r.left,window.innerWidth-150)+'px';
-  menu.style.top=(r.bottom+6)+'px';
-  menu.classList.add('show');
-  /* 点其他地方关闭 */
-  setTimeout(()=>document.addEventListener('touchstart',closeBubbleMenu,{once:true}),100);
-}
-function closeBubbleMenu(){document.getElementById('bubbleMenu').classList.remove('show');}
-function bmCopy(){
-  const m=window._vm&&window._vm[_curMid];
-  if(m&&navigator.clipboard)navigator.clipboard.writeText(m.text||'');
-  closeBubbleMenu();toast('📋 已复制');
-}
-function bmPlayVoice(){
-  closeBubbleMenu();
-  const m=window._vm&&window._vm[_curMid];
-  if(!m){toast('找不到消息');return;}
-  const s=S.set;
-  if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请先在设置里开启语音并填写MiniMax信息');return;}
-  toast('🎙️ 生成语音中…');
-  translateToJP(m.text).then(jp=>{
-    return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
-  }).then(r=>r.json()).then(d=>{
-    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));return;}
-    const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
-    audio.play();toast('▶ 播放中');
-  }).catch(e=>toast('❌ '+e.message));
-}
 /* toast */
 .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(45,26,90,.88);color:white;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;animation:tin .25s ease,tout .3s ease 2.2s forwards}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -830,7 +698,7 @@ async function callApi(){
   const ih=a>=50?'【关系非常亲密，情感浓烈，言语间透着默契与在乎。】':a>=30?'【关系亲密，温柔体贴，称呼更亲昵。】':a>=15?'【比较熟悉，说话自然随意。】':a>=5?'【有点熟悉，语气轻松些。】':'【普通朋友，保持礼貌距离。】';
   const mem=S.mem?.length?'【对话记忆】'+S.mem.map(m=>m.t).join('；'):'';
   const sys=[(S.myPrompt||SYS),ih,mem].filter(Boolean).join('\n');
-  const rm=S.msgs.filter(m=>m.text&&m.type!=='sys'&&m.type!=='hb'&&m.type!=='tf').slice(-20).map(m=>({role:m.sender==='me'?'user':'assistant',content:m.text}));
+  const rm=S.msgs.filter(m=>m.text&&m.type!=='sys'&&m.type!=='hb'&&m.type!=='tf'&&m.type!=='auto').slice(-20).map(m=>({role:m.sender==='me'?'user':'assistant',content:m.text}));
   if(!rm.length)rm.push({role:'user',content:'你好'});
   try{const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),body:JSON.stringify(pc.body(sys,rm))});const d=await r.json();return pc.parse(d)||null}catch(e){return null}
 }
@@ -867,11 +735,11 @@ async function umem(){
   }catch(e){}
 }
 
-/* auto init */
+/* auto init — 标记为auto类型，不会混入AI对话上下文 */
 setInterval(()=>{try{
   if(!document.getElementById('co').classList.contains('open'))return;
-  S.msgs.push({id:rid(),sender:'y',text:IM[Math.floor(Math.random()*IM.length)],time:Date.now(),type:'txt'});sv();rm();
-}catch(e){}},60000+Math.random()*60000);
+  S.msgs.push({id:rid(),sender:'y',text:IM[Math.floor(Math.random()*IM.length)],time:Date.now(),type:'auto'});sv();rm();
+}catch(e){}},120000+Math.random()*180000);
 
 /* pat pat */
 function dopp(){document.getElementById('cm').classList.remove('open');S.msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍幸村精市',time:Date.now(),type:'sys'});sv();rm();const rs=['……你干嘛。','被你拍到了。','嗯？','……','又来。'];setTimeout(()=>{S.msgs.push({id:rid(),sender:'y',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});S.aff++;sv();rm();uab()},800+Math.random()*1500)}
@@ -929,7 +797,6 @@ function vc(i){const c=CARDS[i];os(c.t,`<div style="text-align:center"><img src=
 
 /* ── MiniMax TTS ── */
 async function translateToJP(text){
-  // use chat API to translate Chinese→Japanese
   const s=S.set;if(!s.key) return text;
   const pc=PC[s.prov];if(!pc) return text;
   try{
@@ -939,27 +806,98 @@ async function translateToJP(text){
   }catch(e){return text}
 }
 
+async function genVoice(text){
+  const s=S.set;
+  if(!s.voiceOn) return null;
+  if(!s.mmkey||!s.mmgid) return null;
+  const vid=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
+  try{
+    const r=await fetch('/.netlify/functions/tts',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid})
+    });
+    const d=await r.json();
+    if(d.base_resp?.status_code!==0){toast('❌ TTS:'+d.base_resp?.status_msg);return null;}
+    if(!d.data?.audio) return null;
+    return d.data.audio;
+  }catch(e){return null;}
+}
+
 function makeAudioBubble(b, audioB64, jpText, cnText, mine){
   b.style.cssText='padding:0;background:transparent;border:none;box-shadow:none';
   const wrap=document.createElement('div');
-  const vc=document.createElement('div');
-  vc.className='voice-bub'+(mine?' me':'');
-  vc.innerHTML=`<div class="voice-play">▶</div><div class="voice-wave"></div><span style="font-size:11px;color:${mine?'rgba(45,26,90,.7)':'var(--muted)'}">语音</span>`;
+  const vc2=document.createElement('div');
+  vc2.className='voice-bub'+(mine?' me':'');
+  vc2.innerHTML=`<div class="voice-play">▶</div><div class="voice-wave"></div><span style="font-size:11px;color:${mine?'rgba(45,26,90,.7)':'var(--muted)'}">语音</span>`;
   const sub=document.createElement('div');
   sub.className='voice-sub';
   sub.innerHTML=`🇯🇵 ${esc(jpText)}<br/><span style="color:var(--text)">📝 ${esc(cnText)}</span>`;
   let audio=null;
-  vc.addEventListener('click',()=>{
+  vc2.addEventListener('click',()=>{
     if(!audio){
       audio=new Audio('data:audio/mp3;base64,'+audioB64);
       const dur=audio.duration||3;
-      vc.style.setProperty('--dur',dur+'s');
-      audio.addEventListener('ended',()=>{vc.classList.remove('playing');vc.querySelector('.voice-play').textContent='▶'});
+      vc2.style.setProperty('--dur',dur+'s');
+      audio.addEventListener('ended',()=>{vc2.classList.remove('playing');vc2.querySelector('.voice-play').textContent='▶'});
     }
-    if(vc.classList.contains('playing')){audio.pause();audio.currentTime=0;vc.classList.remove('playing');vc.querySelector('.voice-play').textContent='▶';}
-    else{audio.play();vc.classList.add('playing');vc.querySelector('.voice-play').textContent='⏸';}
+    if(vc2.classList.contains('playing')){audio.pause();audio.currentTime=0;vc2.classList.remove('playing');vc2.querySelector('.voice-play').textContent='▶';}
+    else{audio.play();vc2.classList.add('playing');vc2.querySelector('.voice-play').textContent='⏸';}
   });
-  wrap.appendChild(vc);wrap.appendChild(sub);b.appendChild(wrap);
+  wrap.appendChild(vc2);wrap.appendChild(sub);b.appendChild(wrap);
+}
+
+async function playMsgVoice(m, btn){
+  const s=S.set;
+  if(!s.voiceOn){toast('⚠️ 请去设置开启语音');return;}
+  if(!s.mmkey||!s.mmgid){toast('⚠️ 请填写MiniMax信息');return;}
+  btn.innerHTML='⏳';
+  try{
+    const jp=await translateToJP(m.text);
+    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
+    const d=await r.json();
+    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
+    const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
+    btn.innerHTML='⏸';
+    audio.addEventListener('ended',()=>{btn.innerHTML='▶';});
+    audio.play();
+  }catch(e){
+    toast('❌ '+e.message);
+    btn.innerHTML='▶';
+  }
+}
+
+/* ── 气泡菜单 ── */
+let _curMid=null,_curBub=null;
+function showBubbleMenu(mid,bub){
+  _curMid=mid;_curBub=bub;
+  const menu=document.getElementById('bubbleMenu');
+  const r=bub.getBoundingClientRect();
+  menu.style.left=Math.min(r.left,window.innerWidth-150)+'px';
+  menu.style.top=(r.bottom+6)+'px';
+  menu.classList.add('show');
+  setTimeout(()=>document.addEventListener('touchstart',closeBubbleMenu,{once:true}),100);
+}
+function closeBubbleMenu(){document.getElementById('bubbleMenu').classList.remove('show');}
+function bmCopy(){
+  const m=window._vm&&window._vm[_curMid];
+  if(m&&navigator.clipboard)navigator.clipboard.writeText(m.text||'');
+  closeBubbleMenu();toast('📋 已复制');
+}
+function bmPlayVoice(){
+  closeBubbleMenu();
+  const m=window._vm&&window._vm[_curMid];
+  if(!m){toast('找不到消息');return;}
+  const s=S.set;
+  if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请先在设置里开启语音并填写MiniMax信息');return;}
+  toast('🎙️ 生成语音中…');
+  translateToJP(m.text).then(jp=>{
+    return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
+  }).then(r=>r.json()).then(d=>{
+    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));return;}
+    const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
+    audio.play();toast('▶ 播放中');
+  }).catch(e=>toast('❌ '+e.message));
 }
 
 /* toast */
