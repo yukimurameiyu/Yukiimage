@@ -334,12 +334,6 @@ function bmPlayVoice(){
     audio.play();toast('▶ 播放中');
   }).catch(e=>toast('❌ '+e.message));
 }
-
-function base64ToBlob(b64,type){
-  const bin=atob(b64);const arr=new Uint8Array(bin.length);
-  for(let i=0;i<bin.length;i++)arr[i]=bin.charCodeAt(i);
-  return new Blob([arr],{type});
-}
 /* toast */
 .toast{position:fixed;bottom:88px;left:50%;transform:translateX(-50%);background:rgba(45,26,90,.88);color:white;padding:10px 20px;border-radius:20px;font-size:13px;z-index:999;white-space:nowrap;pointer-events:none;animation:tin .25s ease,tout .3s ease 2.2s forwards}
 @keyframes tin{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
@@ -642,12 +636,15 @@ function openChat(){
             voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
       }).then(r=>r.json()).then(d=>{
         if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';return;}
-        const blob=base64ToBlob(d.data.audio,'audio/mpeg');
-        const burl=URL.createObjectURL(blob);
-        const audio=new Audio(burl);
-        btn.textContent='⏸ 暂停';
-        audio.addEventListener('ended',()=>{btn.textContent='▶ 语音';URL.revokeObjectURL(burl);},{once:true});
-        audio.play().catch(e=>{toast('播放失败:'+e.message);btn.textContent='▶ 语音';});
+        try{
+          const b=atob(d.data.audio),a=new Uint8Array(b.length);
+          for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);
+          const u=URL.createObjectURL(new Blob([a],{type:'audio/mpeg'}));
+          const aud=new Audio(u);
+          btn.textContent='⏸ 暂停';
+          aud.onended=()=>{btn.textContent='▶ 语音';URL.revokeObjectURL(u);};
+          aud.play().catch(e=>{toast('播放失败:'+e.message);btn.textContent='▶ 语音';});
+        }catch(e){toast('❌ '+e.message);btn.textContent='▶ 语音';}
       }).catch(e=>{toast('❌ '+e.message);btn.textContent='▶ 语音';});
     });
   }
