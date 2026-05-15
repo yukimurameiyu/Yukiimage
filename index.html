@@ -628,6 +628,8 @@ function openChat(){
       if(!m){toast('找不到消息');return;}
       const s=S.set;
       if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请在设置里开启语音并填写MiniMax信息');return;}
+      /* 在用户点击事件里立刻创建AudioContext，获得播放授权 */
+      const actx=new(window.AudioContext||window.webkitAudioContext)();
       btn.textContent='⏳';
       translateToJP(m.text).then(jp=>{
         return fetch('/.netlify/functions/tts',{method:'POST',
@@ -635,17 +637,17 @@ function openChat(){
           body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,
             voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
       }).then(r=>r.json()).then(d=>{
-        if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';return;}
-        try{
-          const b=atob(d.data.audio),a=new Uint8Array(b.length);
-          for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);
-          const u=URL.createObjectURL(new Blob([a],{type:'audio/mpeg'}));
-          const aud=new Audio(u);
-          btn.textContent='⏸ 暂停';
-          aud.onended=()=>{btn.textContent='▶ 语音';URL.revokeObjectURL(u);};
-          aud.play().catch(e=>{toast('播放失败:'+e.message);btn.textContent='▶ 语音';});
-        }catch(e){toast('❌ '+e.message);btn.textContent='▶ 语音';}
-      }).catch(e=>{toast('❌ '+e.message);btn.textContent='▶ 语音';});
+        if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
+        const b=atob(d.data.audio),a=new Uint8Array(b.length);
+        for(let i=0;i<b.length;i++)a[i]=b.charCodeAt(i);
+        return actx.decodeAudioData(a.buffer);
+      }).then(buf=>{
+        if(!buf)return;
+        const src=actx.createBufferSource();
+        src.buffer=buf;src.connect(actx.destination);src.start(0);
+        btn.textContent='⏸';
+        src.onended=()=>{btn.textContent='▶ 语音';actx.close();};
+      }).catch(e=>{toast('❌ '+e.message);btn.textContent='▶ 语音';actx.close();});
     });
   }
 }
