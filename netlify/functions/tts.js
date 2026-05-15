@@ -5,7 +5,7 @@ exports.handler = async (event) => {
   try {
     const { text, groupId, apiKey, voiceId } = JSON.parse(event.body);
     const response = await fetch(
-      `https://api.minimax.chat/v1/t2a_v2?GroupId=${groupId}`,
+      `https://api.minimax.io/v1/t2a_v2?GroupId=${groupId}`,
       {
         method: 'POST',
         headers: {
