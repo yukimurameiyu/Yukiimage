@@ -5,7 +5,6 @@ const CORS_HEADERS = {
 };
 
 exports.handler = async (event) => {
-  /* 预检请求 */
   if (event.httpMethod === 'OPTIONS') {
     return { statusCode: 204, headers: CORS_HEADERS, body: '' };
   }
@@ -19,7 +18,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 400,
         headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ error: 'Missing text or apiKey' })
+        body: JSON.stringify({ base_resp: { status_code: 400, status_msg: 'Missing text or apiKey' } })
       };
     }
 
@@ -55,7 +54,7 @@ exports.handler = async (event) => {
       const errText = await response.text();
       console.error('MiniMax API error:', response.status, errText);
       return {
-        statusCode: response.status,
+        statusCode: 200,
         headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           base_resp: { status_code: response.status, status_msg: errText.slice(0, 200) }
@@ -64,6 +63,16 @@ exports.handler = async (event) => {
     }
 
     const data = await response.json();
+
+    /* MiniMax 默认返回 hex 编码的音频，前端需要 base64，在这里转换 */
+    if (data.data && data.data.audio) {
+      const raw = data.data.audio;
+      const isHex = /^[0-9a-fA-F]+$/.test(raw.slice(0, 100));
+      if (isHex) {
+        data.data.audio = Buffer.from(raw, 'hex').toString('base64');
+      }
+    }
+
     return {
       statusCode: 200,
       headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
