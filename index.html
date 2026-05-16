@@ -7,23 +7,23 @@
 
 <style>
 :root{
-  --bg:#F7F5FC; --bg2:#EEE8FF; --card:#fff;
-  --p50:#FAF8FF; --p100:#F0EBFF; --p200:#DDD4F8;
-  --p400:#A08CD4; --p500:#7B5CB8; --p600:#5A3E96; --p700:#3D2870; --p800:#261850;
-  --text:#1A1028; --muted:#9B8AAE; --border:#EDE8F8;
-  --me:#DDD4F8; --shadow:0 2px 16px rgba(94,63,168,.08);
+  --bg:#F5F0FC; --bg2:#EDE4FF; --card:#fff;
+  --p50:#FAF6FF; --p100:#F0E8FF; --p200:#DDD0F8;
+  --p400:#A88CD8; --p500:#8B6BC0; --p600:#6B48A8; --p700:#4A2E80; --p800:#2E1858;
+  --text:#1A1028; --muted:#9B8AAE; --border:#E8E0F5;
+  --me:#E0D4F8; --shadow:0 2px 16px rgba(94,63,168,.08);
   --shadow-md:0 4px 24px rgba(94,63,168,.12);
-  --r:16px; --tab:62px;
+  --r:18px; --tab:62px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;-webkit-tap-highlight-color:transparent}
-body{font-family:'PingFang SC','Noto Sans SC',-apple-system,sans-serif;background:var(--bg);color:var(--text);max-width:430px;margin:0 auto;height:100%;-webkit-font-smoothing:antialiased}
+body{font-family:'PingFang SC','Noto Sans SC',-apple-system,sans-serif;background:var(--bg);background-image:radial-gradient(circle at 20% 50%,rgba(167,139,250,.04) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(200,170,255,.04) 0%,transparent 50%);color:var(--text);max-width:430px;margin:0 auto;height:100%;-webkit-font-smoothing:antialiased}
 ::-webkit-scrollbar{display:none}
 input,textarea,button{font-family:inherit}
 button:active{opacity:.8}
 
 #app{height:100%;display:flex;flex-direction:column}
-.sb{height:40px;flex-shrink:0;background:var(--p800);display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:.3px}
+.sb{height:40px;flex-shrink:0;background:linear-gradient(90deg,#2E1858,#3a2268);display:flex;align-items:center;justify-content:space-between;padding:0 18px;color:rgba(255,255,255,.8);font-size:11px;letter-spacing:.3px}
 .sb .t{font-weight:600;font-size:13px}
 .pages{flex:1;overflow:hidden;position:relative}
 .page{position:absolute;inset:0;overflow-y:auto;padding-bottom:calc(var(--tab) + 12px);display:none}
@@ -31,19 +31,25 @@ button:active{opacity:.8}
 @keyframes pu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
 /* tabbar */
-.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--tab);background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-top:1px solid rgba(200,190,230,.4);display:grid;grid-template-columns:repeat(4,1fr);z-index:50;box-shadow:0 -1px 0 rgba(200,190,230,.5)}
-.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);font-size:9.5px;letter-spacing:.3px;transition:color .2s}
+.tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;height:var(--tab);background:rgba(255,255,255,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid rgba(200,180,235,.3);display:grid;grid-template-columns:repeat(4,1fr);z-index:50;box-shadow:0 -4px 20px rgba(94,63,168,.05)}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;color:var(--muted);font-size:9.5px;letter-spacing:.3px;transition:color .25s}
 .tab.active{color:var(--p500)}
 .tab-i{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
 .tab-i svg{width:22px;height:22px;stroke-width:1.5}
-.tab-d{width:16px;height:2px;border-radius:1px;background:var(--p400);opacity:0;transition:opacity .2s;margin-top:1px}
+.tab-d{width:16px;height:2.5px;border-radius:2px;background:linear-gradient(90deg,var(--p400),var(--p600));opacity:0;transition:opacity .25s;margin-top:1px}
 .tab.active .tab-d{opacity:1}
 
 /* ── HOME ── */
-.hero{background:linear-gradient(160deg,var(--p800) 0%,var(--p700) 45%,var(--p500) 100%);padding:20px 20px 48px;position:relative;overflow:hidden}
-.hero-bg{position:absolute;top:-10%;left:-5%;width:110%;height:120%;object-fit:cover;object-position:center top;opacity:.22;mix-blend-mode:luminosity}
-.hero::before{content:'';position:absolute;top:-60px;right:-40px;width:220px;height:220px;background:rgba(255,255,255,.05);border-radius:50%}
-.hero::after{content:'';position:absolute;bottom:-80px;left:-30px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%}
+.hero{background:linear-gradient(160deg,#2E1858 0%,#4A2E80 30%,#6B48A8 60%,#8B6BC0 85%,#A88CD8 100%);padding:20px 20px 52px;position:relative;overflow:hidden}
+.hero-bg{position:absolute;top:-10%;left:-5%;width:110%;height:120%;object-fit:cover;object-position:center top;opacity:.18;mix-blend-mode:luminosity}
+.hero::before{content:'';position:absolute;top:-60px;right:-40px;width:260px;height:260px;background:radial-gradient(circle,rgba(200,170,255,.12) 0%,transparent 70%);border-radius:50%;animation:heroOrb1 8s ease-in-out infinite}
+.hero::after{content:'';position:absolute;bottom:-80px;left:-30px;width:220px;height:220px;background:radial-gradient(circle,rgba(180,140,240,.1) 0%,transparent 70%);border-radius:50%;animation:heroOrb2 10s ease-in-out infinite 2s}
+@keyframes heroOrb1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-12px,8px) scale(1.08)}}
+@keyframes heroOrb2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(10px,-6px) scale(1.05)}}
+/* floating sparkles */
+.hero-sparkles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sparkle{position:absolute;width:3px;height:3px;background:rgba(255,255,255,.5);border-radius:50%;animation:sparkleFloat linear infinite}
+@keyframes sparkleFloat{0%{transform:translateY(0) scale(1);opacity:0}10%{opacity:.7}90%{opacity:.15}100%{transform:translateY(-180px) scale(.3);opacity:0}}
 /* user avatar */
 .my-ava{width:34px;height:34px;border-radius:10px;overflow:hidden;background:var(--p300);flex-shrink:0;cursor:pointer}
 .my-ava img{width:100%;height:100%;object-fit:cover}
@@ -54,31 +60,37 @@ button:active{opacity:.8}
 .prof-ava img{width:100%;height:100%;object-fit:cover}
 .prof-ava-edit{position:absolute;bottom:-4px;right:-4px;width:24px;height:24px;background:var(--p500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:white}
 .h-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
-.h-clock{font-size:42px;font-weight:200;color:white;letter-spacing:-2px;font-family:'PingFang SC','STSong',serif}
-.h-date{font-size:12px;color:rgba(255,255,255,.72);margin-top:2px}
-.h-logo{width:44px;height:44px;background:rgba(255,255,255,.15);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;backdrop-filter:blur(4px)}
+.h-clock{font-size:44px;font-weight:200;color:white;letter-spacing:-1px;font-family:'PingFang SC','STSong',serif;text-shadow:0 0 30px rgba(200,170,255,.35)}
+.h-date{font-size:12px;color:rgba(255,255,255,.68);margin-top:3px;letter-spacing:1px}
+.h-logo{width:44px;height:44px;background:rgba(255,255,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;overflow:hidden;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1)}
 .h-logo img{width:100%;height:100%;object-fit:contain}
 .h-char{display:flex;align-items:flex-end;gap:12px;position:relative;z-index:1;margin-top:16px}
-.h-chibi{width:130px;height:150px;object-fit:contain;object-position:bottom;filter:drop-shadow(0 6px 16px rgba(0,0,0,.25));flex-shrink:0}
-.h-bubble{flex:1;margin-bottom:16px;background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.25);border-radius:16px 16px 16px 4px;padding:10px 13px;color:white}
-.h-bubble .bn{font-size:10px;opacity:.75;margin-bottom:3px;font-weight:600}
+.h-chibi{width:130px;height:150px;object-fit:contain;object-position:bottom;filter:drop-shadow(0 8px 20px rgba(0,0,0,.3));flex-shrink:0;animation:chibiBob 4s ease-in-out infinite}
+@keyframes chibiBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.h-bubble{flex:1;margin-bottom:16px;background:rgba(255,255,255,.13);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.2);border-radius:18px 18px 18px 4px;padding:11px 14px;color:white;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .2s ease}
+.h-bubble:active{transform:scale(.97)}
+.h-bubble .bn{font-size:10px;opacity:.7;margin-bottom:4px;font-weight:600;letter-spacing:.5px}
 .h-bubble .bt{font-size:13px;line-height:1.65}
 
-.days{margin:-24px 14px 0;background:rgba(255,255,255,.98);border-radius:var(--r);padding:16px 20px;box-shadow:0 8px 32px rgba(94,63,168,.16);display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10;border:1px solid rgba(200,190,230,.3)}
-.dn{font-size:32px;font-weight:800;color:var(--p500);font-family:'PingFang SC','STSong',serif;letter-spacing:-1px}
-.dl{font-size:11px;color:var(--muted);margin-top:1px}
+.days{margin:-28px 14px 0;background:rgba(255,255,255,.95);backdrop-filter:blur(16px);border-radius:20px;padding:18px 22px;box-shadow:0 8px 32px rgba(94,63,168,.13),0 0 0 1px rgba(200,180,240,.2) inset;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:10;border:1px solid rgba(210,190,245,.3);overflow:hidden}
+.days::before{content:'';position:absolute;top:-30px;right:-20px;width:80px;height:80px;background:radial-gradient(circle,rgba(167,139,250,.12) 0%,transparent 70%);border-radius:50%}
+.days::after{content:'💜';position:absolute;top:8px;right:12px;font-size:8px;opacity:.3;animation:heartPulse 2s ease-in-out infinite}
+@keyframes heartPulse{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.2);opacity:.5}}
+.dn{font-size:34px;font-weight:800;background:linear-gradient(135deg,var(--p500),var(--p700));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-family:'PingFang SC','STSong',serif;letter-spacing:-1px}
+.dl{font-size:11px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
 .ds{font-size:10px;color:var(--muted);text-align:right;margin-top:2px}
 
-.app-grid{padding:16px 14px 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.ai{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer}
-.ai-box{width:54px;height:54px;border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 12px rgba(0,0,0,.08);transition:transform .15s;border:1px solid rgba(255,255,255,.6)}
-.ai-box svg{width:24px;height:24px;stroke-width:1.5}
-.ai-box:active{transform:scale(.91)}
-.ai-lbl{font-size:9.5px;color:var(--text);text-align:center;font-weight:400;letter-spacing:.2px}
+.app-grid{padding:18px 14px 8px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.ai{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
+.ai-box{width:54px;height:54px;border-radius:16px;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 14px rgba(0,0,0,.06);transition:transform .18s cubic-bezier(.34,1.56,.64,1),box-shadow .2s;border:1px solid rgba(255,255,255,.5)}
+.ai-box svg{width:23px;height:23px;stroke-width:1.5}
+.ai-box:active{transform:scale(.88);box-shadow:0 1px 6px rgba(0,0,0,.04)}
+.ai-lbl{font-size:9.5px;color:var(--muted);text-align:center;font-weight:400;letter-spacing:.3px}
 
-.today{margin:8px 14px 14px;background:white;border-radius:var(--r);padding:16px 18px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.today{margin:10px 14px 14px;background:white;border-radius:20px;padding:16px 18px;box-shadow:0 2px 16px rgba(94,63,168,.06);border:1px solid rgba(210,190,245,.25);position:relative;overflow:hidden}
+.today::before{content:'📮';position:absolute;top:-6px;right:10px;font-size:22px;opacity:.08;transform:rotate(12deg)}
 .today-hd{font-size:9.5px;font-weight:600;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:8px}
-.today-hd::after{content:'';flex:1;height:1px;background:var(--border)}
+.today-hd::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 .today-bd{font-size:14px;line-height:1.8;color:var(--text)}
 
 /* ── GALLERY ── */
@@ -282,7 +294,12 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <!-- HOME -->
 <div class="page active" id="pg-home">
 <div class="hero">
+<div class="hero-sparkles" id="heroSparkles"></div>
 <img class="hero-bg" src="IMG_3016.jpeg" alt="" onerror="this.style.display='none'"/>
+<!-- cute star decorations -->
+<svg class="hero-deco" style="position:absolute;top:15px;right:16px;width:60px;height:60px;opacity:.15;z-index:1;animation:decoSpin 20s linear infinite" viewBox="0 0 60 60"><path d="M30 5 l3 10 h10 l-8 6 3 10-8-6-8 6 3-10-8-6h10z" fill="white"/></svg>
+<svg class="hero-deco" style="position:absolute;bottom:50px;right:30px;width:24px;height:24px;opacity:.12;z-index:1;animation:decoSpin 15s linear infinite reverse" viewBox="0 0 60 60"><path d="M30 5 l3 10 h10 l-8 6 3 10-8-6-8 6 3-10-8-6h10z" fill="white"/></svg>
+<style>@keyframes decoSpin{to{transform:rotate(360deg)}}</style>
   <div class="h-top">
     <div><div class="h-clock" id="bc">--:--</div><div class="h-date" id="ds">--</div></div>
     
@@ -295,21 +312,26 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 <div class="days">
   <div><div class="dn" id="dc">0</div><div class="dl">在一起的第 · 天</div></div>
-  <div><div style="font-size:32px">💜</div><div class="ds" id="dd">设置日期</div></div>
+  <div style="text-align:right"><div style="font-size:28px;animation:heartPulse 2s ease-in-out infinite">💜</div><div class="ds" id="dd">设置日期</div></div>
+</div>
+<div style="padding:14px 20px 0;display:flex;align-items:center;gap:8px">
+  <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border))"></div>
+  <span style="font-size:9px;color:var(--muted);letter-spacing:2.5px;font-weight:500;white-space:nowrap">✦ 幸村の世界 ✦</span>
+  <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)"></div>
 </div>
 <div class="app-grid">
-  <div class="ai" onclick="openChat()"><div class="ai-box" style="background:#8B6DC8;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-lbl">微聊</span></div>
-  <div class="ai" onclick="sp('pg-gallery')"><div class="ai-box" style="background:#9B60BE;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><span class="ai-lbl">图鉴</span></div>
-  <div class="ai" onclick="sp('pg-taobao')"><div class="ai-box" style="background:#C07850;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="ai-lbl">桃宝</span></div>
-  <div class="ai" onclick="sp('pg-xhs')"><div class="ai-box" style="background:#B04060;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div><span class="ai-lbl">小红薯</span></div>
-  <div class="ai" onclick="sp('pg-gacha')"><div class="ai-box" style="background:#8060A0;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11h2"/><path d="M18.95 11h2"/></svg></div><span class="ai-lbl">扭蛋机</span></div>
-  <div class="ai" onclick="sp('pg-garden')"><div class="ai-box" style="background:#508060;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="ai-lbl">家园</span></div>
-  <div class="ai" onclick="sp('pg-inspect')"><div class="ai-box" style="background:#4080A0;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><span class="ai-lbl">查岗</span></div>
-  <div class="ai" onclick="sp('pg-world')"><div class="ai-box" style="background:#6050A0;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><span class="ai-lbl">世界书</span></div>
-  <div class="ai" onclick="sp('pg-memory')"><div class="ai-box" style="background:#A06080;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><span class="ai-lbl">记忆库</span></div>
-  <div class="ai" onclick="sp('pg-games')"><div class="ai-box" style="background:#408080;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/><path d="M12 8v8"/></svg></div><span class="ai-lbl">小游戏</span></div>
-  <div class="ai" onclick="sp('pg-alarm')"><div class="ai-box" style="background:#907080;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg></div><span class="ai-lbl">闹钟</span></div>
-  <div class="ai" onclick="sp('pg-set');st(document.getElementById('t-set'))"><div class="ai-box" style="background:#686878;border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><span class="ai-lbl">设置</span></div>
+  <div class="ai" onclick="openChat()"><div class="ai-box" style="background:linear-gradient(140deg,#9B7FD4,#7B5CB8);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="ai-lbl">微聊</span></div>
+  <div class="ai" onclick="sp('pg-gallery')"><div class="ai-box" style="background:linear-gradient(140deg,#B080D0,#8B60BE);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div><span class="ai-lbl">图鉴</span></div>
+  <div class="ai" onclick="sp('pg-taobao')"><div class="ai-box" style="background:linear-gradient(140deg,#D4A07B,#C08060);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg></div><span class="ai-lbl">桃宝</span></div>
+  <div class="ai" onclick="sp('pg-xhs')"><div class="ai-box" style="background:linear-gradient(140deg,#D0708A,#B04868);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div><span class="ai-lbl">小红薯</span></div>
+  <div class="ai" onclick="sp('pg-gacha')"><div class="ai-box" style="background:linear-gradient(140deg,#9B80C0,#7860A0);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/><path d="M3.05 11h2"/><path d="M18.95 11h2"/></svg></div><span class="ai-lbl">扭蛋机</span></div>
+  <div class="ai" onclick="sp('pg-garden')"><div class="ai-box" style="background:linear-gradient(140deg,#7AAE8A,#508868);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><span class="ai-lbl">家园</span></div>
+  <div class="ai" onclick="sp('pg-inspect')"><div class="ai-box" style="background:linear-gradient(140deg,#6BA0BE,#4888A8);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div><span class="ai-lbl">查岗</span></div>
+  <div class="ai" onclick="sp('pg-world')"><div class="ai-box" style="background:linear-gradient(140deg,#8070B8,#6050A0);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><span class="ai-lbl">世界书</span></div>
+  <div class="ai" onclick="sp('pg-memory')"><div class="ai-box" style="background:linear-gradient(140deg,#C080A0,#A06888);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><span class="ai-lbl">记忆库</span></div>
+  <div class="ai" onclick="sp('pg-games')"><div class="ai-box" style="background:linear-gradient(140deg,#60A8A0,#408888);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/><path d="M12 8v8"/></svg></div><span class="ai-lbl">小游戏</span></div>
+  <div class="ai" onclick="sp('pg-alarm')"><div class="ai-box" style="background:linear-gradient(140deg,#A890A8,#907088);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg></div><span class="ai-lbl">闹钟</span></div>
+  <div class="ai" onclick="sp('pg-set');st(document.getElementById('t-set'))"><div class="ai-box" style="background:linear-gradient(140deg,#8888A0,#686880);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><span class="ai-lbl">设置</span></div>
 </div>
 <div class="today"><div class="today-hd">📮 今日来信</div><div class="today-bd" id="tm">正在加载……</div></div>
 </div>
@@ -596,6 +618,20 @@ function ud(){
 }
 uc();setInterval(()=>{uc();checkAlarms();},1000);
 
+/* sparkles */
+(function(){
+  const c=document.getElementById('heroSparkles');if(!c)return;
+  for(let i=0;i<12;i++){
+    const s=document.createElement('div');s.className='sparkle';
+    s.style.left=Math.random()*100+'%';
+    s.style.bottom=Math.random()*30+'%';
+    s.style.animationDuration=(5+Math.random()*5)+'s';
+    s.style.animationDelay=(Math.random()*6)+'s';
+    s.style.width=s.style.height=(1.5+Math.random()*2.5)+'px';
+    c.appendChild(s);
+  }
+})();
+
 /* nav */
 function sp(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -603,7 +639,7 @@ function sp(id){
   if(id==='pg-inspect')setTimeout(renderInspect,50);
   if(id==='pg-world')setTimeout(()=>{if(!S.worldEntries)S.worldEntries=[];renderWorldEntries();},50);
   if(id==='pg-memory')setTimeout(()=>{if(!S.memoryEntries)S.memoryEntries=[];renderMemoryEntries();},50);
-  if(id==='pg-xhs')setTimeout(renderXhs,50);
+  if(id==='pg-xhs')setTimeout(()=>{renderXhs();generateDailyPosts();},50);
   if(id==='pg-gacha')setTimeout(updateGachaUI,50);
 }
 
@@ -785,6 +821,71 @@ const SEED_POSTS=[
 
 function initXhs(){
   if(!S.xhsPosts)S.xhsPosts=[...SEED_POSTS];
+}
+
+/* 每天生成3-5条新帖 */
+const DAILY_AUTHORS=[
+  {user:'yukimura',weight:25},
+  {user:'sanada',weight:15},
+  {user:'marui',weight:20},
+  {user:'niou',weight:15},
+  {user:'akaya',weight:15},
+  {user:'passerA',weight:5},
+  {user:'passerB',weight:5},
+];
+const AUTHOR_PROMPTS={
+  yukimura:'你是幸村精市，网球部部长，温柔深情，喜欢花道茶道。用第一人称发一条立海大生活相关的小红书风格帖子，80字以内，不用emoji堆砌，有质感。',
+  sanada:'你是真田弦一郎，网球部副部长，严肃简练，信奉武士道。发一条简短的日常帖子，不超过50字，风格简练有力。',
+  marui:'你是丸井文太，网球部截击天才，超级甜党。发一条关于甜点或日常的帖子，活泼可爱，可以用颜文字，80字以内。',
+  niou:'你是仁王雅治，诡术师，调皮神秘。发一条让人摸不着头脑但有意思的帖子，60字以内，可以用"Puri♪"和"☆"。',
+  akaya:'你是切原赤也，热血中二，对前辈很崇拜。发一条热血励志或者日常吐槽的帖子，感叹号多，80字以内。',
+  passerA:'你是立海大的普通女生，发一条关于校园生活的帖子，轻松日常，60字以内。',
+  passerB:'你是立海大网球部的粉丝，发一条关于观看网球比赛或部员的帖子，60字以内。',
+};
+
+async function generateDailyPosts(){
+  const s=S.set;
+  if(!s.key||s.prov==='off') return;
+  const today=new Date().toDateString();
+  if(S.xhsLastGen===today) return; /* 今天已生成 */
+
+  /* 随机选3-5个作者 */
+  const count=3+Math.floor(Math.random()*3);
+  const chosen=[];
+  const pool=[...DAILY_AUTHORS];
+  for(let i=0;i<count;i++){
+    const total=pool.reduce((a,b)=>a+b.weight,0);
+    let r=Math.random()*total;
+    for(const a of pool){r-=a.weight;if(r<=0){chosen.push(a.user);pool.splice(pool.indexOf(a),1);break;}}
+  }
+
+  const pc=PC[s.prov];if(!pc)return;
+  const newPosts=[];
+  for(const author of chosen){
+    const prompt=AUTHOR_PROMPTS[author]||'发一条日常帖子，60字以内。';
+    try{
+      const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
+        body:JSON.stringify(pc.body(prompt,[{role:'user',content:'发一条今天的帖子'}]))});
+      const d=await r.json();
+      const text=pc.parse(d);
+      if(text&&text.trim()){
+        newPosts.push({
+          id:'d'+rid(),user:author,
+          ts:Date.now()-Math.floor(Math.random()*3600000),
+          text:text.trim(),likes:[],comments:[],myLiked:false
+        });
+      }
+    }catch(e){}
+    await new Promise(r=>setTimeout(r,300));
+  }
+
+  if(newPosts.length){
+    S.xhsPosts=[...newPosts,...(S.xhsPosts||[])];
+    S.xhsLastGen=today;
+    sv();
+    renderXhs();
+    toast('✨ 今日新内容已更新');
+  }
 }
 
 function renderXhs(){
