@@ -348,7 +348,54 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="page" id="pg-xhs"><div class="ph"><h2>小红薯</h2><p>幸村の生活分享</p></div><div class="stub"><div class="stub-i">🌸</div><div class="stub-t">小红薯社区</div><div class="stub-d">和幸村一起发帖、点赞、评论<br/>感受真实的生活气息</div><div class="stub-b">即将开放</div></div></div>
 <div class="page" id="pg-gacha"><div class="ph"><h2>扭蛋机</h2><p>召唤幸村的专属卡面</p></div><div class="stub"><div class="stub-i">🎰</div><div class="stub-t">SSR召唤池</div><div class="stub-d">幸村精市限定卡面抽取<br/>SSR概率 5% · 十连保底</div><div class="stub-b">即将开放</div></div></div>
 <div class="page" id="pg-garden"><div class="ph"><h2>家园</h2><p>幸村的专属小屋</p></div><div class="stub"><div class="stub-i">🏡</div><div class="stub-t">幸村の家园</div><div class="stub-d">像素风格的温馨小屋<br/>和幸村一起装扮、互动、生活</div><div class="stub-b">即将开放</div></div></div>
-<div class="page" id="pg-inspect"><div class="ph"><h2>查岗</h2><p>双向查询 · 行程日记</p></div><div class="stub"><div class="stub-i">🔍</div><div class="stub-t">查岗功能</div><div class="stub-d">查看幸村的行程、日记、购物记录……<br/>他也会查你哦</div><div class="stub-b">即将开放</div></div></div>
+<div class="page" id="pg-inspect">
+<div class="ph"><h2>查岗</h2><p>幸村精市 · 实时行踪</p></div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:12px">
+
+  <!-- 当前状态卡 -->
+  <div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="padding:16px;display:flex;gap:14px;align-items:center">
+      <div style="flex-shrink:0;position:relative">
+        <img src="chibi-normal.png" id="inspectChibi" style="width:80px;height:90px;object-fit:contain;object-position:bottom" onerror="this.style.display='none'"/>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:11px;color:var(--muted);letter-spacing:1px;margin-bottom:6px">📍 当前位置</div>
+        <div style="font-size:17px;font-weight:600;color:var(--text)" id="inspectStatus">加载中…</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:4px" id="inspectDetail"></div>
+        <div style="font-size:11px;color:var(--p400);margin-top:6px" id="inspectTime"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- tab切换 -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+    <button onclick="showInspectTab('schedule')" id="itab-schedule" style="padding:9px;border-radius:12px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📅 行程</button>
+    <button onclick="showInspectTab('diary')" id="itab-diary" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📓 日记</button>
+    <button onclick="showInspectTab('shopping')" id="itab-shopping" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛍️ 购物</button>
+  </div>
+
+  <!-- 行程内容 -->
+  <div id="inspect-schedule">
+    <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-weight:600;margin-bottom:8px">今日时间线</div>
+    <div id="scheduleList" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+
+  <!-- 日记内容 -->
+  <div id="inspect-diary" style="display:none">
+    <div style="background:white;border-radius:var(--r);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-weight:600;margin-bottom:10px">📓 幸村精市的日记</div>
+      <div id="diaryContent" style="font-size:14px;line-height:1.85;color:var(--text)">加载中…</div>
+      <button onclick="genDiary()" style="margin-top:12px;padding:8px 16px;border-radius:20px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:12px;cursor:pointer;font-family:inherit">🔄 重新生成</button>
+    </div>
+  </div>
+
+  <!-- 购物记录 -->
+  <div id="inspect-shopping" style="display:none">
+    <div style="display:flex;flex-direction:column;gap:8px" id="shoppingList"></div>
+  </div>
+
+</div>
+</div>
 <div class="page" id="pg-world"><div class="ph"><h2>世界书</h2><p>背景故事 · 世界观设定</p></div><div class="stub"><div class="stub-i">📚</div><div class="stub-t">世界书</div><div class="stub-d">默认加载网球王子世界观<br/>可自由编辑专属背景故事</div><div class="stub-b">即将开放</div></div></div>
 <div class="page" id="pg-memory"><div class="ph"><h2>记忆库</h2><p>每日一记 · 珍贵回忆</p></div><div class="stub"><div class="stub-i">📓</div><div class="stub-t">记忆库</div><div class="stub-d">每日写下和幸村的故事<br/>AI自动提炼关键记忆，让他永远记得你</div><div class="stub-b">即将开放</div></div></div>
 <div class="page" id="pg-games"><div class="ph"><h2>小游戏</h2><p>五子棋 · 斗地主 · 反应测试</p></div><div class="stub"><div class="stub-i">🎮</div><div class="stub-t">游戏中心</div><div class="stub-d">和幸村一起下棋、斗地主<br/>还有刺激的反应速度测试</div><div class="stub-b">即将开放</div></div></div>
@@ -1209,12 +1256,164 @@ function snoozeAlarm(){
   setTimeout(()=>triggerAlarm(document.getElementById('alarmTimeDisplay').textContent),5*60*1000);
   toast('⏰ 5分钟后再叫你');
 }
-/* init */
+/* ══ 查岗系统 ══ */
+const WEEKDAY_SCHEDULE=[
+  {s:0,   e:6,   label:'💤 灭五感中',detail:'请勿打扰。',img:'chibi-down.png'},
+  {s:6,   e:8,   label:'🏃 晨跑/自主训练',detail:()=>pick(['在球场做发球练习','绕学校跑步中','做体能训练','在安静的球场独自热身'])},
+  {s:8,   e:12,  label:'📚 上课中',detail:()=>pick(['在主教室','在数学课上','在文学课上，据说在看窗外','在课间整理笔记'])},
+  {s:12,  e:13.5,label:'🍱 午休',detail:()=>pick(['在食堂和真田一起','自己去了附近便利店','在教室安静地吃','去图书馆翻了会儿书'])},
+  {s:13.5,e:15.5,label:'📚 下午课',detail:()=>pick(['在课堂上','在历史课闭目养神','和柳讨论课题','在课间给花道老师发了消息'])},
+  {s:15.5,e:16.83,label:'🎾 网球部活动',detail:()=>pick(['和真田对练中','在指导切原的发球','部内训练赛','在旁边安静观察队员状态','纠正丸井的截击姿势'])},
+  {s:17,  e:18,  label:'🍜 晚餐时间',detail:()=>pick(['在学校食堂','和队友去了附近拉面店','一个人吃得很清淡','和柳生去了附近的茶馆顺便吃了点东西'])},
+  {s:18,  e:20,  label:'🌸 个人时间',detail:()=>pick(['在练习室浇花','在宿舍泡茶','看本周的比赛录像','在复习花道动作','写了几页笔记','看了会儿书，茶快凉了'])},
+  {s:20,  e:22,  label:'🌙 备战/自习',detail:()=>pick(['在整理战术笔记','分析了对手的录像','和真田发消息讨论赛程','在自习室','提前洗漱，准备早睡'])},
+  {s:22,  e:24,  label:'🛌 准备就寝',detail:()=>pick(['已经在床上了','在喝睡前的温水','关灯了','还在刷比赛数据，该睡了'])},
+];
+
+const WEEKEND_EVENTS=[
+  {label:'☕ 茶道馆',detail:'一个人去了常去的茶馆，坐了两个小时。'},
+  {label:'🌿 花道课',detail:'今天有花道课，老师夸他今天的作品平衡感很好。'},
+  {label:'🎾 自主练习',detail:'去球场自主练习了两个小时，没叫任何人。'},
+  {label:'🛒 采购',detail:()=>pick(['去买了新的茶叶','去花店采购了这周的花材','在文具店挑了新的笔记本'])},
+  {label:'🍡 和队友出去',detail:()=>pick(['和丸井、切原去了商业街','和真田去了附近的书店','和仁王去了游戏厅（据说是被拉去的）','和柳一起去了博物馆'])},
+  {label:'📖 图书馆',detail:'在学校图书馆待了一上午，翻了几本战术分析的书。'},
+  {label:'🏡 宿舍休息',detail:'难得的休息日，在宿舍整理房间，浇了花，泡了茶。'},
+  {label:'🎬 看录像',detail:'下午对着笔记本看了三场比赛录像，做了标注。'},
+];
+
+const SHOPPING_RECORDS=[
+  {date:'3天前',item:'白毫银针（白茶）50g',price:'¥128',note:'常备茶叶，这款最合他口味'},
+  {date:'5天前',item:'Wilson网球拍弦 × 2',price:'¥86',note:'真田拜托他一起买的'},
+  {date:'1周前',item:'花道剪刀（替换头）',price:'¥45',note:'旧的用了两年，换了'},
+  {date:'1周前',item:'护手霜（无香型）',price:'¥32',note:'花道课老师推荐的牌子'},
+  {date:'2周前',item:'战术分析笔记本 × 3',price:'¥54',note:'这学期第二批了'},
+  {date:'2周前',item:'抹茶点心礼盒',price:'¥68',note:'给花道老师的谢礼'},
+  {date:'3周前',item:'运动绷带 × 5卷',price:'¥35',note:'给切原备的，他总是乱受伤'},
+];
+
+function getHour(){ return new Date().getHours()+(new Date().getMinutes()/60); }
+function isWeekend(){ const d=new Date().getDay();return d===0||d===6; }
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function getCurrentStatus(){
+  const h=getHour();
+  if(isWeekend()){
+    /* 周末按时间段 */
+    if(h<6) return {label:'💤 灭五感中',detail:'请勿打扰。',img:'chibi-down.png'};
+    if(h<9) return {label:'🌅 起床中',detail:pick(['难得睡到8点多','今天7点多就起了，习惯了','在阳台浇花']),img:'chibi-normal.png'};
+    const ev=pick(WEEKEND_EVENTS);
+    return {label:ev.label,detail:typeof ev.detail==='function'?ev.detail():ev.detail,img:'chibi-normal.png'};
+  }
+  const slot=WEEKDAY_SCHEDULE.find(s=>h>=s.s&&h<s.e)||WEEKDAY_SCHEDULE[0];
+  return {
+    label:slot.label,
+    detail:typeof slot.detail==='function'?slot.detail():slot.detail,
+    img:slot.img||'chibi-normal.png'
+  };
+}
+
+function renderInspect(){
+  const st=getCurrentStatus();
+  const now=new Date();
+  document.getElementById('inspectStatus').textContent=st.label;
+  document.getElementById('inspectDetail').textContent=st.detail;
+  document.getElementById('inspectTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' · '+(isWeekend()?'周末':'工作日');
+  const chi=document.getElementById('inspectChibi');
+  if(chi){chi.src=st.img;chi.onerror=()=>chi.style.display='none';}
+
+  /* 今日行程 */
+  const list=document.getElementById('scheduleList');
+  if(list){
+    const h=getHour();
+    const slots=isWeekend()?[
+      {s:0,e:6,label:'💤 灭五感中'},{s:6,e:9,label:'🌅 起床/早晨时光'},
+      {s:9,e:12,label:'🌸 上午自由活动'},{s:12,e:13.5,label:'🍱 午餐'},
+      {s:13.5,e:18,label:'☀️ 下午自由活动'},{s:18,e:20,label:'🍜 晚餐/休息'},
+      {s:20,e:24,label:'🌙 晚间时光'},
+    ]:WEEKDAY_SCHEDULE;
+    list.innerHTML=slots.map(s=>{
+      const isPast=h>s.e;const isCurr=h>=s.s&&h<s.e;
+      const sh=Math.floor(s.s).toString().padStart(2,'0')+':'+(s.s%1===0.5?'30':'00');
+      return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:${isCurr?'var(--p100)':'white'};border:1px solid ${isCurr?'var(--p300)':'var(--border)'}">
+        <div style="font-size:10px;color:var(--muted);white-space:nowrap;margin-top:2px;font-weight:${isCurr?'700':'400'};color:${isCurr?'var(--p500)':'var(--muted)'}">${sh}</div>
+        <div style="font-size:13px;color:${isPast?'var(--muted)':isCurr?'var(--p700)':'var(--text)'};${isPast?'text-decoration:line-through;opacity:.6':''};font-weight:${isCurr?'600':'400'}">${s.label}</div>
+        ${isCurr?'<div style="margin-left:auto;font-size:10px;color:var(--p500);font-weight:700;white-space:nowrap">← 现在</div>':''}
+      </div>`;
+    }).join('');
+  }
+
+  /* 购物记录 */
+  const sl=document.getElementById('shoppingList');
+  if(sl){
+    sl.innerHTML=SHOPPING_RECORDS.map(r=>`
+      <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+          <div style="font-size:14px;font-weight:600">${r.item}</div>
+          <div style="font-size:14px;color:var(--p600);font-weight:700">${r.price}</div>
+        </div>
+        <div style="font-size:11px;color:var(--muted)">${r.date} · ${r.note}</div>
+      </div>`).join('');
+  }
+}
+
+function showInspectTab(tab){
+  ['schedule','diary','shopping'].forEach(t=>{
+    document.getElementById('inspect-'+t).style.display=t===tab?'block':'none';
+    const btn=document.getElementById('itab-'+t);
+    if(btn){
+      btn.style.borderColor=t===tab?'var(--p500)':'var(--border)';
+      btn.style.background=t===tab?'var(--p100)':'white';
+      btn.style.color=t===tab?'var(--p600)':'var(--muted)';
+    }
+  });
+  if(tab==='diary'&&document.getElementById('diaryContent').textContent==='加载中…') genDiary();
+}
+
+let _diaryCache='';
+async function genDiary(){
+  const el=document.getElementById('diaryContent');if(!el)return;
+  el.textContent='正在翻看他的日记…';
+  const s=S.set;
+  if(!s.key){el.textContent='（需要填写API Key才能生成日记）';return;}
+  const now=new Date();
+  const dayStr=['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
+  const isWknd=isWeekend();
+  const recentMsgs=S.msgs.filter(m=>m.text&&m.type!=='sys').slice(-10).map(m=>(m.sender==='me'?'对方':'我')+':'+m.text).join('\n');
+  const prompt=`你是幸村精市，今天是${dayStr}，${isWknd?'周末':'工作日'}。请用第一人称写今天的日记，100字左右，简练克制，有细节感，结尾留一点对某人的若有若无的在意。参考今日对话：\n${recentMsgs||'（今天没有特别的对话）'}`;
+  try{
+    const pc=PC[s.prov];if(!pc){el.textContent='（引擎未配置）';return;}
+    const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
+      body:JSON.stringify(pc.body(prompt,[{role:'user',content:'写今天的日记'}]))});
+    const d=await r.json();
+    const text=pc.parse(d);
+    _diaryCache=text||'今天没什么特别的。';
+    el.textContent=_diaryCache;
+  }catch(e){el.textContent='（生成失败：'+e.message+'）';}
+}
+
+/* ══ 查岗：幸村查你 ══ */
+const YUKI_CHECK_MSGS=[
+  '你去哪了。','在干嘛。','刚才没看到你。','今天去了哪里。','你在哪。',
+  '……怎么没声音。','有空吗，说话。','最近在忙什么。','今天有没有好好吃饭。',
+];
+setInterval(()=>{
+  if(Math.random()>0.15)return;/* 约15%概率触发 */
+  const chat=document.getElementById('co');
+  if(!chat||!chat.classList.contains('open'))return;
+  const msg=pick(YUKI_CHECK_MSGS);
+  S.msgs.push({id:rid(),sender:'y',text:msg,time:Date.now(),type:'txt'});
+  sv();rm();
+},10*60*1000);/* 每10分钟检查一次 */
+
+/* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
 document.getElementById('hs').textContent=IM[Math.floor(Math.random()*IM.length)];
 renderGallery();renderAlarms();
 updateMyAva();
 if(S.yukiStatus) document.getElementById('yukiStatus').textContent=S.yukiStatus;
+/* 切换到查岗页自动刷新 */
+const _origSp=window.sp||sp;
+window.sp=function(id){sp(id);if(id==='pg-inspect')setTimeout(renderInspect,50);};
 </script>
 </body>
 </html>
