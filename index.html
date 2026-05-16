@@ -247,6 +247,31 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .bubble-menu.show{display:block;animation:pu .18s ease}
 .bm-item{padding:10px 14px;color:white;font-size:14px;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px}
 .bm-item:active{background:rgba(255,255,255,.15)}
+
+/* ── 扭蛋机 ── */
+@keyframes cardFlip{0%{transform:rotateY(90deg) scale(.8);opacity:0}100%{transform:rotateY(0) scale(1);opacity:1}}
+@keyframes ssrGlow{0%,100%{box-shadow:0 0 20px rgba(255,200,0,.6)}50%{box-shadow:0 0 40px rgba(255,200,0,1)}}
+@keyframes srGlow{0%,100%{box-shadow:0 0 12px rgba(160,100,240,.5)}50%{box-shadow:0 0 24px rgba(160,100,240,.9)}}
+.gacha-card{width:100px;border-radius:12px;overflow:hidden;animation:cardFlip .4s ease forwards;opacity:0;cursor:pointer;position:relative}
+.gacha-card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
+.gacha-card-ph{width:100%;aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px}
+.gacha-card .gc-rar{position:absolute;top:4px;left:4px;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;color:white}
+.gacha-card.ssr{animation:cardFlip .4s ease forwards,ssrGlow 1.5s ease infinite .5s}
+.gacha-card.sr{animation:cardFlip .4s ease forwards,srGlow 1.5s ease infinite .5s}
+.unlock-thumb{width:100%;aspect-ratio:2/3;border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
+.unlock-thumb img{width:100%;height:100%;object-fit:cover}
+.unlock-thumb .locked{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.6)}
+/* ── 小红薯 ── */
+.xhs-post{background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+.xhs-post-head{display:flex;align-items:center;gap:10px;padding:12px 14px 8px}
+.xhs-avatar{width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:white}
+.xhs-post-body{padding:0 14px 10px;font-size:14px;line-height:1.7;color:var(--text)}
+.xhs-post-actions{display:flex;gap:16px;padding:8px 14px;border-top:1px solid var(--border)}
+.xhs-action{display:flex;align-items:center;gap:4px;font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s}
+.xhs-action.liked{color:#E05080}
+.xhs-comments{padding:8px 14px;background:var(--bg);display:flex;flex-direction:column;gap:6px}
+.xhs-comment{font-size:13px;line-height:1.6}
+.xhs-comment .cn{font-weight:700;color:var(--p600)}
 </style>
 </head>
 <body>
@@ -292,7 +317,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <!-- GALLERY -->
 <div class="page" id="pg-gallery">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>角色图鉴</h2><p>幸村精市 · 立海大网球部部长</p></div>
-<div style="padding:10px 14px 4px;font-size:11px;color:var(--muted);letter-spacing:.3px">已解锁 <span id="unlockCount">0</span>/4 · 通过扭蛋机获取卡面</div>
+<div style="padding:10px 14px 4px;font-size:11px;color:var(--muted);letter-spacing:.3px">已解锁 <span id="unlockCount">0</span>/4 · 通过扭蛋机解锁</div>
 <div class="gg" id="galleryGrid"></div>
 </div>
 
@@ -345,8 +370,56 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 
 <!-- STUBS -->
 <div class="page" id="pg-taobao"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>桃宝</h2><p>幸村专属好物购</p></div><div class="stub"><div class="stub-i">🛍️</div><div class="stub-t">桃宝商城</div><div class="stub-d">服装、食品饮料、礼物、运动用品……正在上架中</div><div class="stub-b">即将开放</div></div></div>
-<div class="page" id="pg-xhs"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>小红薯</h2><p>幸村の生活分享</p></div><div class="stub"><div class="stub-i">🌸</div><div class="stub-t">小红薯社区</div><div class="stub-d">和幸村一起发帖、点赞、评论<br/>感受真实的生活气息</div><div class="stub-b">即将开放</div></div></div>
-<div class="page" id="pg-gacha"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>扭蛋机</h2><p>召唤幸村的专属卡面</p></div><div class="stub"><div class="stub-i">🎰</div><div class="stub-t">SSR召唤池</div><div class="stub-d">幸村精市限定卡面抽取<br/>SSR概率 5% · 十连保底</div><div class="stub-b">即将开放</div></div></div>
+<div class="page" id="pg-xhs">
+<div class="ph" style="padding-top:14px">
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div><h2>小红薯</h2><p>立海大生活圈</p></div>
+    <button onclick="xhsPost()" style="background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);color:white;border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;font-family:inherit">＋ 发布</button>
+  </div>
+</div>
+<div id="xhsFeed" style="padding:10px 12px;display:flex;flex-direction:column;gap:12px"></div>
+</div>
+<div class="page" id="pg-gacha">
+<div class="ph" style="padding-top:14px;background:linear-gradient(135deg,#1a0a3a,#3d1a6e)">
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
+  <h2>扭蛋机</h2><p>幸村精市限定 · SSR 3% · 十连SR保底</p>
+</div>
+<!-- 抽卡动画层 -->
+<div id="gachaAnim" style="display:none;position:fixed;inset:0;z-index:300;background:#0d0020;flex-direction:column;align-items:center;justify-content:center">
+  <canvas id="gachaCanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
+  <div id="gachaCards" style="position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:20px;max-width:400px"></div>
+  <button onclick="closeGachaAnim()" id="gachaCloseBtn" style="display:none;position:relative;z-index:1;margin-top:20px;padding:12px 32px;background:linear-gradient(135deg,var(--p500),var(--p400));color:white;border:none;border-radius:20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">收下 ✓</button>
+</div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:12px">
+  <!-- 当前池 -->
+  <div style="background:linear-gradient(135deg,#1a0a3a,#2d1060);border-radius:var(--r);padding:16px;color:white;text-align:center;position:relative;overflow:hidden">
+    <div style="font-size:11px;opacity:.6;letter-spacing:2px;margin-bottom:8px">当前卡池</div>
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px">🌸 幸村精市·全限定池</div>
+    <div style="font-size:11px;opacity:.7">SSR 3% · SR 15% · R 82% · 十连SR保底</div>
+    <div style="margin-top:12px;font-size:12px;opacity:.6">已抽 <span id="pullCount">0</span> 次 · 距保底 <span id="pullLeft">10</span> 次</div>
+  </div>
+  <!-- 按钮 -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+    <button onclick="doPull(1)" style="padding:14px;background:linear-gradient(135deg,var(--p600),var(--p400));color:white;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">单抽 × 1<br/><span style="font-size:11px;opacity:.8">¥10</span></button>
+    <button onclick="doPull(10)" style="padding:14px;background:linear-gradient(135deg,#8B2FC9,#C060E0);color:white;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">十连 × 10<br/><span style="font-size:11px;opacity:.8">¥88 · SR保底</span></button>
+  </div>
+  <!-- 已解锁卡面 -->
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:10px">已解锁卡面</div>
+    <div id="gachaUnlocked" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>
+  </div>
+  <!-- 概率表 -->
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:10px">卡池概率</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+      <div style="display:flex;justify-content:space-between"><span style="color:#FF8C00;font-weight:700">✦✦✦ SSR</span><span>3%</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--p500);font-weight:700">✦✦ SR</span><span>15%（十连必出）</span></div>
+      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted);font-weight:700">✦ R</span><span>82%</span></div>
+    </div>
+  </div>
+</div>
+</div>
 <div class="page" id="pg-garden"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>家园</h2><p>幸村的专属小屋</p></div><div class="stub"><div class="stub-i">🏡</div><div class="stub-t">幸村の家园</div><div class="stub-d">像素风格的温馨小屋<br/>和幸村一起装扮、互动、生活</div><div class="stub-b">即将开放</div></div></div>
 <div class="page" id="pg-inspect">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p>幸村精市 · 实时行踪</p></div>
@@ -530,6 +603,8 @@ function sp(id){
   if(id==='pg-inspect')setTimeout(renderInspect,50);
   if(id==='pg-world')setTimeout(()=>{if(!S.worldEntries)S.worldEntries=[];renderWorldEntries();},50);
   if(id==='pg-memory')setTimeout(()=>{if(!S.memoryEntries)S.memoryEntries=[];renderMemoryEntries();},50);
+  if(id==='pg-xhs')setTimeout(renderXhs,50);
+  if(id==='pg-gacha')setTimeout(updateGachaUI,50);
 }
 
 /* ══ 世界书 ══ */
@@ -539,6 +614,277 @@ function saveWorldEntry(){const t=document.getElementById('we_t')?.value.trim();
 function editWorldEntry(i){const e=S.worldEntries[i];os('编辑世界设定',`<div style="display:flex;flex-direction:column;gap:10px"><div><div style="font-size:12px;color:var(--muted);margin-bottom:4px">标题</div><input class="si" id="we_t2" value="${esc(e.title)}"/></div><div><div style="font-size:12px;color:var(--muted);margin-bottom:4px">内容</div><textarea class="si" id="we_c2" rows="5" style="resize:vertical;font-family:inherit">${esc(e.content)}</textarea></div><button class="shbtn p" onclick="updateWorldEntry(${i})">保存</button></div>`);}
 function updateWorldEntry(i){const t=document.getElementById('we_t2')?.value.trim();const c=document.getElementById('we_c2')?.value.trim();if(!t||!c)return;S.worldEntries[i]={title:t,content:c};sv();cs();renderWorldEntries();toast('✅ 已更新');}
 function deleteWorldEntry(i){if(!confirm('删除这条设定？'))return;S.worldEntries.splice(i,1);sv();renderWorldEntries();}
+/* ══ 扭蛋机 ══ */
+const CARD_POOL=[
+  /* SSR */
+  {id:0,name:'静谧时光',rarity:'SSR',img:'ssr-sofa.jpg',galleryIdx:0},
+  {id:1,name:'夏日海边',rarity:'SSR',img:'ssr-beach.jpg',galleryIdx:1},
+  {id:2,name:'猫耳游园',rarity:'SSR',img:'ssr-cat.jpg',galleryIdx:2},
+  {id:3,name:'荣耀时刻',rarity:'SR',img:'ssr-trophy.jpg',galleryIdx:3},
+  /* SR */
+  {id:4,name:'SR · 占位1',rarity:'SR',img:'sr-1.jpg',galleryIdx:-1},
+  {id:5,name:'SR · 占位2',rarity:'SR',img:'sr-2.jpg',galleryIdx:-1},
+  {id:6,name:'SR · 占位3',rarity:'SR',img:'sr-3.jpg',galleryIdx:-1},
+  /* R */
+  {id:7,name:'R · 占位1',rarity:'R',img:'r-1.jpg',galleryIdx:-1},
+  {id:8,name:'R · 占位2',rarity:'R',img:'r-2.jpg',galleryIdx:-1},
+  {id:9,name:'R · 占位3',rarity:'R',img:'r-3.jpg',galleryIdx:-1},
+  {id:10,name:'R · 占位4',rarity:'R',img:'r-4.jpg',galleryIdx:-1},
+  {id:11,name:'R · 占位5',rarity:'R',img:'r-5.jpg',galleryIdx:-1},
+  {id:12,name:'R · 占位6',rarity:'R',img:'r-6.jpg',galleryIdx:-1},
+];
+const RARITY_COLOR={SSR:'linear-gradient(135deg,#FF8C00,#FFD700)',SR:'linear-gradient(135deg,#7B3FC9,#C060E0)',R:'linear-gradient(135deg,#5080A0,#8080C0)'};
+
+function pullOne(guaranteeSR){
+  const r=Math.random()*100;
+  let rarity;
+  if(r<3) rarity='SSR';
+  else if(r<18||guaranteeSR) rarity='SR';
+  else rarity='R';
+  const pool=CARD_POOL.filter(c=>c.rarity===rarity);
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function doPull(n){
+  if(!S.gachaPulls)S.gachaPulls=0;
+  if(!S.gachaTotal)S.gachaTotal=0;
+  /* wallet check */
+  const cost=n===1?10:88;
+  if((S.wallet||0)<cost){toast('余额不足！当前¥'+(S.wallet||0).toFixed(2));return;}
+  S.wallet=+((S.wallet||0)-cost).toFixed(2);
+  uwb();
+  /* pull */
+  const results=[];
+  for(let i=0;i<n;i++){
+    const isLast=i===n-1;
+    const needSR=isLast&&n===10&&!results.some(c=>c.rarity==='SSR'||c.rarity==='SR');
+    results.push(pullOne(needSR));
+  }
+  S.gachaPulls=(S.gachaPulls||0)+n;
+  S.gachaTotal=(S.gachaTotal||0)+n;
+  /* unlock gallery cards */
+  results.forEach(c=>{
+    if(c.galleryIdx>=0){
+      if(!S.unlocked)S.unlocked=[];
+      if(!S.unlocked.includes(c.galleryIdx))S.unlocked.push(c.galleryIdx);
+    }
+    if(!S.ownedCards)S.ownedCards=[];
+    if(!S.ownedCards.includes(c.id))S.ownedCards.push(c.id);
+  });
+  sv();
+  showGachaAnim(results);
+  updateGachaUI();
+}
+
+function showGachaAnim(cards){
+  const anim=document.getElementById('gachaAnim');
+  const cardsEl=document.getElementById('gachaCards');
+  const btn=document.getElementById('gachaCloseBtn');
+  anim.style.display='flex';
+  cardsEl.innerHTML='';
+  btn.style.display='none';
+  /* canvas tennis ball animation */
+  const canvas=document.getElementById('gachaCanvas');
+  const ctx=canvas.getContext('2d');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  let balls=Array.from({length:12},()=>({
+    x:Math.random()*canvas.width,y:Math.random()*canvas.height,
+    vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
+    r:4+Math.random()*8,angle:0,va:(Math.random()-0.5)*0.2,
+    color:`hsl(${260+Math.random()*60},70%,${40+Math.random()*30}%)`
+  }));
+  let animRunning=true;
+  function drawBall(b){
+    ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.angle);
+    ctx.beginPath();ctx.arc(0,0,b.r,0,Math.PI*2);
+    ctx.fillStyle=b.color;ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.arc(0,0,b.r,0.3,Math.PI-0.3);ctx.stroke();
+    ctx.restore();
+  }
+  function animate(){
+    if(!animRunning)return;
+    ctx.fillStyle='rgba(13,0,32,.15)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    balls.forEach(b=>{
+      b.x+=b.vx;b.y+=b.vy;b.angle+=b.va;
+      if(b.x<0||b.x>canvas.width)b.vx*=-1;
+      if(b.y<0||b.y>canvas.height)b.vy*=-1;
+      drawBall(b);
+    });
+    requestAnimationFrame(animate);
+  }
+  animate();
+  /* show cards with delay */
+  cards.forEach((c,i)=>{
+    setTimeout(()=>{
+      const div=document.createElement('div');
+      div.className='gacha-card '+(c.rarity==='SSR'?'ssr':c.rarity==='SR'?'sr':'');
+      div.style.animationDelay=i*0.1+'s';
+      const rar=document.createElement('div');
+      rar.className='gc-rar';
+      rar.style.background=RARITY_COLOR[c.rarity];
+      rar.textContent=c.rarity;
+      const ph=document.createElement('div');
+      ph.className='gacha-card-ph';
+      ph.style.background=RARITY_COLOR[c.rarity];
+      ph.innerHTML=`<span>${c.rarity==='SSR'?'👑':c.rarity==='SR'?'⭐':'🎾'}</span><span style="font-size:9px;margin-top:4px;color:white;opacity:.8">${c.name}</span>`;
+      const img=document.createElement('img');
+      img.src=c.img;
+      img.onerror=()=>img.style.display='none';
+      img.onload=()=>ph.style.display='none';
+      div.appendChild(ph);div.appendChild(img);div.appendChild(rar);
+      cardsEl.appendChild(div);
+      if(i===cards.length-1){
+        setTimeout(()=>{btn.style.display='block';animRunning=false;},500);
+      }
+    },i*120+300);
+  });
+}
+
+function closeGachaAnim(){
+  document.getElementById('gachaAnim').style.display='none';
+  renderGallery();
+  updateGachaUI();
+}
+
+function updateGachaUI(){
+  const pulls=S.gachaPulls||0;
+  const total=S.gachaTotal||0;
+  const left=10-(pulls%10);
+  document.getElementById('pullCount').textContent=total;
+  document.getElementById('pullLeft').textContent=left===10?10:left;
+  /* owned cards mini display */
+  const el=document.getElementById('gachaUnlocked');if(!el)return;
+  el.innerHTML=CARD_POOL.map(c=>{
+    const owned=(S.ownedCards||[]).includes(c.id);
+    return`<div class="unlock-thumb" onclick="${owned&&c.galleryIdx>=0?'sp(\'pg-gallery\')':''}">
+      ${owned?`<img src="${c.img}" onerror="this.style.display='none'"/><div style="position:absolute;bottom:0;left:0;right:0;padding:3px;background:rgba(0,0,0,.6);font-size:8px;color:white;text-align:center">${c.name}</div>`:
+      `<div style="width:100%;aspect-ratio:2/3;background:var(--p100);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:18px;opacity:.3">🔒</div><div style="font-size:8px;color:var(--muted);margin-top:2px;text-align:center">${c.rarity}</div></div>`}
+    </div>`;
+  }).join('');
+}
+
+/* ══ 小红薯 ══ */
+const XHS_USERS={
+  yukimura:{name:'幸村精市',color:'#5E3FA8',ico:'👑'},
+  sanada:{name:'真田弦一郎',color:'#2D4A6E',ico:'⚔️'},
+  marui:{name:'丸井文太',color:'#C04060',ico:'🍮'},
+  niou:{name:'仁王雅治',color:'#4A4A8A',ico:'🎭'},
+  akaya:{name:'切原赤也',color:'#8A2020',ico:'🔥'},
+  passerA:{name:'网球少女🎾',color:'#806080',ico:'🎀'},
+  passerB:{name:'立海粉丝团',color:'#408060',ico:'🌿'},
+  passerC:{name:'路过的同学',color:'#806040',ico:'☀️'},
+};
+
+const SEED_POSTS=[
+  {id:'p1',user:'yukimura',ts:Date.now()-3600000,text:'今天花道课结束，茶还热着。\n球场上的风也是这样——在对手败下之前，一切都是平静的。',likes:['sanada','passerA','passerB'],comments:[{user:'sanada',text:'部长今日也令人心服。'},{user:'passerA',text:'好有意境！！！'}],myLiked:false},
+  {id:'p2',user:'marui',ts:Date.now()-7200000,text:'新款抹茶泡芙🍮！！！！真的太好吃了！！有没有人要一起来食堂(˶˃ᵕ˂˶)',likes:['akaya','passerC'],comments:[{user:'akaya',text:'我要！！！！'},{user:'yukimura',text:'少吃甜食。'},{user:'marui',text:'部长你好烦！！！(╬￣皿￣)'}],myLiked:false},
+  {id:'p3',user:'niou',ts:Date.now()-10800000,text:'Puri♪ 今天把真田的训练计划换了一版。\n他还没发现。\n……大家不要告诉他哦☆',likes:['marui','passerA','passerC'],comments:[{user:'passerB',text:'仁王前辈好坏！！'},{user:'niou',text:'这才叫战术☆'}],myLiked:false},
+  {id:'p4',user:'akaya',ts:Date.now()-86400000,text:'今天被幸村部长完全压制了……\n但我不服！！！！一定会变强！！',likes:['marui','passerA'],comments:[{user:'marui',text:'切原加油！！(｡•̀ᴗ-)✧'},{user:'yukimura',text:'这股劲保持着。'}],myLiked:false},
+];
+
+function initXhs(){
+  if(!S.xhsPosts)S.xhsPosts=[...SEED_POSTS];
+}
+
+function renderXhs(){
+  initXhs();
+  const feed=document.getElementById('xhsFeed');if(!feed)return;
+  const sorted=[...S.xhsPosts].sort((a,b)=>b.ts-a.ts);
+  feed.innerHTML='';
+  sorted.forEach(p=>feed.appendChild(buildXhsPost(p)));
+}
+
+function buildXhsPost(p){
+  const u=XHS_USERS[p.user]||{name:p.user,color:'#666',ico:'👤'};
+  const isMe=p.user==='me';
+  const myName=S.set.name||'我';
+  const displayName=isMe?myName:u.name;
+  const color=isMe?'var(--p500)':u.color;
+  const div=document.createElement('div');div.className='xhs-post';
+  const likes=Array.isArray(p.likes)?p.likes:[];
+  const likeCount=likes.length+(p.myLiked?0:0);
+  div.innerHTML=`
+    <div class="xhs-post-head">
+      <div class="xhs-avatar" style="background:${color}">${isMe?(myName.slice(-1)||'我'):u.ico}</div>
+      <div><div style="font-size:13px;font-weight:700;color:${color}">${esc(displayName)}</div>
+      <div style="font-size:10px;color:var(--muted)">${fmtXhsTime(p.ts)}</div></div>
+    </div>
+    <div class="xhs-post-body">${esc(p.text).replace(/\n/g,'<br>')}</div>
+    <div class="xhs-post-actions">
+      <div class="xhs-action ${p.myLiked?'liked':''}" onclick="xhsLike('${p.id}')">
+        ${p.myLiked?'❤️':'🤍'} ${likeCount}
+      </div>
+      <div class="xhs-action" onclick="xhsComment('${p.id}')">💬 ${(p.comments||[]).length}</div>
+    </div>
+    ${(p.comments||[]).length?`<div class="xhs-comments">${(p.comments||[]).map(c=>{const cu=XHS_USERS[c.user]||{name:c.user==='me'?myName:c.user};return`<div class="xhs-comment"><span class="cn">${esc(c.user==='me'?myName:cu.name)}：</span>${esc(c.text)}</div>`}).join('')}</div>`:''}
+  `;
+  return div;
+}
+
+function fmtXhsTime(ts){
+  const d=Date.now()-ts;
+  if(d<60000)return'刚刚';
+  if(d<3600000)return Math.floor(d/60000)+'分钟前';
+  if(d<86400000)return Math.floor(d/3600000)+'小时前';
+  return Math.floor(d/86400000)+'天前';
+}
+
+function xhsLike(id){
+  initXhs();
+  const p=S.xhsPosts.find(x=>x.id===id);if(!p)return;
+  p.myLiked=!p.myLiked;
+  if(!Array.isArray(p.likes))p.likes=[];
+  if(p.myLiked&&!p.likes.includes('me'))p.likes.push('me');
+  else p.likes=p.likes.filter(x=>x!=='me');
+  sv();renderXhs();
+}
+
+function xhsComment(id){
+  os('发表评论',`<div style="display:flex;flex-direction:column;gap:10px">
+    <textarea class="si" id="xhs_cmt" rows="3" style="resize:none;font-family:inherit" placeholder="说点什么…"></textarea>
+    <button class="shbtn p" onclick="submitXhsComment('${id}')">发送</button>
+  </div>`);
+}
+
+function submitXhsComment(id){
+  const t=document.getElementById('xhs_cmt')?.value.trim();if(!t)return;
+  initXhs();
+  const p=S.xhsPosts.find(x=>x.id===id);if(!p)return;
+  if(!Array.isArray(p.comments))p.comments=[];
+  p.comments.push({user:'me',text:t});
+  sv();cs();renderXhs();
+  /* 幸村回复概率50% */
+  if(p.user==='yukimura'&&Math.random()<0.5){
+    setTimeout(()=>{
+      const replies=['嗯。','……','看到了。','说得对。','你来评论了。'];
+      p.comments.push({user:'yukimura',text:replies[Math.floor(Math.random()*replies.length)]});
+      sv();renderXhs();
+    },2000+Math.random()*3000);
+  }
+}
+
+function xhsPost(){
+  os('发布笔记',`<div style="display:flex;flex-direction:column;gap:10px">
+    <textarea class="si" id="xhs_post" rows="5" style="resize:vertical;font-family:inherit;line-height:1.7" placeholder="分享此刻…"></textarea>
+    <button class="shbtn p" onclick="submitXhsPost()">发布</button>
+  </div>`);
+}
+
+function submitXhsPost(){
+  const t=document.getElementById('xhs_post')?.value.trim();if(!t)return;
+  initXhs();
+  S.xhsPosts.push({id:'p'+rid(),user:'me',ts:Date.now(),text:t,likes:[],comments:[],myLiked:false});
+  sv();cs();renderXhs();
+  /* 幸村随机来点赞 */
+  if(Math.random()<0.6){
+    setTimeout(()=>{
+      const p=S.xhsPosts.find(x=>x.user==='me'&&!x.likes.includes('yukimura'));
+      if(p){p.likes.push('yukimura');sv();renderXhs();}
+    },3000+Math.random()*5000);
+  }
+}
+
 function getWorldBookText(){if(!S.worldEntries?.length)return'';return'【世界书·自定义设定】\n'+S.worldEntries.map(e=>e.title+'：'+e.content).join('\n');}
 
 /* ══ 记忆库 ══ */
@@ -1486,7 +1832,7 @@ setInterval(()=>{
 /* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
 document.getElementById('hs').textContent=IM[Math.floor(Math.random()*IM.length)];
-renderGallery();renderAlarms();
+renderGallery();renderAlarms();initXhs();
 updateMyAva();
 if(S.yukiStatus) document.getElementById('yukiStatus').textContent=S.yukiStatus;
 /* 切换到查岗页自动刷新 */
