@@ -368,10 +368,11 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   </div>
 
   <!-- tab切换 -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">
     <button onclick="showInspectTab('schedule')" id="itab-schedule" style="padding:9px;border-radius:12px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📅 行程</button>
     <button onclick="showInspectTab('diary')" id="itab-diary" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">📓 日记</button>
     <button onclick="showInspectTab('shopping')" id="itab-shopping" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛍️ 购物</button>
+    <button onclick="showInspectTab('forum')" id="itab-forum" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🗂️ 论坛</button>
   </div>
 
   <!-- 行程内容 -->
@@ -392,6 +393,11 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <!-- 购物记录 -->
   <div id="inspect-shopping" style="display:none">
     <div style="display:flex;flex-direction:column;gap:8px" id="shoppingList"></div>
+  </div>
+
+  <!-- 论坛足迹 -->
+  <div id="inspect-forum" style="display:none">
+    <div style="display:flex;flex-direction:column;gap:8px" id="forumList"></div>
   </div>
 
 </div>
@@ -1343,6 +1349,32 @@ function renderInspect(){
   }
 
   /* 购物记录 */
+  /* 论坛足迹 */
+  const fl=document.getElementById('forumList');
+  if(fl){
+    const FORUM=[
+      {type:'发布',time:'2小时前',title:'请问哪里有好的白茶推荐？',tag:'生活',likes:12,content:'最近在找一款清淡的白毫银针，有了解的吗。'},
+      {type:'点赞',time:'昨天',title:'立海大网球部本周训练记录整理',tag:'网球',likes:87,content:'部长今天的发球速度又提升了，数据惊人。'},
+      {type:'浏览',time:'昨天',title:'花道入门：剑山的正确使用方法',tag:'花道',likes:34,content:''},
+      {type:'点赞',time:'2天前',title:'全国中学生网球联赛战术分析',tag:'网球',likes:256,content:''},
+      {type:'发布',time:'3天前',title:'推荐一首适合练习时听的纯音乐',tag:'音乐',likes:45,content:'安静的曲子更能让人专注。不需要歌词。'},
+      {type:'浏览',time:'4天前',title:'茶道与网球——静与动的平衡',tag:'生活',likes:120,content:''},
+      {type:'点赞',time:'5天前',title:'立海大周边推荐：隐藏的茶馆',tag:'美食',likes:67,content:''},
+    ];
+    const typeColor={'发布':'var(--p500)','点赞':'#E05080','浏览':'var(--muted)'};
+    fl.innerHTML=FORUM.map(f=>`
+      <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+          <span style="font-size:10px;font-weight:700;color:${typeColor[f.type]||'var(--muted)'};background:${f.type==='发布'?'var(--p100)':f.type==='点赞'?'#FEE0EA':'var(--bg)'};padding:2px 8px;border-radius:10px">${f.type}</span>
+          <span style="font-size:10px;color:var(--muted)">${f.time}</span>
+          <span style="font-size:10px;color:var(--p500);background:var(--p50);padding:2px 8px;border-radius:10px;margin-left:auto">${f.tag}</span>
+        </div>
+        <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${f.title}</div>
+        ${f.content?`<div style="font-size:12px;color:var(--muted);line-height:1.6">${f.content}</div>`:''}
+        ${f.likes?`<div style="font-size:11px;color:var(--muted);margin-top:6px">❤️ ${f.likes}</div>`:''}
+      </div>`).join('');
+  }
+
   const sl=document.getElementById('shoppingList');
   if(sl){
     sl.innerHTML=SHOPPING_RECORDS.map(r=>`
@@ -1357,7 +1389,7 @@ function renderInspect(){
 }
 
 function showInspectTab(tab){
-  ['schedule','diary','shopping'].forEach(t=>{
+  ['schedule','diary','shopping','forum'].forEach(t=>{
     document.getElementById('inspect-'+t).style.display=t===tab?'block':'none';
     const btn=document.getElementById('itab-'+t);
     if(btn){
@@ -1379,7 +1411,8 @@ async function genDiary(){
   const dayStr=['周日','周一','周二','周三','周四','周五','周六'][now.getDay()];
   const isWknd=isWeekend();
   const recentMsgs=S.msgs.filter(m=>m.text&&m.type!=='sys').slice(-10).map(m=>(m.sender==='me'?'对方':'我')+':'+m.text).join('\n');
-  const prompt=`你是幸村精市，今天是${dayStr}，${isWknd?'周末':'工作日'}。请用第一人称写今天的日记，100字左右，简练克制，有细节感，结尾留一点对某人的若有若无的在意。参考今日对话：\n${recentMsgs||'（今天没有特别的对话）'}`;
+  const userName=S.set.name||'她';
+  const prompt=`你是幸村精市，今天是${dayStr}，${isWknd?'周末':'工作日'}。请用第一人称写今天的日记，100字左右，简练克制，有细节感，结尾留一点对"${userName}"若有若无的在意。提到对方时用"${userName}"，性别为女性，用"她"。参考今日对话：\n${recentMsgs||'（今天没有特别的对话）'}`;
   try{
     const pc=PC[s.prov];if(!pc){el.textContent='（引擎未配置）';return;}
     const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
