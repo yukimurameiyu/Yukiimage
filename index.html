@@ -497,7 +497,7 @@ function ud(){
 uc();setInterval(()=>{uc();checkAlarms();},1000);
 
 /* nav */
-function sp(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id)?.classList.add('active')}
+function sp(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id)?.classList.add('active');if(id==='pg-inspect')setTimeout(renderInspect,50);}
 function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
 
 /* settings */
@@ -1412,8 +1412,7 @@ renderGallery();renderAlarms();
 updateMyAva();
 if(S.yukiStatus) document.getElementById('yukiStatus').textContent=S.yukiStatus;
 /* 切换到查岗页自动刷新 */
-const _origSp=window.sp||sp;
-window.sp=function(id){sp(id);if(id==='pg-inspect')setTimeout(renderInspect,50);};
+
 </script>
 </body>
 </html>
