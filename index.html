@@ -672,6 +672,7 @@ function sp(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id)?.classList.add('active');
   if(id==='pg-inspect')setTimeout(renderInspect,50);
+  if(id==='pg-gallery')setTimeout(renderGallery,50);
   if(id==='pg-world')setTimeout(()=>{if(!S.worldEntries)S.worldEntries=[];renderWorldEntries();},50);
   if(id==='pg-memory')setTimeout(()=>{if(!S.memoryEntries)S.memoryEntries=[];renderMemoryEntries();},50);
   if(id==='pg-xhs')setTimeout(()=>{renderXhs();generateDailyPosts();},50);
@@ -866,7 +867,8 @@ function updateGachaUI(){
   const el=document.getElementById('gachaUnlocked');if(!el)return;
   el.innerHTML=CARD_POOL.map(c=>{
     const owned=(S.ownedCards||[]).includes(c.id);
-    return`<div class="unlock-thumb" onclick="${owned&&c.galleryIdx>=0?'sp(\'pg-gallery\')':''}">
+    const clickFn=owned&&c.galleryIdx>=0?`vc(${c.galleryIdx})`:'';
+    return`<div class="unlock-thumb" onclick="${clickFn}" style="cursor:${owned&&c.galleryIdx>=0?'pointer':'default'}">
       ${owned?`<img src="${c.img}" onerror="this.style.display='none'"/><div style="position:absolute;bottom:0;left:0;right:0;padding:3px;background:rgba(0,0,0,.6);font-size:8px;color:white;text-align:center">${c.name}</div>`:
       `<div style="width:100%;aspect-ratio:3/2;background:var(--p100);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:18px;opacity:.3">🔒</div><div style="font-size:8px;color:var(--muted);margin-top:2px;text-align:center">${c.rarity}</div></div>`}
     </div>`;
