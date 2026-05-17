@@ -1308,7 +1308,8 @@ function renderChatList(){
     const last=msgs.length?msgs[msgs.length-1]:null;
     const preview=last?(last.sender==='me'?'我：':'')+((last.type==='hb'?'🧧 红包':last.type==='tf'?'💰 转账':last.text)||'').slice(0,20):'开始聊天吧~';
     const time=last?fmtChatTime(last.time):'';
-    const ava=ch.img?`<img src="${ch.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
+    const customAva=(S.charAvatars&&S.charAvatars[cid])?S.charAvatars[cid]:(cid==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
+    const ava=customAva?`<img src="${customAva}"/>`:ch.img?`<img src="${ch.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
     const schoolTag=ch.school==='青春学园'?'青学':ch.school==='冰帝学园'?'冰帝':'立海';
     return`<div class="cl-card" onclick="openCharChat('${cid}')">
       <div class="cl-ava" style="background:${ch.color}">${ava}<span class="cl-school">${schoolTag}</span></div>
@@ -1338,14 +1339,13 @@ function openCharChat(cid){
   document.getElementById('co').classList.add('open');
   /* 更新聊天头部 */
   const img=document.getElementById('chatAvaImg');
-  if(cid==='yukimura'&&S.yukiAvatar){img.src=S.yukiAvatar;}
+  const charAva=(S.charAvatars&&S.charAvatars[cid])?S.charAvatars[cid]:(cid==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
+  if(charAva){img.src=charAva;}
   else if(ch.img){img.src=ch.img;img.onerror=()=>{img.src='chibi-normal.png';};}
   document.querySelector('#co .cn').textContent=ch.name;
   const statusEl=document.getElementById('yukiStatus');
-  if(cid==='yukimura'){statusEl.textContent=S.yukiStatus||'🌸 茶道课结束了';}
-  else if(cid==='fuji'){statusEl.textContent='📷 在拍照';}
-  else if(cid==='ryoma'){statusEl.textContent='🐱 和卡鲁宾在一起';}
-  else{statusEl.textContent=ch.bio.slice(0,15);}
+  const charStatus=(S.charStatuses&&S.charStatuses[cid])?S.charStatuses[cid]:(cid==='yukimura'&&S.yukiStatus?S.yukiStatus:'');
+  statusEl.textContent=charStatus||getDefaultStatus(cid)||ch.bio.slice(0,15);
   rm();uab();
   /* time-based auto greeting */
   const msgs=getChatMsgs(cid);
@@ -1451,14 +1451,31 @@ function uab(){
 /* ── 角色资料（根据当前聊天角色） ── */
 function openCharProfile(){
   document.getElementById('cm').classList.remove('open');
-  if(_curChatId==='yukimura')return openYukiProfile();
-  const ch=CHAR_PACKS[_curChatId];if(!ch)return;
-  const aff=((S.princeAff&&S.princeAff[_curChatId])||0);
+  const cid=_curChatId;
+  const ch=CHAR_PACKS[cid];if(!ch)return;
+  /* 统一存储初始化 */
+  if(!S.charAvatars)S.charAvatars={};
+  if(!S.charStatuses)S.charStatuses={};
+  if(!S.charPrompts)S.charPrompts={};
+  /* 向后兼容幸村旧字段 */
+  if(cid==='yukimura'){
+    if(S.yukiAvatar&&!S.charAvatars.yukimura)S.charAvatars.yukimura=S.yukiAvatar;
+    if(S.yukiStatus&&!S.charStatuses.yukimura)S.charStatuses.yukimura=S.yukiStatus;
+    if(S.myPrompt&&!S.charPrompts.yukimura)S.charPrompts.yukimura=S.myPrompt;
+  }
+  const ava=S.charAvatars[cid];
+  const status=S.charStatuses[cid]||getDefaultStatus(cid);
+  const prompt=S.charPrompts[cid]||'';
+  const aff=(cid==='yukimura')?(S.aff||0):((S.princeAff&&S.princeAff[cid])||0);
+  const avaHtml=ava?`<img src="${ava}" style="width:100%;height:100%;object-fit:cover"/>`:(ch.img?`<img src="${ch.img}" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div style=\\'width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px\\'>${ch.ico}</div>'">`:`<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px">${ch.ico}</div>`);
   os(ch.name+' · 资料',`
     <div style="text-align:center;margin-bottom:16px">
-      <div style="width:80px;height:80px;border-radius:20px;overflow:hidden;margin:0 auto 8px;border:3px solid ${ch.color}30;background:${ch.color}15;display:flex;align-items:center;justify-content:center;font-size:36px">${ch.ico}</div>
-      <div style="font-size:17px;font-weight:700;color:var(--text)">${ch.name}</div>
-      <div style="font-size:12px;color:var(--muted);margin-top:4px">${ch.school} · ${ch.pos}</div>
+      <div style="width:80px;height:80px;border-radius:20px;overflow:hidden;margin:0 auto 8px;border:3px solid ${ch.color}50;cursor:pointer;position:relative" onclick="document.getElementById('charAvaInput').click()">
+        ${avaHtml}
+        <div style="position:absolute;bottom:0;right:0;width:22px;height:22px;background:${ch.color};border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px">✏️</div>
+      </div>
+      <input type="file" id="charAvaInput" accept="image/*" style="display:none" onchange="loadCharAva(this)"/>
+      <div style="font-size:11px;color:var(--muted)">点击更换${ch.name}头像</div>
     </div>
     <div style="background:var(--p50);border-radius:14px;padding:12px 16px;margin-bottom:12px">
       <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;margin-bottom:6px">💜 好感度</div>
@@ -1467,9 +1484,53 @@ function openCharProfile(){
         <span style="font-size:14px;font-weight:700;color:${ch.color}">${aff}</span>
       </div>
     </div>
-    <div style="font-size:13px;color:var(--text);line-height:1.8;padding:0 4px">${ch.bio}</div>
-    <button class="shbtn p" onclick="cs()" style="margin-top:14px">关闭</button>
+    <div style="margin-bottom:10px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${ch.name}状态签名</div>
+      <input class="si" id="charStatus" value="${esc(status)}" placeholder="${ch.name}的状态…"/>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">角色Prompt（留空用默认）</div>
+      <textarea class="si" id="charPrompt" rows="5" style="resize:vertical;line-height:1.5" placeholder="${ch.sys?ch.sys.slice(0,40)+'…':ch.name+'的人设…'}">${esc(prompt)}</textarea>
+    </div>
+    <button class="shbtn p" onclick="saveCharProfile()">保存${ch.name}资料</button>
   `);
+}
+function getDefaultStatus(cid){
+  const defaults={yukimura:'🌸 茶道课结束了',fuji:'📷 在拍照',ryoma:'🐱 和卡鲁宾在一起'};
+  return defaults[cid]||'';
+}
+function loadCharAva(input){
+  const file=input.files[0];if(!file)return;
+  const cid=_curChatId;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    if(!S.charAvatars)S.charAvatars={};
+    S.charAvatars[cid]=e.target.result;
+    /* 向后兼容幸村旧字段 */
+    if(cid==='yukimura')S.yukiAvatar=e.target.result;
+    sv();
+    /* 更新聊天头像 */
+    const ci=document.getElementById('chatAvaImg');if(ci)ci.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function saveCharProfile(){
+  const cid=_curChatId;
+  const ch=CHAR_PACKS[cid];
+  if(!S.charStatuses)S.charStatuses={};
+  if(!S.charPrompts)S.charPrompts={};
+  S.charStatuses[cid]=document.getElementById('charStatus').value.trim();
+  S.charPrompts[cid]=document.getElementById('charPrompt').value.trim();
+  /* 向后兼容幸村旧字段 */
+  if(cid==='yukimura'){
+    S.yukiStatus=S.charStatuses[cid];
+    S.myPrompt=S.charPrompts[cid];
+  }
+  sv();
+  /* 更新聊天头部状态 */
+  const el=document.getElementById('yukiStatus');
+  if(el)el.textContent=S.charStatuses[cid]||getDefaultStatus(cid);
+  cs();toast('✅ '+ch.name+'资料已保存');
 }
 
 function updateMyAva(){
@@ -1578,7 +1639,8 @@ function rm(){
     const mine=m.sender==='me';
     const row=document.createElement('div');row.className='mr'+(mine?' me':'');
     if(!mine){const a=document.createElement('div');a.className='ma';
-      const avaSrc=(_curChatId==='yukimura'&&S.yukiAvatar)?S.yukiAvatar:(ch.img||'chibi-normal.png');
+      const charAva2=(S.charAvatars&&S.charAvatars[_curChatId])?S.charAvatars[_curChatId]:(_curChatId==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
+      const avaSrc=charAva2||(ch.img||'chibi-normal.png');
       a.innerHTML=`<img src="${avaSrc}" onerror="this.src='chibi-normal.png'"/>`;row.appendChild(a)}
     const b=document.createElement('div');b.className='bub '+(mine?'me':'ot');
     if(m.type==='hb')rhb(b,m,mine);
@@ -1631,7 +1693,7 @@ function rtf(b,m,mine){
   b.querySelector('.tfac')?.addEventListener('click',()=>{m.ac=true;S.wallet=+(S.wallet+m.amount).toFixed(2);sv();rm();uwb();toast('💰 已收款 ¥'+m.amount.toFixed(2))});
   b.querySelector('.tfde')?.addEventListener('click',()=>{m.ac=false;sv();rm();toast('已退回转账')});
 }
-function sty(){const box=document.getElementById('msgs');const r=document.createElement('div');r.className='tr';r.id='tr';const a=document.createElement('div');a.className='ma';const ch=CHAR_PACKS[_curChatId];const avaSrc=(_curChatId==='yukimura'&&S.yukiAvatar)?S.yukiAvatar:(ch&&ch.img?ch.img:'chibi-normal.png');a.innerHTML=`<img src="${avaSrc}" onerror="this.src='chibi-normal.png'"/>`;const tb=document.createElement('div');tb.className='tb';tb.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';r.appendChild(a);r.appendChild(tb);box.appendChild(r);box.scrollTop=box.scrollHeight}
+function sty(){const box=document.getElementById('msgs');const r=document.createElement('div');r.className='tr';r.id='tr';const a=document.createElement('div');a.className='ma';const ch=CHAR_PACKS[_curChatId];const charAva3=(S.charAvatars&&S.charAvatars[_curChatId])?S.charAvatars[_curChatId]:(_curChatId==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');const avaSrc=charAva3||(ch&&ch.img?ch.img:'chibi-normal.png');a.innerHTML=`<img src="${avaSrc}" onerror="this.src='chibi-normal.png'"/>`;const tb=document.createElement('div');tb.className='tb';tb.innerHTML='<div class="td"></div><div class="td"></div><div class="td"></div>';r.appendChild(a);r.appendChild(tb);box.appendChild(r);box.scrollTop=box.scrollHeight}
 function hty(){document.getElementById('tr')?.remove()}
 
 /* API */
@@ -1654,7 +1716,8 @@ async function callApi(charId){
   const a=(cid==='yukimura')?(S.aff||0):((S.princeAff&&S.princeAff[cid])||0);
   const ih=a>=50?'【关系非常亲密，情感浓烈，言语间透着默契与在乎。】':a>=30?'【关系亲密，温柔体贴，称呼更亲昵。】':a>=15?'【比较熟悉，说话自然随意。】':a>=5?'【有点熟悉，语气轻松些。】':'【普通朋友，保持礼貌距离。】';
   const mem=S.mem?.length&&cid==='yukimura'?'【对话记忆】'+S.mem.map(m=>m.t).join('；'):'';
-  const charSys=(ch&&ch.sys)?ch.sys:((cid==='yukimura'&&S.myPrompt)?S.myPrompt:SYS);
+  const customPrompt=(S.charPrompts&&S.charPrompts[cid])?S.charPrompts[cid]:((cid==='yukimura'&&S.myPrompt)?S.myPrompt:'');
+  const charSys=customPrompt||(ch&&ch.sys?ch.sys:SYS);
   const sys=[charSys,cid==='yukimura'?getWorldBookText():'',ih,mem,cid==='yukimura'?getMemoryLibText():''].filter(Boolean).join('\n');
   const msgs=getChatMsgs(cid);
   const _IM_SET=new Set(IM);const _OP_ALL=[];Object.values(OP).forEach(a=>a.forEach(v=>_OP_ALL.push(v)));const _OP_SET=new Set(_OP_ALL);
