@@ -404,6 +404,13 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   </div>
 </div>
 <button class="save-btn" onclick="saveSt()">保存设置</button>
+<div class="sec">
+  <div class="sec-t">🛠️ 调试工具</div>
+  <div style="padding:10px 16px 14px;display:flex;flex-direction:column;gap:8px">
+    <button onclick="S.wallet=9999;sv();uwb();toast('💰 已充值 ¥9999')" style="padding:10px;border-radius:12px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">💰 充值9999金币</button>
+    <button onclick="if(confirm('确定清除所有数据？聊天记录、背包、好感度都会清空')){localStorage.removeItem('yw_v1');location.reload()}" style="padding:10px;border-radius:12px;background:#FFF3F3;border:1px solid #FFCDD2;color:#C62828;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">🗑️ 清除全部数据</button>
+  </div>
+</div>
 </div>
 
 <!-- STUBS -->
