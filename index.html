@@ -338,6 +338,8 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="ai" onclick="sp('pg-world')"><div class="ai-box" style="background:linear-gradient(140deg,#8070B8,#6050A0);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div><span class="ai-lbl">世界书</span></div>
   <div class="ai" onclick="sp('pg-memory')"><div class="ai-box" style="background:linear-gradient(140deg,#C080A0,#A06888);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div><span class="ai-lbl">记忆库</span></div>
   <div class="ai" onclick="sp('pg-games')"><div class="ai-box" style="background:linear-gradient(140deg,#60A8A0,#408888);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M12 12h.01"/><path d="M17 12h.01"/><path d="M7 12h.01"/><path d="M12 8v8"/></svg></div><span class="ai-lbl">小游戏</span></div>
+  <div class="ai" onclick="sp('pg-phone')"><div class="ai-box" style="background:linear-gradient(140deg,#4CAF50,#2E7D32);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div><span class="ai-lbl">电话</span></div>
+  <div class="ai" onclick="sp('pg-mail')"><div class="ai-box" style="background:linear-gradient(140deg,#42A5F5,#1565C0);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div><span class="ai-lbl">邮箱</span></div>
   <div class="ai" onclick="sp('pg-alarm')"><div class="ai-box" style="background:linear-gradient(140deg,#A890A8,#907088);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M5 3L2 6"/><path d="M22 6l-3-3"/></svg></div><span class="ai-lbl">闹钟</span></div>
   <div class="ai" onclick="sp('pg-set');st(document.getElementById('t-set'))"><div class="ai-box" style="background:linear-gradient(140deg,#8888A0,#686880);border:none"><svg viewBox="0 0 24 24" fill="none" stroke="white"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div><span class="ai-lbl">设置</span></div>
 </div>
@@ -346,9 +348,17 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 
 <!-- GALLERY -->
 <div class="page" id="pg-gallery">
-<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>角色图鉴</h2><p>幸村精市 · 立海大网球部部长</p></div>
-<div style="padding:10px 14px 4px;font-size:11px;color:var(--muted);letter-spacing:.3px">已解锁 <span id="unlockCount">0</span>/4 · 通过扭蛋机解锁</div>
-<div class="gg" id="galleryGrid"></div>
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1A0A3A 0%,#2D1060 30%,#4A1E8A 60%,#6B3CB0 100%);position:relative;overflow:hidden">
+  <div style="position:absolute;top:8px;right:16px;font-size:44px;opacity:.06;animation:decoSpin 20s linear infinite">✦</div>
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
+  <h2 style="position:relative;z-index:1">✦ 角色图鉴</h2>
+  <p style="position:relative;z-index:1">王子们的资料 · 好感记录</p>
+</div>
+<div style="padding:10px 14px 4px;display:flex;align-items:center;justify-content:space-between">
+  <span style="font-size:11px;color:var(--muted)">已解锁 <span id="unlockCharCount">1</span> / <span id="totalCharCount">0</span> 位角色</span>
+  <span style="font-size:10px;color:var(--p400)" id="gachaUnlockHint">扭蛋解锁卡面 <span id="unlockCount">0</span>/4</span>
+</div>
+<div id="charGallery" style="padding:8px 14px 14px;display:flex;flex-direction:column;gap:10px"></div>
 </div>
 
 <!-- SETTINGS -->
@@ -386,8 +396,6 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
     <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
     <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
     <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
-    <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">Voice ID（声音克隆ID）</div>
-    <input class="si" id="mmvid" placeholder="moss_audio_…"/>
     <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
       <input type="checkbox" id="voiceOn" style="width:16px;height:16px;accent-color:var(--p500)"/>
       <label for="voiceOn" style="font-size:13px">开启幸村语音回复</label>
@@ -634,6 +642,35 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 </div>
 <div class="page" id="pg-games"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>小游戏</h2><p>五子棋 · 斗地主 · 反应测试</p></div><div class="stub"><div class="stub-i">🎮</div><div class="stub-t">游戏中心</div><div class="stub-d">和幸村一起下棋、斗地主<br/>还有刺激的反应速度测试</div><div class="stub-b">即将开放</div></div></div>
+<!-- 电话 -->
+<div class="page" id="pg-phone">
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1B5E20 0%,#2E7D32 40%,#43A047 80%,#66BB6A 100%)">
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
+  <h2>📞 电话</h2><p>使用电话卡激活来电</p>
+</div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px">📞 待接来电</div>
+    <div id="phoneReadyList"></div>
+  </div>
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px">📜 通话记录</div>
+    <div id="phoneLogList"><div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无通话记录</div></div>
+  </div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.7;padding:0 12px">在桃宝购买电话卡 → 激活指定角色来电<br/>角色好感度≥50才能使用电话卡</div>
+</div>
+</div>
+<!-- 邮箱 -->
+<div class="page" id="pg-mail">
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#0D47A1 0%,#1565C0 40%,#1E88E5 80%,#42A5F5 100%)">
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
+  <h2>📧 邮箱</h2><p>来自王子们的信件</p>
+</div>
+<div style="padding:14px;display:flex;flex-direction:column;gap:10px">
+  <div id="mailList"></div>
+  <div style="font-size:11px;color:var(--muted);text-align:center;line-height:1.7;padding:12px">好感度达到一定等级时<br/>会收到角色的专属信件 💌</div>
+</div>
+</div>
 <div class="page" id="pg-alarm">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>闹钟</h2><p>幸村亲自叫早</p></div>
 <div class="alarm-list" id="alarmList"></div>
@@ -726,8 +763,10 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 
 <script>
 const K='yw_v1';
+/* ── 语音ID（不要外泄） ── */
+const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:200,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[]}}
 function sv(){localStorage.setItem(K,JSON.stringify(S))}
 
 /* clock */
@@ -775,6 +814,8 @@ function sp(id){
   if(id==='pg-gacha')setTimeout(updateGachaUI,50);
   if(id==='pg-taobao')setTimeout(renderShop,50);
   if(id==='pg-garden')setTimeout(renderGarden,50);
+  if(id==='pg-phone')setTimeout(renderPhone,50);
+  if(id==='pg-mail')setTimeout(renderMail,50);
 }
 
 /* ══ 世界书 ══ */
@@ -1173,8 +1214,8 @@ function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove(
 
 /* settings */
 function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat'};document.getElementById('mi').value=m[el.dataset.p]||''}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmvid:document.getElementById('mmvid').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
-function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('mmvid').value=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';document.getElementById('voiceOn').checked=!!s.voiceOn}
+function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
+function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn}
 lsi();
 function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2);const sw=document.getElementById('shopWallet');if(sw)sw.textContent='¥'+(S.wallet||0).toFixed(0);}
 uwb();
@@ -1261,7 +1302,7 @@ function openChat(){
         return fetch('/.netlify/functions/tts',{method:'POST',
           headers:{'Content-Type':'application/json'},
           body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,
-            voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
+            voiceId:VOICE_ID})});
       }).then(r=>r.json()).then(d=>{
         if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
         m._audioB64=d.data.audio;
@@ -1603,25 +1644,60 @@ const CARDS=[
 ];
 function renderGallery(){
   if(!S.unlocked)S.unlocked=[];
-  const grid=document.getElementById('galleryGrid');if(!grid)return;
   const uc=document.getElementById('unlockCount');if(uc)uc.textContent=S.unlocked.length;
-  grid.innerHTML='';
-  CARDS.forEach((c,i)=>{
-    const locked=!S.unlocked.includes(i);
-    const div=document.createElement('div');
-    div.className='gc';div.style.cursor=locked?'default':'pointer';
-    if(!locked)div.onclick=()=>vc(i);
-    div.innerHTML=`
-      <div class="gc-ph" id="gp${i}" style="display:flex"><span>${c.ico}</span><span>${c.r} · ${c.t}</span></div>
-      <img src="${c.i}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover${locked?';filter:blur(2px) brightness(.4)':''}"
-        onload="document.getElementById('gp${i}').style.display='none'"
-        onerror="this.style.display='none'"/>
-      <div class="gc-r">${c.r}</div>
-      <div class="gc-lbl">${c.t}</div>
-      ${locked?'<div class="gc-locked"><svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.8)" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg><span>未解锁</span></div>':''}
-    `;
-    grid.appendChild(div);
+  /* 角色图鉴 */
+  const all=getAllPrinces();
+  const active=getActivePrinces();
+  const tc=document.getElementById('totalCharCount');if(tc)tc.textContent=all.length;
+  const ac=document.getElementById('unlockCharCount');if(ac)ac.textContent=active.length;
+  const gallery=document.getElementById('charGallery');if(!gallery)return;
+  gallery.innerHTML='';
+  all.forEach(ch=>{
+    const aff=ch.id==='yukimura'?(S.aff||0):(S.princeAff?.[ch.id]||0);
+    const affLv=aff>=50?'💖 亲密':aff>=30?'❤️ 喜欢':aff>=15?'🧡 熟悉':aff>=5?'💛 友好':'🤍 初识';
+    const d=document.createElement('div');
+    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(ch.active?'':'opacity:.6');
+    d.innerHTML=`<div style="display:flex;gap:12px;padding:14px;position:relative">
+      <div style="width:60px;height:60px;border-radius:16px;overflow:hidden;flex-shrink:0;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 3px 10px ${ch.color}40;position:relative">
+        <img src="${ch.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"/>
+        <span style="position:relative;z-index:0">${ch.ico}</span>
+        ${!ch.active?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>':''}
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <span style="font-size:15px;font-weight:700">${ch.name}</span>
+          ${ch.active?`<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:${ch.color};color:white;font-weight:700">已解锁</span>`:'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#9E9E9E;color:white;font-weight:700">未解锁</span>'}
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">${ch.school} · ${ch.pos}</div>
+        <div style="font-size:11px;color:var(--text);margin-top:3px;line-height:1.5;opacity:.7">${ch.bio}</div>
+        ${ch.active?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+          <span style="font-size:11px">${affLv}</span>
+          <div style="flex:1;height:4px;background:var(--p100);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(aff,100)}%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:2px"></div></div>
+          <span style="font-size:10px;color:var(--p500);font-weight:700">Lv${aff}</span>
+        </div>`:'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
+      </div>
+    </div>`;
+    if(ch.active) d.style.cursor='pointer';
+    if(ch.active) d.onclick=()=>openCharDetail(ch.id);
+    gallery.appendChild(d);
   });
+}
+function openCharDetail(cid){
+  const ch=CHAR_PACKS[cid];if(!ch)return;
+  const aff=cid==='yukimura'?(S.aff||0):(S.princeAff?.[cid]||0);
+  const merchCount=(S.bag?.merch||[]).filter(m=>m.prince===cid).length;
+  os(ch.ico+' '+ch.name,`<div style="text-align:center">
+    <div style="width:80px;height:80px;border-radius:20px;background:${ch.color};margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px;color:white;overflow:hidden;position:relative;box-shadow:0 4px 16px ${ch.color}40">
+      <img src="${ch.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"/><span style="position:relative;z-index:0">${ch.ico}</span>
+    </div>
+    <div style="font-size:18px;font-weight:700">${ch.name}</div>
+    <div style="font-size:12px;color:var(--muted);margin:4px 0 12px">${ch.school} · ${ch.pos}</div>
+    <div style="font-size:13px;color:var(--text);line-height:1.7;margin-bottom:12px;font-style:italic">${ch.bio}</div>
+    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:8px">
+      <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--p500)">${aff}</div><div style="font-size:10px;color:var(--muted)">好感度</div></div>
+      <div style="text-align:center"><div style="font-size:20px;font-weight:800;color:var(--p500)">${merchCount}</div><div style="font-size:10px;color:var(--muted)">周边</div></div>
+    </div>
+  </div>`);
 }
 function unlockCard(idx){
   if(!S.unlocked)S.unlocked=[];
@@ -1646,7 +1722,7 @@ async function genVoice(text){
   const s=S.set;
   if(!s.voiceOn) return null;
   if(!s.mmkey||!s.mmgid) return null;
-  const vid=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
+  const vid=VOICE_ID;
   try{
     const r=await fetch('/.netlify/functions/tts',{
       method:'POST',headers:{'Content-Type':'application/json'},
@@ -1689,7 +1765,7 @@ async function playMsgVoice(m, btn){
   btn.innerHTML='⏳';
   try{
     const jp=await translateToJP(m.text);
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
+    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:VOICE_ID})});
     const d=await r.json();
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
     const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
@@ -1743,7 +1819,7 @@ function bmPlayVoice(){
   toast('🎙️ 生成语音中…');
   translateToJP(m.text).then(jp=>{
     return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263'})});
+      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:VOICE_ID})});
   }).then(r=>r.json()).then(d=>{
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));actx.close();return;}
     m._audioB64=d.data.audio;
@@ -2190,17 +2266,40 @@ setInterval(()=>{
 },10*60*1000);/* 每10分钟检查一次 */
 
 /* ══ 桃宝商城系统 ══ */
-const PRINCES=[
-  {id:'yukimura',name:'幸村精市',ico:'👑'},
-  {id:'sanada',name:'真田弦一郎',ico:'⚔️'},
-  {id:'yanagi',name:'柳莲二',ico:'📊'},
-  {id:'marui',name:'丸井文太',ico:'🍮'},
-  {id:'akaya',name:'切原赤也',ico:'🔥'},
-  {id:'niou',name:'仁王雅治',ico:'🎭'},
-  {id:'yagyuu',name:'柳生比吕士',ico:'🎩'},
-];
-function princeName(id){return(PRINCES.find(p=>p.id===id)||{}).name||id}
-function princeIco(id){return(PRINCES.find(p=>p.id===id)||{}).ico||'👤'}
+/* ══ 角色包系统 ══ */
+/* active:true 表示已安装角色包（有素材），false 表示锁定 */
+/* 添加新角色：1.在此注册 2.准备素材 3.设active:true */
+const CHAR_PACKS={
+  yukimura:{name:'幸村精市',school:'立海大',pos:'部长',ico:'👑',color:'#5E3FA8',active:true,
+    bio:'神之子，全胜不败。温柔深情，热爱花道茶道。',img:'char-yukimura.png'},
+  sanada:{name:'真田弦一郎',school:'立海大',pos:'副部长',ico:'⚔️',color:'#2D4A6E',active:false,
+    bio:'皇帝，信奉武士道的严肃少年。',img:'char-sanada.png'},
+  yanagi:{name:'柳莲二',school:'立海大',pos:'参谋',ico:'📊',color:'#5D7A5D',active:false,
+    bio:'数据网球的达人，冷静而精确。',img:'char-yanagi.png'},
+  marui:{name:'丸井文太',school:'立海大',pos:'截击天才',ico:'🍮',color:'#C04060',active:false,
+    bio:'自称天才的甜食爱好者。',img:'char-marui.png'},
+  akaya:{name:'切原赤也',school:'立海大',pos:'二年级王牌',ico:'🔥',color:'#8A2020',active:false,
+    bio:'热血中二，对前辈无比崇拜。',img:'char-akaya.png'},
+  niou:{name:'仁王雅治',school:'立海大',pos:'诡术师',ico:'🎭',color:'#4A4A8A',active:false,
+    bio:'Puri♪ 神出鬼没的模仿者。',img:'char-niou.png'},
+  yagyuu:{name:'柳生比吕士',school:'立海大',pos:'绅士',ico:'🎩',color:'#6A6A8A',active:false,
+    bio:'温文尔雅的眼镜绅士。',img:'char-yagyuu.png'},
+  /* ── 待接入角色（准备好素材后设active:true即可） ── */
+  fuji:{name:'不二周助',school:'青春学园',pos:'天才',ico:'🌵',color:'#2E7D32',active:false,
+    bio:'笑容下藏着锋芒的天才球员。',img:'char-fuji.png'},
+  ryoma:{name:'越前龙马',school:'青春学园',pos:'超级新星',ico:'🎾',color:'#1565C0',active:false,
+    bio:'まだまだだね。无敌的一年级生。',img:'char-ryoma.png'},
+  atobe:{name:'迹部景吾',school:'冰帝学园',pos:'部长',ico:'💎',color:'#6A1B9A',active:false,
+    bio:'俺様の美技に酔いな。冰帝之王。',img:'char-atobe.png'},
+  tezuka:{name:'手冢国光',school:'青春学园',pos:'部长',ico:'🏔️',color:'#37474F',active:false,
+    bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png'},
+};
+/* 获取已激活角色列表（兼容旧PRINCES引用） */
+function getActivePrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k,v])=>({id:k,...v}));}
+function getAllPrinces(){return Object.entries(CHAR_PACKS).map(([k,v])=>({id:k,...v}));}
+const PRINCES=getActivePrinces();/* 初始快照，UI函数用getActivePrinces()动态获取 */
+function princeName(id){return CHAR_PACKS[id]?.name||id}
+function princeIco(id){return CHAR_PACKS[id]?.ico||'👤'}
 
 const MERCH_POOL=[
   {name:'吧唧·幸村精市',prince:'yukimura',type:'badge',price:800,rarity:'normal',img:'🔮'},
@@ -2255,8 +2354,10 @@ function needsRefresh(){
 }
 function generateShopItems(){
   const rr=Math.random();
-  const mPool=rr<0.12?MERCH_POOL.filter(m=>m.rarity==='rare'):MERCH_POOL.filter(m=>m.rarity==='normal');
-  const merch=mPool[Math.floor(Math.random()*mPool.length)];
+  const activeIds=getActivePrinces().map(p=>p.id);
+  const activeMerch=MERCH_POOL.filter(m=>activeIds.includes(m.prince));
+  const mPool=rr<0.12?activeMerch.filter(m=>m.rarity==='rare'):activeMerch.filter(m=>m.rarity==='normal');
+  const merch=(mPool.length?mPool:activeMerch)[Math.floor(Math.random()*(mPool.length||activeMerch.length))];
   const seed=SEED_POOL_SHOP[Math.floor(Math.random()*SEED_POOL_SHOP.length)];
   const gi=Math.floor(Math.random()*GIFT_POOL.length);
   const gift=GIFT_POOL[gi];
@@ -2348,15 +2449,15 @@ function useCard(cardId){
   if(!S.bag?.cards?.[cardId]||S.bag.cards[cardId]<=0){toast('没有这张卡了');return;}cs();
   if(!S.princeAff)S.princeAff={};
   if(cardId==='likeCard'){
-    const sh=[...PRINCES].sort(()=>Math.random()-0.5);const p1=sh[0],p2=sh[1];
+    const sh=[...getActivePrinces()].sort(()=>Math.random()-0.5);const p1=sh[0],p2=sh[1];
     S.princeAff[p1.id]=(S.princeAff[p1.id]||0)+3;S.princeAff[p2.id]=(S.princeAff[p2.id]||0)+3;
     if(p1.id==='yukimura'||p2.id==='yukimura')S.aff=(S.aff||0)+3;
     S.bag.cards[cardId]--;sv();uab();toast('💗 '+p1.name+' 和 '+p2.name+' 好感+3！');
   }else if(cardId==='advLikeCard'){
-    let btns=PRINCES.map(p=>`<button onclick="applyAdvLike('${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}<br/><span style="font-size:9px;color:var(--p400)">Lv${(S.princeAff[p.id])||0}</span></button>`).join('');
+    let btns=getActivePrinces().map(p=>`<button onclick="applyAdvLike('${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}<br/><span style="font-size:9px;color:var(--p400)">Lv${(S.princeAff[p.id])||0}</span></button>`).join('');
     os('💖 选择角色',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">选择一名角色 好感+3</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
   }else if(cardId==='phoneCard'){
-    let btns=PRINCES.map(p=>{const af=(S.princeAff[p.id])||0;const yaf=p.id==='yukimura'?(S.aff||0):af;const ok=yaf>=50;
+    let btns=getActivePrinces().map(p=>{const af=(S.princeAff[p.id])||0;const yaf=p.id==='yukimura'?(S.aff||0):af;const ok=yaf>=50;
       return`<button ${ok?`onclick="activatePhone('${p.id}')"`:'disabled'} style="padding:8px 4px;border-radius:12px;background:${ok?'var(--p50)':'#f5f5f5'};border:1px solid ${ok?'var(--border)':'#eee'};cursor:${ok?'pointer':'not-allowed'};font-family:inherit;font-size:11px;text-align:center;${ok?'':'opacity:.5'}">${p.ico}<br/>${p.name}<br/><span style="font-size:9px;color:${ok?'#4CAF50':'var(--muted)'}">Lv${yaf}${ok?' ✓':''}</span></button>`;
     }).join('');
     os('📞 选择角色',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">好感≥50可激活来电</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
@@ -2381,7 +2482,7 @@ function activatePhone(pid){
 function useGift(idx){
   if(!S.bag?.gifts?.[idx]){toast('找不到礼物');return;}
   const g=S.bag.gifts[idx];cs();
-  let btns=PRINCES.map(p=>`<button onclick="giveGiftTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
+  let btns=getActivePrinces().map(p=>`<button onclick="giveGiftTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
   os('🎁 赠送 '+g.name,`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">好感+${g.affUp}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
 }
 function giveGiftTo(gi,pid){
@@ -2732,7 +2833,7 @@ function endKitchenGame(){
 function giftDessert(idx){
   ensureGarden();
   const d=S.garden.desserts[idx];if(!d)return;cs();
-  let btns=PRINCES.map(p=>`<button onclick="giveDessertTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
+  let btns=getActivePrinces().map(p=>`<button onclick="giveDessertTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
   os('🍰 赠送 '+d.name,`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">${d.quality} · 好感+${d.affUp}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
 }
 function giveDessertTo(idx,pid){
@@ -2747,6 +2848,63 @@ function giveDessertTo(idx,pid){
 }
 
 function renderGarden(){ensureGarden();showGardenArea('room');}
+
+/* ══ 电话系统 ══ */
+function renderPhone(){
+  const list=document.getElementById('phoneReadyList');if(!list)return;
+  const ready=S.phoneReady||[];
+  if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';return;}
+  list.innerHTML=ready.map((r,i)=>{
+    const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
+    return`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--p50);border-radius:12px;margin-bottom:6px">
+      <div style="width:40px;height:40px;border-radius:12px;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:20px;color:white">${ch.ico}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">来电已激活 · ${new Date(r.ts).toLocaleDateString('zh-CN')}</div></div>
+      <button onclick="startPhoneCall(${i})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
+    </div>`;
+  }).join('');
+}
+function startPhoneCall(idx){
+  const r=(S.phoneReady||[])[idx];if(!r)return;
+  const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤'};
+  toast('📞 '+ch.name+' 正在拨入… 电话功能完整版即将上线');
+  /* 完整版将接入AI生成文本+MiniMax语音 */
+}
+
+/* ══ 邮箱系统 ══ */
+const MAIL_THRESHOLDS=[
+  {lv:5,subject:'初次见面',body:'写信这种事…不太习惯。但你看起来是个还不错的人。以后有空来看看练习吧。'},
+  {lv:15,subject:'最近怎么样',body:'最近练习很忙，但偶尔会想到你。上次你笑的那个样子。没什么，随便说说。'},
+  {lv:30,subject:'茶',body:'今天泡了新的白茶，第一个想到的是你会不会喜欢。下次来部室的时候，给你留一杯。'},
+  {lv:50,subject:'只给你看',body:'有些话我不太会说出口。\n但你应该已经知道了吧。\n和你在一起的时候，赢或者输，好像都不那么重要了。\n……只是好像而已。'},
+];
+function renderMail(){
+  const list=document.getElementById('mailList');if(!list)return;
+  const aff=S.aff||0;
+  if(!MAIL_THRESHOLDS.some(m=>aff>=m.lv)){
+    list.innerHTML='<div style="text-align:center;padding:24px;color:var(--muted);font-size:13px">📭 暂无邮件<br/><span style="font-size:11px">和幸村提高好感度后会收到信件</span></div>';return;
+  }
+  list.innerHTML=MAIL_THRESHOLDS.map((m,i)=>{
+    const unlocked=aff>=m.lv;
+    return`<div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid ${unlocked?'var(--border)':'#eee'};${unlocked?'cursor:pointer':'opacity:.5'}" ${unlocked?`onclick="openMailIdx(${i})"`:''}>
+      <div style="padding:14px;display:flex;gap:12px;align-items:center">
+        <div style="font-size:24px">${unlocked?'💌':'🔒'}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;${unlocked?'':'color:var(--muted)'}">${unlocked?m.subject:'好感 Lv'+m.lv+' 解锁'}</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">${unlocked?'来自幸村精市':'继续提升好感度吧'}</div>
+        </div>
+        ${unlocked?'<span style="font-size:10px;color:var(--p400)">查看 ›</span>':''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openMailIdx(i){
+  const m=MAIL_THRESHOLDS[i];if(!m)return;
+  os('💌 '+m.subject,`<div style="text-align:left">
+    <div style="font-size:10px;color:var(--muted);margin-bottom:8px">From: 幸村精市 &lt;yukimura@rikkai.ac.jp&gt;</div>
+    <div style="font-size:14px;line-height:1.85;color:var(--text)">${m.body.replace(/\n/g,'<br/>')}</div>
+    <div style="text-align:right;margin-top:12px;font-size:11px;color:var(--muted);font-style:italic">— 幸村精市</div>
+  </div>`);
+}
 
 /* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
