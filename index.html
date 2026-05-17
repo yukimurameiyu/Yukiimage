@@ -97,11 +97,11 @@ button:active{opacity:.8}
 .ph{background:linear-gradient(135deg,var(--p800),var(--p500));padding:20px 18px 24px;color:white}
 .ph h2{font-size:20px;font-weight:600;font-family:'PingFang SC','STSong',serif;letter-spacing:.5px}
 .ph p{font-size:11px;opacity:.7;margin-top:5px;letter-spacing:.3px}
-.gg{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gg{padding:14px;display:grid;grid-template-columns:1fr;gap:12px}
 .gc{border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);cursor:pointer;background:var(--p100);position:relative;transition:transform .15s;border:1px solid var(--border)}
 .gc:active{transform:scale(.97)}
-.gc img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
-.gc-ph{width:100%;aspect-ratio:3/4;background:linear-gradient(135deg,var(--p200),var(--p400));display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-size:32px}
+.gc img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.gc-ph{width:100%;aspect-ratio:3/2;background:linear-gradient(135deg,var(--p200),var(--p400));display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-size:32px}
 .gc-ph span{font-size:11px;margin-top:6px;opacity:.85}
 .gc-lbl{position:absolute;bottom:0;left:0;right:0;padding:8px 10px;background:linear-gradient(transparent,rgba(0,0,0,.65));color:white;font-size:11px;font-weight:600}
 .gc-r{position:absolute;top:8px;left:8px;background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px}
@@ -261,16 +261,24 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .bm-item:active{background:rgba(255,255,255,.15)}
 
 /* ── 扭蛋机 ── */
-@keyframes cardFlip{0%{transform:rotateY(90deg) scale(.8);opacity:0}100%{transform:rotateY(0) scale(1);opacity:1}}
-@keyframes ssrGlow{0%,100%{box-shadow:0 0 20px rgba(255,200,0,.6)}50%{box-shadow:0 0 40px rgba(255,200,0,1)}}
-@keyframes srGlow{0%,100%{box-shadow:0 0 12px rgba(160,100,240,.5)}50%{box-shadow:0 0 24px rgba(160,100,240,.9)}}
-.gacha-card{width:100px;border-radius:12px;overflow:hidden;animation:cardFlip .4s ease forwards;opacity:0;cursor:pointer;position:relative}
-.gacha-card img{width:100%;aspect-ratio:2/3;object-fit:cover;display:block}
-.gacha-card-ph{width:100%;aspect-ratio:2/3;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px}
+@keyframes cardFlip{0%{transform:perspective(800px) rotateY(90deg) scale(.7);opacity:0;filter:brightness(2)}60%{transform:perspective(800px) rotateY(-8deg) scale(1.05);opacity:1;filter:brightness(1.3)}100%{transform:perspective(800px) rotateY(0) scale(1);opacity:1;filter:brightness(1)}}
+@keyframes ssrGlow{0%,100%{box-shadow:0 0 20px rgba(255,200,0,.6),0 0 60px rgba(255,180,0,.2),inset 0 0 30px rgba(255,200,0,.1)}50%{box-shadow:0 0 40px rgba(255,200,0,1),0 0 100px rgba(255,180,0,.4),inset 0 0 40px rgba(255,200,0,.2)}}
+@keyframes srGlow{0%,100%{box-shadow:0 0 12px rgba(160,100,240,.5),0 0 40px rgba(160,100,240,.15)}50%{box-shadow:0 0 24px rgba(160,100,240,.9),0 0 60px rgba(160,100,240,.3)}}
+@keyframes ssrShake{0%,100%{transform:translateX(0)}10%{transform:translateX(-6px)}20%{transform:translateX(6px)}30%{transform:translateX(-4px)}40%{transform:translateX(4px)}50%{transform:translateX(-2px)}60%{transform:translateX(0)}}
+@keyframes ssrFlash{0%{opacity:1}100%{opacity:0}}
+@keyframes ssrRainbow{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+@keyframes gachaParticle{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--px),var(--py)) scale(0);opacity:0}}
+.gacha-flash{position:fixed;inset:0;z-index:301;background:linear-gradient(135deg,rgba(255,215,0,.9),rgba(255,255,255,.95));pointer-events:none;animation:ssrFlash .8s ease-out forwards}
+.gacha-particles{position:fixed;inset:0;z-index:302;pointer-events:none;overflow:hidden}
+.gacha-particle{position:absolute;width:4px;height:4px;border-radius:50%;animation:gachaParticle 1.5s ease-out forwards}
+.gacha-card{width:140px;border-radius:12px;overflow:hidden;animation:cardFlip .4s ease forwards;opacity:0;cursor:pointer;position:relative;transition:transform .2s}
+.gacha-card:hover{transform:scale(1.05)}
+.gacha-card img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.gacha-card-ph{width:100%;aspect-ratio:3/2;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:24px}
 .gacha-card .gc-rar{position:absolute;top:4px;left:4px;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;color:white}
 .gacha-card.ssr{animation:cardFlip .4s ease forwards,ssrGlow 1.5s ease infinite .5s}
 .gacha-card.sr{animation:cardFlip .4s ease forwards,srGlow 1.5s ease infinite .5s}
-.unlock-thumb{width:100%;aspect-ratio:2/3;border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
+.unlock-thumb{width:100%;aspect-ratio:3/2;border-radius:10px;overflow:hidden;position:relative;cursor:pointer}
 .unlock-thumb img{width:100%;height:100%;object-fit:cover}
 .unlock-thumb .locked{position:absolute;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;font-size:18px;color:rgba(255,255,255,.6)}
 /* ── 小红薯 ── */
@@ -316,7 +324,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 <div style="padding:14px 20px 0;display:flex;align-items:center;gap:8px">
   <div style="flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--border))"></div>
-  <span style="font-size:9px;color:var(--muted);letter-spacing:2.5px;font-weight:500;white-space:nowrap">✦ 幸村の世界 ✦</span>
+  <span style="font-size:9px;color:var(--muted);letter-spacing:2.5px;font-weight:500;white-space:nowrap" id="worldTitle">✦ 我的世界 ✦</span>
   <div style="flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)"></div>
 </div>
 <div class="app-grid">
@@ -403,28 +411,36 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div id="xhsFeed" style="padding:10px 12px;display:flex;flex-direction:column;gap:12px"></div>
 </div>
 <div class="page" id="pg-gacha">
-<div class="ph" style="padding-top:14px;background:linear-gradient(135deg,#1a0a3a,#3d1a6e)">
-  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
-  <h2>扭蛋机</h2><p>幸村精市限定 · SSR 3% · 十连SR保底</p>
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#0a0520 0%,#1a0a3a 30%,#2d1060 60%,#4a1e8a 100%);position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22><circle cx=%2230%22 cy=%2230%22 r=%221%22 fill=%22rgba(255,255,255,.06)%22/></svg>');pointer-events:none"></div>
+  <div style="position:absolute;top:10px;right:20px;font-size:60px;opacity:.06;animation:decoSpin 25s linear infinite">✦</div>
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
+  <h2 style="position:relative;z-index:1">✦ 扭蛋机</h2><p style="position:relative;z-index:1">幸村精市限定 · SSR 3% · 十连SR保底</p>
 </div>
 <!-- 抽卡动画层 -->
 <div id="gachaAnim" style="display:none;position:fixed;inset:0;z-index:300;background:#0d0020;flex-direction:column;align-items:center;justify-content:center">
   <canvas id="gachaCanvas" style="position:absolute;inset:0;width:100%;height:100%"></canvas>
-  <div id="gachaCards" style="position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:20px;max-width:400px"></div>
-  <button onclick="closeGachaAnim()" id="gachaCloseBtn" style="display:none;position:relative;z-index:1;margin-top:20px;padding:12px 32px;background:linear-gradient(135deg,var(--p500),var(--p400));color:white;border:none;border-radius:20px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit">收下 ✓</button>
+  <div id="gachaCards" style="position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;padding:20px;max-width:420px"></div>
+  <button onclick="closeGachaAnim()" id="gachaCloseBtn" style="display:none;position:relative;z-index:1;margin-top:20px;padding:14px 40px;background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.08));backdrop-filter:blur(12px);color:white;border:1px solid rgba(255,255,255,.25);border-radius:24px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:1px;transition:all .2s">收下 ✓</button>
 </div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
   <!-- 当前池 -->
-  <div style="background:linear-gradient(135deg,#1a0a3a,#2d1060);border-radius:var(--r);padding:16px;color:white;text-align:center;position:relative;overflow:hidden">
-    <div style="font-size:11px;opacity:.6;letter-spacing:2px;margin-bottom:8px">当前卡池</div>
-    <div style="font-size:18px;font-weight:700;margin-bottom:4px">🌸 幸村精市·全限定池</div>
-    <div style="font-size:11px;opacity:.7">SSR 3% · SR 15% · R 82% · 十连SR保底</div>
-    <div style="margin-top:12px;font-size:12px;opacity:.6">已抽 <span id="pullCount">0</span> 次 · 距保底 <span id="pullLeft">10</span> 次</div>
+  <div style="background:linear-gradient(160deg,#0a0520,#1a0a3a,#2d1060);border-radius:var(--r);padding:20px;color:white;text-align:center;position:relative;overflow:hidden;border:1px solid rgba(160,100,240,.2)">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(160,100,240,.12),transparent 70%);pointer-events:none"></div>
+    <div style="position:absolute;top:8px;left:12px;font-size:16px;opacity:.15;animation:heartPulse 3s ease-in-out infinite">✦</div>
+    <div style="position:absolute;bottom:8px;right:12px;font-size:12px;opacity:.1;animation:heartPulse 3s ease-in-out infinite 1.5s">✦</div>
+    <div style="font-size:10px;opacity:.5;letter-spacing:3px;margin-bottom:10px;text-transform:uppercase">Current Pool</div>
+    <div style="font-size:20px;font-weight:700;margin-bottom:6px;text-shadow:0 0 20px rgba(200,170,255,.3)">🌸 幸村精市·全限定池</div>
+    <div style="font-size:11px;opacity:.6;letter-spacing:.5px">SSR 3% · SR 15% · R 82% · 十连SR保底</div>
+    <div style="margin-top:14px;font-size:12px;opacity:.5;display:flex;justify-content:center;gap:16px">
+      <span>已抽 <span id="pullCount" style="color:#C8A8FF;font-weight:700">0</span> 次</span>
+      <span>距保底 <span id="pullLeft" style="color:#FFD700;font-weight:700">10</span> 次</span>
+    </div>
   </div>
   <!-- 按钮 -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-    <button onclick="doPull(1)" style="padding:14px;background:linear-gradient(135deg,var(--p600),var(--p400));color:white;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">单抽 × 1<br/><span style="font-size:11px;opacity:.8">¥10</span></button>
-    <button onclick="doPull(10)" style="padding:14px;background:linear-gradient(135deg,#8B2FC9,#C060E0);color:white;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">十连 × 10<br/><span style="font-size:11px;opacity:.8">¥88 · SR保底</span></button>
+    <button onclick="doPull(1)" style="padding:16px 14px;background:linear-gradient(135deg,var(--p600),var(--p400));color:white;border:none;border-radius:16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(107,72,168,.35);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden" onmousedown="this.style.transform='scale(.96)'" onmouseup="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform='scale(1)'"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.1),transparent);pointer-events:none"></div>单抽 × 1<br/><span style="font-size:11px;opacity:.7">¥10</span></button>
+    <button onclick="doPull(10)" style="padding:16px 14px;background:linear-gradient(135deg,#6B20B0,#A040E0,#C060FF);color:white;border:none;border-radius:16px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(160,64,224,.4);transition:transform .15s,box-shadow .15s;position:relative;overflow:hidden" onmousedown="this.style.transform='scale(.96)'" onmouseup="this.style.transform='scale(1)'" ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform='scale(1)'"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);pointer-events:none"></div>十连 × 10<br/><span style="font-size:11px;opacity:.7">¥88 · SR保底</span></button>
   </div>
   <!-- 已解锁卡面 -->
   <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
@@ -432,12 +448,13 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
     <div id="gachaUnlocked" style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px"></div>
   </div>
   <!-- 概率表 -->
-  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
-    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:10px">卡池概率</div>
-    <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
-      <div style="display:flex;justify-content:space-between"><span style="color:#FF8C00;font-weight:700">✦✦✦ SSR</span><span>3%</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--p500);font-weight:700">✦✦ SR</span><span>15%（十连必出）</span></div>
-      <div style="display:flex;justify-content:space-between"><span style="color:var(--muted);font-weight:700">✦ R</span><span>82%</span></div>
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden">
+    <div style="position:absolute;top:-20px;right:-10px;font-size:60px;opacity:.03;transform:rotate(15deg)">🎰</div>
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:12px">卡池概率</div>
+    <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#FFD700,#FF8C00);box-shadow:0 0 6px rgba(255,200,0,.5)"></div><span style="color:#FF8C00;font-weight:700;flex:1">✦✦✦ SSR</span><span style="font-weight:600">3%</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,#9060E0,#C080FF);box-shadow:0 0 6px rgba(160,100,240,.5)"></div><span style="color:var(--p500);font-weight:700;flex:1">✦✦ SR</span><span style="font-weight:600">15%（十连必出）</span></div>
+      <div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:var(--muted)"></div><span style="color:var(--muted);font-weight:700;flex:1">✦ R</span><span style="font-weight:600">82%</span></div>
     </div>
   </div>
 </div>
@@ -575,6 +592,8 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
         <div class="cmi" onclick="dohb()">🧧 发红包</div>
         <div class="cmi" onclick="dotf()">💰 转账</div>
         <div class="cmi" onclick="dopp()">👋 拍一拍</div>
+        <div class="cmi" onclick="doDice()">🎲 掷骰子</div>
+        <div class="cmi" onclick="doRPS()">✊ 猜拳</div>
         <div class="cmi" onclick="openYukiProfile()">👑 幸村资料</div>
         <div class="cmi" onclick="openMyProfile()">👤 我的资料</div>
         <div class="cmi" onclick="clr()">🗑️ 清空记录</div>
@@ -582,9 +601,25 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
     </div>
   </div>
   <div class="msgs" id="msgs"></div>
+  <!-- Quick actions bar -->
+  <div id="quickActions" style="display:none;position:fixed;bottom:68px;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:106">
+    <div style="background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding:8px 12px;overflow-x:auto;white-space:nowrap;display:flex;gap:6px;-webkit-overflow-scrolling:touch">
+      <button onclick="sendQuick('早上好呀☀️')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">☀️ 早安</button>
+      <button onclick="sendQuick('晚安💜')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">🌙 晚安</button>
+      <button onclick="sendQuick('想你了')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">💭 想你</button>
+      <button onclick="sendQuick('在干嘛～')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">👀 查岗</button>
+      <button onclick="sendQuick('抱抱🤗')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">🤗 抱抱</button>
+      <button onclick="sendQuick('今天辛苦了')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:var(--p50);font-size:12px;cursor:pointer;font-family:inherit;color:var(--p600)">💪 辛苦了</button>
+      <button onclick="sendSticker('💋')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:linear-gradient(135deg,#FFE0EC,#FFD0E0);font-size:12px;cursor:pointer;font-family:inherit">💋</button>
+      <button onclick="sendSticker('😘')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:linear-gradient(135deg,#FFE0EC,#FFD0E0);font-size:12px;cursor:pointer;font-family:inherit">😘</button>
+      <button onclick="sendSticker('🥺')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:linear-gradient(135deg,#E8E0FF,#D8D0FF);font-size:12px;cursor:pointer;font-family:inherit">🥺</button>
+      <button onclick="sendSticker('❤️‍🔥')" style="flex-shrink:0;padding:6px 14px;border-radius:20px;border:1px solid var(--border);background:linear-gradient(135deg,#FFE0D0,#FFD0C0);font-size:12px;cursor:pointer;font-family:inherit">❤️‍🔥</button>
+    </div>
+  </div>
   <div class="ib">
     <div class="ia" onclick="dohb()">🧧</div>
-    <textarea class="inp" id="inp" placeholder="发消息…" rows="1" oninput="ar(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}"></textarea>
+    <div class="ia" onclick="toggleQuickActions()" id="stickerBtn" style="font-size:16px">😊</div>
+    <textarea class="inp" id="inp" placeholder="发消息…" rows="1" oninput="ar(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send()}" onfocus="hideQuickActions()"></textarea>
     <button class="sb2" onclick="send()">➤</button>
   </div>
 </div>
@@ -719,28 +754,64 @@ function showGachaAnim(cards){
   anim.style.display='flex';
   cardsEl.innerHTML='';
   btn.style.display='none';
-  /* canvas tennis ball animation */
+  const hasSSR=cards.some(c=>c.rarity==='SSR');
+  const hasSR=cards.some(c=>c.rarity==='SR');
+  /* SSR golden flash */
+  if(hasSSR){
+    const flash=document.createElement('div');flash.className='gacha-flash';
+    document.body.appendChild(flash);setTimeout(()=>flash.remove(),900);
+    /* golden particles */
+    const ptc=document.createElement('div');ptc.className='gacha-particles';
+    for(let i=0;i<30;i++){
+      const p=document.createElement('div');p.className='gacha-particle';
+      p.style.left=Math.random()*100+'%';p.style.top=Math.random()*100+'%';
+      p.style.setProperty('--px',(Math.random()-0.5)*200+'px');
+      p.style.setProperty('--py',(Math.random()-0.5)*200+'px');
+      p.style.background=`hsl(${40+Math.random()*20},100%,${60+Math.random()*30}%)`;
+      p.style.width=p.style.height=(2+Math.random()*5)+'px';
+      p.style.animationDelay=Math.random()*0.5+'s';
+      ptc.appendChild(p);
+    }
+    document.body.appendChild(ptc);setTimeout(()=>ptc.remove(),2500);
+    /* SSR voice placeholder - plays audio/ssr-voice.mp3 if exists */
+    try{
+      const ssrAudio=new Audio('audio/ssr-voice.mp3');
+      ssrAudio.volume=0.8;
+      ssrAudio.play().catch(()=>{});
+    }catch(e){}
+  }
+  /* canvas background particles */
   const canvas=document.getElementById('gachaCanvas');
   const ctx=canvas.getContext('2d');
   canvas.width=window.innerWidth;canvas.height=window.innerHeight;
-  let balls=Array.from({length:12},()=>({
+  const baseHue=hasSSR?40:hasSR?270:220;
+  let balls=Array.from({length:hasSSR?24:14},()=>({
     x:Math.random()*canvas.width,y:Math.random()*canvas.height,
-    vx:(Math.random()-0.5)*3,vy:(Math.random()-0.5)*3,
-    r:4+Math.random()*8,angle:0,va:(Math.random()-0.5)*0.2,
-    color:`hsl(${260+Math.random()*60},70%,${40+Math.random()*30}%)`
+    vx:(Math.random()-0.5)*4,vy:(Math.random()-0.5)*4,
+    r:2+Math.random()*6,angle:0,va:(Math.random()-0.5)*0.2,
+    color:`hsla(${baseHue+Math.random()*60},80%,${50+Math.random()*30}%,${0.4+Math.random()*0.4})`,
+    trail:[]
   }));
   let animRunning=true;
   function drawBall(b){
+    /* trail */
+    b.trail.push({x:b.x,y:b.y});
+    if(b.trail.length>8)b.trail.shift();
+    for(let i=0;i<b.trail.length;i++){
+      const a=i/b.trail.length*0.15;
+      ctx.beginPath();ctx.arc(b.trail[i].x,b.trail[i].y,b.r*(i/b.trail.length),0,Math.PI*2);
+      ctx.fillStyle=b.color.replace(/[\d.]+\)$/,a+')');ctx.fill();
+    }
     ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.angle);
     ctx.beginPath();ctx.arc(0,0,b.r,0,Math.PI*2);
     ctx.fillStyle=b.color;ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,.3)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.arc(0,0,b.r,0.3,Math.PI-0.3);ctx.stroke();
+    if(hasSSR){ctx.shadowBlur=12;ctx.shadowColor='rgba(255,200,0,.5)';}
     ctx.restore();
   }
   function animate(){
     if(!animRunning)return;
-    ctx.fillStyle='rgba(13,0,32,.15)';ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle=hasSSR?'rgba(20,10,0,.12)':'rgba(13,0,32,.12)';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
     balls.forEach(b=>{
       b.x+=b.vx;b.y+=b.vy;b.angle+=b.va;
       if(b.x<0||b.x>canvas.width)b.vx*=-1;
@@ -750,6 +821,8 @@ function showGachaAnim(cards){
     requestAnimationFrame(animate);
   }
   animate();
+  /* set bg color based on rarity */
+  anim.style.background=hasSSR?'linear-gradient(160deg,#1a0a00,#2d1a00)':'#0d0020';
   /* show cards with delay */
   cards.forEach((c,i)=>{
     setTimeout(()=>{
@@ -773,7 +846,7 @@ function showGachaAnim(cards){
       if(i===cards.length-1){
         setTimeout(()=>{btn.style.display='block';animRunning=false;},500);
       }
-    },i*120+300);
+    },i*(hasSSR?180:120)+(hasSSR?600:300));
   });
 }
 
@@ -795,7 +868,7 @@ function updateGachaUI(){
     const owned=(S.ownedCards||[]).includes(c.id);
     return`<div class="unlock-thumb" onclick="${owned&&c.galleryIdx>=0?'sp(\'pg-gallery\')':''}">
       ${owned?`<img src="${c.img}" onerror="this.style.display='none'"/><div style="position:absolute;bottom:0;left:0;right:0;padding:3px;background:rgba(0,0,0,.6);font-size:8px;color:white;text-align:center">${c.name}</div>`:
-      `<div style="width:100%;aspect-ratio:2/3;background:var(--p100);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:18px;opacity:.3">🔒</div><div style="font-size:8px;color:var(--muted);margin-top:2px;text-align:center">${c.rarity}</div></div>`}
+      `<div style="width:100%;aspect-ratio:3/2;background:var(--p100);border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center"><div style="font-size:18px;opacity:.3">🔒</div><div style="font-size:8px;color:var(--muted);margin-top:2px;text-align:center">${c.rarity}</div></div>`}
     </div>`;
   }).join('');
 }
@@ -1000,7 +1073,7 @@ function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove(
 
 /* settings */
 function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat'};document.getElementById('mi').value=m[el.dataset.p]||''}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmvid:document.getElementById('mmvid').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();toast('✅ 设置已保存')}
+function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmvid:document.getElementById('mmvid').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
 function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('mmvid').value=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';document.getElementById('voiceOn').checked=!!s.voiceOn}
 lsi();
 function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2)}
@@ -1028,6 +1101,28 @@ function openChat(){
   if(img&&S.yukiAvatar) img.src=S.yukiAvatar;
   rm();uab();
   document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
+  /* mood indicator */
+  const a=S.aff||0;
+  const mood=a>=50?'😌 心情很好':a>=30?'🌸 温柔':a>=15?'☺️ 平静':a>=5?'🍃 自然':'🫧 一般';
+  const cs2=document.getElementById('yukiStatus');
+  if(cs2&&!S.yukiStatus)cs2.textContent=mood;
+  /* time-based auto greeting */
+  const lastMsg=S.msgs.length?S.msgs[S.msgs.length-1]:null;
+  const timeSinceLastMsg=lastMsg?Date.now()-lastMsg.time:Infinity;
+  if(timeSinceLastMsg>30*60*1000){/* 30 min since last msg */
+    const h=new Date().getHours();
+    let greetPool;
+    if(h>=5&&h<9)greetPool=['早。醒了？','早上好。','起来了？'];
+    else if(h>=9&&h<12)greetPool=['上午好。','在吗。','嗯，你来了。'];
+    else if(h>=12&&h<14)greetPool=['吃了吗。','午安。'];
+    else if(h>=14&&h<18)greetPool=['下午好。','嗯。','来了。'];
+    else if(h>=18&&h<22)greetPool=['晚上好。','今天怎么样。','吃晚饭了吗。'];
+    else greetPool=['还不睡？','这么晚了。','嗯，睡不着？'];
+    setTimeout(()=>{
+      S.msgs.push({id:rid(),sender:'y',text:greetPool[Math.floor(Math.random()*greetPool.length)],time:Date.now(),type:'auto'});
+      sv();rm();
+    },1200+Math.random()*1000);
+  }
   /* 语音按钮事件委托 */
   const box=document.getElementById('msgs');
   if(!box._voiceDelegated){
@@ -1097,6 +1192,8 @@ function updateMyAva(){
   else{img.style.display='none';ph.style.display='flex';}
   const n=S.set.name||'我';
   ph.textContent=n.slice(-1)||'🧡';
+  const wt=document.getElementById('worldTitle');
+  if(wt) wt.textContent='✦ '+(S.set.name||'我')+'の世界 ✦';
 }
 
 /* ── 幸村资料 ── */
@@ -1319,8 +1416,70 @@ setInterval(()=>{try{
 }catch(e){}},120000+Math.random()*180000);
 
 /* pat pat */
-function dopp(){document.getElementById('cm').classList.remove('open');S.msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍幸村精市',time:Date.now(),type:'sys'});sv();rm();const rs=['……你干嘛。','被你拍到了。','嗯？','……','又来。'];setTimeout(()=>{S.msgs.push({id:rid(),sender:'y',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});S.aff++;sv();rm();uab()},800+Math.random()*1500)}
+function dopp(){document.getElementById('cm').classList.remove('open');S.msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍幸村精市',time:Date.now(),type:'sys'});sv();rm();const rs=['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{S.msgs.push({id:rid(),sender:'y',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});S.aff++;sv();rm();uab()},800+Math.random()*1500)}
+
+/* quick actions */
+function toggleQuickActions(){
+  const qa=document.getElementById('quickActions');
+  const show=qa.style.display==='none';
+  qa.style.display=show?'block':'none';
+  document.getElementById('stickerBtn').style.background=show?'var(--p100)':'var(--p50)';
+}
+function hideQuickActions(){document.getElementById('quickActions').style.display='none';document.getElementById('stickerBtn').style.background='var(--p50)';}
+function sendQuick(text){hideQuickActions();document.getElementById('inp').value=text;send();}
+function sendSticker(emoji){
+  hideQuickActions();
+  S.msgs.push({id:rid(),sender:'me',text:emoji,time:Date.now(),type:'txt'});sv();rm();
+  const STICKER_REPLIES={
+    '💋':['……','……嗯。','别在这里。','看到了。'],
+    '😘':['……（偏过头）','嗯。','收到了。','别闹。'],
+    '🥺':['怎么了。','别做那个表情。','好了好了，过来。','……说吧，想要什么。'],
+    '❤️‍🔥':['……你又来。','嗯。','收到。','……我也是。'],
+  };
+  const replies=STICKER_REPLIES[emoji]||['嗯。','看到了。'];
+  setTimeout(()=>{
+    S.msgs.push({id:rid(),sender:'y',text:replies[Math.floor(Math.random()*replies.length)],time:Date.now(),type:'txt'});
+    S.aff++;sv();rm();uab();
+  },800+Math.random()*1500);
+}
 function clr(){document.getElementById('cm').classList.remove('open');if(!confirm('确定清空聊天记录吗？'))return;S.msgs=[];sv();rm()}
+
+/* dice */
+function doDice(){
+  document.getElementById('cm').classList.remove('open');
+  const myDice=Math.ceil(Math.random()*6);
+  S.msgs.push({id:rid(),sender:'me',text:'🎲 掷出了 '+myDice+' 点',time:Date.now(),type:'sys'});sv();rm();
+  setTimeout(()=>{
+    const hisDice=Math.ceil(Math.random()*6);
+    S.msgs.push({id:rid(),sender:'sys',text:'🎲 幸村掷出了 '+hisDice+' 点',time:Date.now(),type:'sys'});
+    const result=myDice>hisDice?'你赢了。':myDice<hisDice?'我赢了。':'平局。';
+    const comments=myDice>hisDice?['……运气不错。','嗯，你赢了。','下次不会让你了。']:myDice<hisDice?['嗯。','这种事我不会输的。','正常发挥。']:['再来一次？','打平了。','有意思。'];
+    setTimeout(()=>{
+      S.msgs.push({id:rid(),sender:'y',text:comments[Math.floor(Math.random()*comments.length)],time:Date.now(),type:'txt'});
+      S.aff++;sv();rm();uab();
+    },600);
+  },1200);
+}
+
+/* rock paper scissors */
+function doRPS(){
+  document.getElementById('cm').classList.remove('open');
+  os('猜拳',`<div style="text-align:center"><div style="font-size:14px;color:var(--muted);margin-bottom:16px">和幸村猜拳</div><div style="display:flex;gap:12px;justify-content:center"><button onclick="playRPS('石头')" style="font-size:36px;padding:14px 20px;border-radius:16px;border:2px solid var(--border);background:white;cursor:pointer;transition:transform .15s">✊</button><button onclick="playRPS('剪刀')" style="font-size:36px;padding:14px 20px;border-radius:16px;border:2px solid var(--border);background:white;cursor:pointer;transition:transform .15s">✌️</button><button onclick="playRPS('布')" style="font-size:36px;padding:14px 20px;border-radius:16px;border:2px solid var(--border);background:white;cursor:pointer;transition:transform .15s">🖐</button></div></div>`);
+}
+function playRPS(my){
+  cs();
+  const choices=['石头','剪刀','布'];
+  const emoji={'石头':'✊','剪刀':'✌️','布':'🖐'};
+  const his=choices[Math.floor(Math.random()*3)];
+  S.msgs.push({id:rid(),sender:'sys',text:`猜拳：你出了${emoji[my]}  幸村出了${emoji[his]}`,time:Date.now(),type:'sys'});
+  const win=(my==='石头'&&his==='剪刀')||(my==='剪刀'&&his==='布')||(my==='布'&&his==='石头');
+  const lose=(my!==his)&&!win;
+  const comments=win?['……你赢了。','嗯，运气好。','不会有下次了。']:lose?['正常。','这种事我不会输。','嗯。']:['再来。','打平了。'];
+  setTimeout(()=>{
+    S.msgs.push({id:rid(),sender:'y',text:comments[Math.floor(Math.random()*comments.length)],time:Date.now(),type:'txt'});
+    if(win)S.aff+=2;else S.aff++;sv();rm();uab();
+  },1000);
+}
 
 /* hongbao */
 function dohb(){document.getElementById('cm').classList.remove('open');os('发红包',`<div class="shi">🧧</div><div class="shar"><span class="shy">¥</span><input class="sham r" id="ha" type="number" min="0.01" max="9999" step="0.01" value="6.66"/></div><input class="shno" id="hn" placeholder="恭喜发财，大吉大利" maxlength="20"/><button class="shbtn r" onclick="sendhb()">塞进红包 🧧</button>`)}
@@ -1337,10 +1496,10 @@ function cs(){document.getElementById('sho').classList.remove('open');document.g
 
 /* gallery */
 const CARDS=[
-  {t:'静谧时光',r:'SSR',d:'「勝つことが全てじゃない。でも、負けるのは嫌いだ。」',i:'ssr-sofa.jpg'},
-  {t:'夏日海边',r:'SSR',d:'「あれれ、天気いいね。日焼け止め、塗ってあげようか？♡」',i:'ssr-beach.jpg'},
-  {t:'猫耳游园',r:'SSR',d:'「……别看了。今天例外。」',i:'ssr-cat.jpg'},
-  {t:'荣耀时刻',r:'SR',d:'「一直赢，不是为了别人，是因为不想让在意的人看到我输。」',i:'ssr-trophy.jpg'},
+  {t:'静谧时光',r:'SSR',d:'「勝つことが全てじゃない。でも、負けるのは嫌いだ。」',i:'ssr-sofa.jpg',ico:'👑'},
+  {t:'夏日海边',r:'SSR',d:'「あれれ、天気いいね。日焼け止め、塗ってあげようか？♡」',i:'ssr-beach.jpg',ico:'🌊'},
+  {t:'猫耳游园',r:'SSR',d:'「……别看了。今天例外。」',i:'ssr-cat.jpg',ico:'🐱'},
+  {t:'荣耀时刻',r:'SR',d:'「一直赢，不是为了别人，是因为不想让在意的人看到我输。」',i:'ssr-trophy.jpg',ico:'🏆'},
 ];
 function renderGallery(){
   if(!S.unlocked)S.unlocked=[];
@@ -1369,7 +1528,7 @@ function unlockCard(idx){
   if(!S.unlocked.includes(idx))S.unlocked.push(idx);
   sv();renderGallery();toast('🎊 解锁了新卡面！');
 }
-function vc(i){const c=CARDS[i];os(c.t,`<div style="text-align:center"><img src="${c.i}" style="width:100%;border-radius:14px;margin-bottom:12px;max-height:280px;object-fit:cover" onerror="this.outerHTML='<div style=&quot;height:200px;background:linear-gradient(135deg,var(--p200),var(--p400));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:12px&quot;>👑</div>'"/><div style="font-size:10px;font-weight:700;background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;border-radius:8px;padding:2px 10px;display:inline-block;margin-bottom:10px">${c.r}</div><div style="font-size:13px;color:var(--muted);line-height:1.8;font-style:italic">${c.d}</div></div>`)}
+function vc(i){const c=CARDS[i];os(c.t,`<div style="text-align:center"><img src="${c.i}" style="width:100%;border-radius:14px;margin-bottom:12px;aspect-ratio:3/2;object-fit:cover" onerror="this.outerHTML='<div style=&quot;width:100%;aspect-ratio:3/2;background:linear-gradient(135deg,var(--p200),var(--p400));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:12px&quot;>${c.ico}</div>'"/><div style="font-size:10px;font-weight:700;background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;border-radius:8px;padding:2px 10px;display:inline-block;margin-bottom:10px">${c.r}</div><div style="font-size:13px;color:var(--muted);line-height:1.8;font-style:italic">${c.d}</div></div>`)}
 
 
 /* ── MiniMax TTS ── */
