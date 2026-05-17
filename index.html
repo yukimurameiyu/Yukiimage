@@ -399,7 +399,29 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 
 <!-- STUBS -->
-<div class="page" id="pg-taobao"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>桃宝</h2><p>幸村专属好物购</p></div><div class="stub"><div class="stub-i">🛍️</div><div class="stub-t">桃宝商城</div><div class="stub-d">服装、食品饮料、礼物、运动用品……正在上架中</div><div class="stub-b">即将开放</div></div></div>
+<div class="page" id="pg-taobao">
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#3D2415 0%,#6B4226 30%,#A06838 60%,#C0884C 100%);position:relative;overflow:hidden">
+  <div style="position:absolute;top:8px;right:16px;font-size:48px;opacity:.08;animation:decoSpin 20s linear infinite">🛍️</div>
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
+  <h2 style="position:relative;z-index:1">🍑 桃宝商城</h2>
+  <p style="position:relative;z-index:1">每日 8:00 上新 · 限量好物</p>
+</div>
+<!-- 钱包 & 背包 -->
+<div style="padding:10px 14px 0;display:flex;gap:8px">
+  <div style="flex:1;background:white;border-radius:14px;padding:10px 14px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+    <span style="font-size:11px;color:var(--muted)">💰 余额</span>
+    <span style="font-size:18px;font-weight:800;color:var(--p500)" id="shopWallet">¥0</span>
+  </div>
+  <button onclick="openBag()" style="background:white;border-radius:14px;padding:10px 16px;box-shadow:var(--shadow);border:1px solid var(--border);font-size:13px;cursor:pointer;font-family:inherit;color:var(--p600);font-weight:600;display:flex;align-items:center;gap:4px">🎒 背包</button>
+</div>
+<!-- 刷新倒计时 -->
+<div style="padding:8px 14px 0;display:flex;align-items:center;justify-content:space-between">
+  <span style="font-size:10px;color:var(--muted);letter-spacing:1px" id="shopRefreshHint">下次上新：--:--:--</span>
+  <span style="font-size:10px;color:var(--p400)" id="shopDateLabel">--</span>
+</div>
+<!-- 商品列表 -->
+<div id="shopGrid" style="padding:10px 14px 14px;display:flex;flex-direction:column;gap:10px"></div>
+</div>
 <div class="page" id="pg-xhs">
 <div class="ph" style="padding-top:14px">
   <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div>
@@ -459,7 +481,81 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   </div>
 </div>
 </div>
-<div class="page" id="pg-garden"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>家园</h2><p>幸村的专属小屋</p></div><div class="stub"><div class="stub-i">🏡</div><div class="stub-t">幸村の家园</div><div class="stub-d">像素风格的温馨小屋<br/>和幸村一起装扮、互动、生活</div><div class="stub-b">即将开放</div></div></div>
+<div class="page" id="pg-garden">
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1B3A2A 0%,#2D5A3E 30%,#4A8A64 60%,#6AAE7A 100%);position:relative;overflow:hidden">
+  <div style="position:absolute;top:6px;right:14px;font-size:44px;opacity:.08;animation:decoSpin 25s linear infinite">🏡</div>
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
+  <h2 style="position:relative;z-index:1">🏡 我的家园</h2>
+  <p style="position:relative;z-index:1">房间 · 阳台 · 厨房</p>
+</div>
+<!-- 区域切换 -->
+<div style="padding:10px 14px 0;display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+  <button onclick="showGardenArea('room')" id="ga-room" style="padding:9px;border-radius:12px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🛋️ 房间</button>
+  <button onclick="showGardenArea('balcony')" id="ga-balcony" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🌿 阳台</button>
+  <button onclick="showGardenArea('kitchen')" id="ga-kitchen" style="padding:9px;border-radius:12px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🍰 厨房</button>
+</div>
+<!-- 房间 -->
+<div id="garden-room" style="padding:10px 14px 14px;display:flex;flex-direction:column;gap:10px">
+  <!-- 收集度 -->
+  <div style="background:white;border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+      <span style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px">👑 周边收集度</span>
+      <span style="font-size:12px;font-weight:700;color:var(--p500)" id="collectRate">0%</span>
+    </div>
+    <div style="height:6px;background:var(--p100);border-radius:3px;overflow:hidden"><div id="collectBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:3px;transition:width .5s"></div></div>
+    <div style="font-size:10px;color:var(--muted);margin-top:4px" id="collectDetail">已收集 0 / 0</div>
+  </div>
+  <!-- 书桌 -->
+  <div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="padding:10px 14px 6px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px">🖥️ 我的痛桌</span>
+      <button onclick="decorDesk()" style="font-size:11px;color:var(--p500);border:none;background:none;cursor:pointer;font-family:inherit;font-weight:600">+ 装饰</button>
+    </div>
+    <div id="deskArea" style="min-height:80px;padding:8px 14px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"></div>
+  </div>
+  <!-- 书架 -->
+  <div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="padding:10px 14px 6px;display:flex;align-items:center;justify-content:space-between">
+      <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px">📚 我的痛书架</span>
+      <button onclick="decorShelf()" style="font-size:11px;color:var(--p500);border:none;background:none;cursor:pointer;font-family:inherit;font-weight:600">+ 装饰</button>
+    </div>
+    <div id="shelfArea" style="min-height:80px;padding:8px 14px 12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center"></div>
+  </div>
+  <!-- 花瓶 -->
+  <div style="background:white;border-radius:var(--r);padding:12px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px">💐 我的花瓶</div>
+    <div id="vaseArea" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+  </div>
+</div>
+<!-- 阳台 -->
+<div id="garden-balcony" style="padding:10px 14px 14px;display:none;flex-direction:column;gap:10px">
+  <div style="background:linear-gradient(180deg,#E3F2FD,#BBDEFB);border-radius:var(--r);padding:14px 16px;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;top:6px;right:12px;font-size:32px;opacity:.15">☀️</div>
+    <div style="font-size:11px;color:#5C6BC0;font-weight:600;letter-spacing:1px;margin-bottom:4px">🌤️ 阳台花园</div>
+    <div style="font-size:10px;color:#7986CB">种下花花 · 记得浇水哦</div>
+  </div>
+  <div id="potArea" style="display:flex;flex-direction:column;gap:10px"></div>
+</div>
+<!-- 厨房 -->
+<div id="garden-kitchen" style="padding:10px 14px 14px;display:none;flex-direction:column;gap:10px">
+  <div style="background:linear-gradient(135deg,#FFF3E0,#FFE0B2);border-radius:var(--r);padding:14px 16px;text-align:center;position:relative;overflow:hidden">
+    <div style="position:absolute;top:6px;right:12px;font-size:32px;opacity:.15">🧁</div>
+    <div style="font-size:11px;color:#E65100;font-weight:600;letter-spacing:1px;margin-bottom:4px">🍰 甜点厨房</div>
+    <div style="font-size:10px;color:#FB8C00">完成解压小游戏来制作甜点吧</div>
+  </div>
+  <div style="background:white;border-radius:var(--r);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border);text-align:center">
+    <div style="font-size:36px;margin-bottom:8px">🧁</div>
+    <div style="font-size:14px;font-weight:600;margin-bottom:4px">叠叠乐甜点坊</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.6">点击叠放方块，叠得越高分数越高<br/>根据得分制作不同品质的甜点</div>
+    <button onclick="startKitchenGame()" style="padding:12px 32px;border-radius:16px;background:linear-gradient(135deg,#FF8A65,#E64A19);color:white;border:none;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(230,74,25,.3)">开始制作 🍰</button>
+  </div>
+  <!-- 甜点背包 -->
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px">🍮 我做的甜点</div>
+    <div id="dessertBag" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+</div>
+</div>
 <div class="page" id="pg-inspect">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p>幸村精市 · 实时行踪</p></div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
@@ -631,7 +727,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <script>
 const K='yw_v1';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:200,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:200,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[]}}
 function sv(){localStorage.setItem(K,JSON.stringify(S))}
 
 /* clock */
@@ -677,6 +773,8 @@ function sp(id){
   if(id==='pg-memory')setTimeout(()=>{if(!S.memoryEntries)S.memoryEntries=[];renderMemoryEntries();},50);
   if(id==='pg-xhs')setTimeout(()=>{renderXhs();generateDailyPosts();},50);
   if(id==='pg-gacha')setTimeout(updateGachaUI,50);
+  if(id==='pg-taobao')setTimeout(renderShop,50);
+  if(id==='pg-garden')setTimeout(renderGarden,50);
 }
 
 /* ══ 世界书 ══ */
@@ -1078,7 +1176,7 @@ function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove(
 function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmvid:document.getElementById('mmvid').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
 function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('mmvid').value=s.mmvid||'moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';document.getElementById('voiceOn').checked=!!s.voiceOn}
 lsi();
-function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2)}
+function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2);const sw=document.getElementById('shopWallet');if(sw)sw.textContent='¥'+(S.wallet||0).toFixed(0);}
 uwb();
 
 /* chat */
@@ -2090,6 +2188,565 @@ setInterval(()=>{
   S.msgs.push({id:rid(),sender:'y',text:msg,time:Date.now(),type:'txt'});
   sv();rm();
 },10*60*1000);/* 每10分钟检查一次 */
+
+/* ══ 桃宝商城系统 ══ */
+const PRINCES=[
+  {id:'yukimura',name:'幸村精市',ico:'👑'},
+  {id:'sanada',name:'真田弦一郎',ico:'⚔️'},
+  {id:'yanagi',name:'柳莲二',ico:'📊'},
+  {id:'marui',name:'丸井文太',ico:'🍮'},
+  {id:'akaya',name:'切原赤也',ico:'🔥'},
+  {id:'niou',name:'仁王雅治',ico:'🎭'},
+  {id:'yagyuu',name:'柳生比吕士',ico:'🎩'},
+];
+function princeName(id){return(PRINCES.find(p=>p.id===id)||{}).name||id}
+function princeIco(id){return(PRINCES.find(p=>p.id===id)||{}).ico||'👤'}
+
+const MERCH_POOL=[
+  {name:'吧唧·幸村精市',prince:'yukimura',type:'badge',price:800,rarity:'normal',img:'🔮'},
+  {name:'吧唧·真田弦一郎',prince:'sanada',type:'badge',price:800,rarity:'normal',img:'⚔️'},
+  {name:'吧唧·切原赤也',prince:'akaya',type:'badge',price:800,rarity:'normal',img:'🔥'},
+  {name:'吧唧·丸井文太',prince:'marui',type:'badge',price:800,rarity:'normal',img:'🍬'},
+  {name:'吧唧·仁王雅治',prince:'niou',type:'badge',price:800,rarity:'normal',img:'🎭'},
+  {name:'吧唧·柳莲二',prince:'yanagi',type:'badge',price:800,rarity:'normal',img:'📊'},
+  {name:'吧唧·柳生比吕士',prince:'yagyuu',type:'badge',price:800,rarity:'normal',img:'🎩'},
+  {name:'卡片·幸村精市',prince:'yukimura',type:'card',price:500,rarity:'normal',img:'🃏'},
+  {name:'卡片·真田弦一郎',prince:'sanada',type:'card',price:500,rarity:'normal',img:'🃏'},
+  {name:'卡片·切原赤也',prince:'akaya',type:'card',price:500,rarity:'normal',img:'🃏'},
+  {name:'卡片·丸井文太',prince:'marui',type:'card',price:500,rarity:'normal',img:'🃏'},
+  {name:'限定·幸村精市 花道ver.',prince:'yukimura',type:'limited',price:1000,rarity:'rare',img:'🌸'},
+  {name:'限定·真田弦一郎 武士ver.',prince:'sanada',type:'limited',price:1000,rarity:'rare',img:'⚡'},
+  {name:'限定·仁王雅治 夜曲ver.',prince:'niou',type:'limited',price:1000,rarity:'rare',img:'🌙'},
+  {name:'限定·切原赤也 觉醒ver.',prince:'akaya',type:'limited',price:1000,rarity:'rare',img:'👹'},
+];
+const SEED_POOL_SHOP=[
+  {name:'雏菊种子',flower:'雏菊',price:30,img:'🌼'},
+  {name:'向日葵种子',flower:'向日葵',price:40,img:'🌻'},
+  {name:'仙人掌种子',flower:'仙人掌',price:35,img:'🌵'},
+  {name:'薰衣草种子',flower:'薰衣草',price:45,img:'💜'},
+  {name:'玫瑰种子',flower:'玫瑰',price:50,img:'🌹'},
+  {name:'百合种子',flower:'百合',price:45,img:'🤍'},
+  {name:'郁金香种子',flower:'郁金香',price:40,img:'🌷'},
+];
+const GIFT_POOL=[
+  {name:'网球',price:150,affUp:2,img:'🎾'},
+  {name:'护腕',price:120,affUp:1,img:'💪'},
+  {name:'球鞋',price:280,affUp:3,img:'👟'},
+  {name:'球衫',price:250,affUp:3,img:'👕'},
+  {name:'吸汗带',price:100,affUp:1,img:'🏋️'},
+  {name:'运动水壶',price:130,affUp:2,img:'🧴'},
+  {name:'护膝',price:200,affUp:2,img:'🦵'},
+];
+const CARD_SHOP_POOL=[
+  {id:'likeCard',name:'好感卡',desc:'随机两名角色 好感+3',price:200,limit:1,img:'💗'},
+  {id:'phoneCard',name:'电话卡',desc:'激活指定角色来电（好感≥50）',price:500,limit:1,img:'📞'},
+  {id:'advLikeCard',name:'高级好感卡',desc:'指定角色 好感+3',price:350,limit:2,img:'💖'},
+  {id:'fertCard',name:'施肥卡',desc:'植物加速生长2小时',price:50,limit:3,img:'🌿'},
+];
+
+function getShopDate(){return new Date().toLocaleDateString('zh-CN')}
+function getRefreshTime(){const n=new Date(),nx=new Date(n);nx.setHours(8,0,0,0);if(n>=nx)nx.setDate(nx.getDate()+1);return nx;}
+function needsRefresh(){
+  if(!S.shop||!S.shop.date)return true;
+  const now=new Date(),today=getShopDate();
+  if(S.shop.date!==today&&now.getHours()>=8)return true;
+  if(S.shop.date!==today&&S.shop.date!==new Date(Date.now()-86400000).toLocaleDateString('zh-CN'))return true;
+  return false;
+}
+function generateShopItems(){
+  const rr=Math.random();
+  const mPool=rr<0.12?MERCH_POOL.filter(m=>m.rarity==='rare'):MERCH_POOL.filter(m=>m.rarity==='normal');
+  const merch=mPool[Math.floor(Math.random()*mPool.length)];
+  const seed=SEED_POOL_SHOP[Math.floor(Math.random()*SEED_POOL_SHOP.length)];
+  const gi=Math.floor(Math.random()*GIFT_POOL.length);
+  const gift=GIFT_POOL[gi];
+  const sh=[...CARD_SHOP_POOL].sort(()=>Math.random()-0.5);
+  return[
+    {sid:rid(),cat:'merch',name:merch.name,prince:merch.prince,type:merch.type,price:merch.price,rarity:merch.rarity,img:merch.img,limit:1,bought:0},
+    {sid:rid(),cat:'seed',name:seed.name,flower:seed.flower,price:seed.price,img:seed.img,limit:3,bought:0},
+    {sid:rid(),cat:'gift',name:gift.name,price:gift.price,affUp:gift.affUp,img:gift.img,limit:1,bought:0},
+    {sid:rid(),cat:'card',cardId:sh[0].id,name:sh[0].name,desc:sh[0].desc,price:sh[0].price,img:sh[0].img,limit:sh[0].limit,bought:0},
+    {sid:rid(),cat:'card',cardId:sh[1].id,name:sh[1].name,desc:sh[1].desc,price:sh[1].price,img:sh[1].img,limit:sh[1].limit,bought:0},
+  ];
+}
+function refreshShop(){if(!S.shop)S.shop={};S.shop.date=getShopDate();S.shop.items=generateShopItems();sv();}
+function ensureShop(){if(needsRefresh())refreshShop();}
+
+function renderShop(){
+  ensureShop();
+  document.getElementById('shopWallet').textContent='¥'+(S.wallet||0).toFixed(0);
+  document.getElementById('shopDateLabel').textContent=S.shop.date+' 上新';
+  const grid=document.getElementById('shopGrid');if(!grid)return;
+  grid.innerHTML='';
+  const catLabel={merch:'👑 王子周边',seed:'🌱 花花种子',gift:'🎁 限定礼物',card:'🃏 道具卡'};
+  const catBg={merch:'linear-gradient(135deg,#FFD700,#FF8C00)',seed:'linear-gradient(135deg,#66BB6A,#388E3C)',gift:'linear-gradient(135deg,#EC407A,#AD1457)',card:'linear-gradient(135deg,var(--p400),var(--p600))'};
+  (S.shop.items||[]).forEach((item,i)=>{
+    const out=item.bought>=item.limit;
+    const d=document.createElement('div');
+    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(out?'opacity:.5;':'');
+    d.innerHTML=`<div style="display:flex;gap:12px;padding:14px">
+      <div style="width:54px;height:54px;border-radius:14px;background:${catBg[item.cat]};display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.1)">${item.img}</div>
+      <div style="flex:1;min-width:0">
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span style="font-size:8.5px;padding:1px 5px;border-radius:6px;color:white;background:${catBg[item.cat]};font-weight:700">${catLabel[item.cat]}</span>
+          ${item.rarity==='rare'?'<span style="font-size:8.5px;padding:1px 5px;border-radius:6px;background:linear-gradient(135deg,#FFD700,#FF6B00);color:white;font-weight:700">✦稀有</span>':''}
+        </div>
+        <div style="font-size:14px;font-weight:600;margin-top:3px">${esc(item.name)}</div>
+        ${item.desc?`<div style="font-size:11px;color:var(--muted);margin-top:1px">${esc(item.desc)}</div>`:''}
+        ${item.prince?`<div style="font-size:10px;color:var(--p400);margin-top:1px">${princeIco(item.prince)} ${princeName(item.prince)}</div>`:''}
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:6px">
+          <div><span style="font-size:16px;font-weight:800;color:var(--p600)">¥${item.price}</span><span style="font-size:10px;color:var(--muted);margin-left:4px">限购${item.limit}</span></div>
+          ${out?'<span style="font-size:11px;color:var(--muted);font-weight:600;padding:5px 12px;background:var(--bg);border-radius:14px">已售罄</span>':`<button onclick="buyShopItem(${i})" style="padding:5px 14px;border-radius:14px;background:linear-gradient(135deg,var(--p600),var(--p400));color:white;border:none;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 2px 8px rgba(94,63,168,.3)">购买</button>`}
+        </div>
+      </div>
+    </div>`;
+    grid.appendChild(d);
+  });
+}
+
+function buyShopItem(idx){
+  ensureShop();const item=S.shop.items[idx];if(!item)return;
+  if(item.bought>=item.limit){toast('今日已售罄');return;}
+  if((S.wallet||0)<item.price){toast('💰 余额不足！需要¥'+item.price);return;}
+  S.wallet=+((S.wallet||0)-item.price).toFixed(2);item.bought++;
+  if(!S.bag)S.bag={merch:[],seeds:[],gifts:[],cards:{}};
+  if(item.cat==='merch') S.bag.merch.push({name:item.name,prince:item.prince,type:item.type,rarity:item.rarity,img:item.img,ts:Date.now()});
+  else if(item.cat==='seed') S.bag.seeds.push({name:item.name,flower:item.flower,img:item.img,ts:Date.now()});
+  else if(item.cat==='gift') S.bag.gifts.push({name:item.name,affUp:item.affUp,img:item.img,ts:Date.now()});
+  else if(item.cat==='card') S.bag.cards[item.cardId]=(S.bag.cards[item.cardId]||0)+1;
+  sv();uwb();renderShop();toast('🛍️ 购买成功！'+item.name);
+}
+
+function openBag(){
+  if(!S.bag)S.bag={merch:[],seeds:[],gifts:[],cards:{}};
+  const b=S.bag;
+  let h='<div style="display:flex;flex-direction:column;gap:10px;max-height:58vh;overflow-y:auto;text-align:left">';
+  /* 道具卡 */
+  h+='<div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px">🃏 道具卡</div>';
+  const cn={likeCard:{n:'好感卡',i:'💗'},phoneCard:{n:'电话卡',i:'📞'},advLikeCard:{n:'高级好感卡',i:'💖'},fertCard:{n:'施肥卡',i:'🌿'}};
+  let hc=false;
+  Object.entries(b.cards||{}).forEach(([k,v])=>{if(v<=0)return;hc=true;const c=cn[k]||{n:k,i:'🃏'};
+    h+=`<div style="display:flex;align-items:center;gap:10px;background:var(--p50);padding:8px 12px;border-radius:12px"><span style="font-size:20px">${c.i}</span><div style="flex:1"><div style="font-size:13px;font-weight:600">${c.n}</div><div style="font-size:11px;color:var(--muted)">×${v}</div></div><button onclick="useCard('${k}')" style="padding:4px 12px;border-radius:12px;background:var(--p500);color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">使用</button></div>`;
+  });
+  if(!hc) h+='<div style="font-size:12px;color:var(--muted);padding:4px 0">暂无</div>';
+  /* 周边 */
+  h+='<div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-top:2px">👑 周边 ('+b.merch.length+')</div>';
+  if(b.merch.length){h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';b.merch.forEach(m=>{h+=`<div style="padding:3px 8px;border-radius:8px;background:${m.rarity==='rare'?'#FFF3E0':'var(--p50)'};font-size:10px;border:1px solid ${m.rarity==='rare'?'#FFB74D':'var(--border)'}">${m.img} ${m.name}</div>`;});h+='</div>';}
+  else h+='<div style="font-size:12px;color:var(--muted);padding:4px 0">暂无</div>';
+  /* 种子 */
+  h+='<div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-top:2px">🌱 种子 ('+b.seeds.length+')</div>';
+  if(b.seeds.length){h+='<div style="display:flex;flex-wrap:wrap;gap:5px">';b.seeds.forEach(s=>{h+=`<div style="padding:3px 8px;border-radius:8px;background:#E8F5E9;font-size:10px;border:1px solid #C8E6C9">${s.img} ${s.name}</div>`;});h+='</div>';}
+  else h+='<div style="font-size:12px;color:var(--muted);padding:4px 0">暂无</div>';
+  /* 礼物 */
+  h+='<div style="font-size:10px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-top:2px">🎁 礼物 ('+b.gifts.length+')</div>';
+  if(b.gifts.length){h+='<div style="display:flex;flex-direction:column;gap:4px">';b.gifts.forEach((g,i)=>{h+=`<div style="display:flex;align-items:center;gap:8px;background:#FCE4EC;padding:6px 10px;border-radius:10px;font-size:11px;border:1px solid #F8BBD0"><span style="font-size:18px">${g.img}</span><span style="flex:1">${g.name}</span><button onclick="useGift(${i})" style="padding:3px 10px;border-radius:10px;background:#EC407A;color:white;border:none;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit">赠送</button></div>`;});h+='</div>';}
+  else h+='<div style="font-size:12px;color:var(--muted);padding:4px 0">暂无</div>';
+  h+='</div>';os('🎒 我的背包',h);
+}
+
+function useCard(cardId){
+  if(!S.bag?.cards?.[cardId]||S.bag.cards[cardId]<=0){toast('没有这张卡了');return;}cs();
+  if(!S.princeAff)S.princeAff={};
+  if(cardId==='likeCard'){
+    const sh=[...PRINCES].sort(()=>Math.random()-0.5);const p1=sh[0],p2=sh[1];
+    S.princeAff[p1.id]=(S.princeAff[p1.id]||0)+3;S.princeAff[p2.id]=(S.princeAff[p2.id]||0)+3;
+    if(p1.id==='yukimura'||p2.id==='yukimura')S.aff=(S.aff||0)+3;
+    S.bag.cards[cardId]--;sv();uab();toast('💗 '+p1.name+' 和 '+p2.name+' 好感+3！');
+  }else if(cardId==='advLikeCard'){
+    let btns=PRINCES.map(p=>`<button onclick="applyAdvLike('${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}<br/><span style="font-size:9px;color:var(--p400)">Lv${(S.princeAff[p.id])||0}</span></button>`).join('');
+    os('💖 选择角色',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">选择一名角色 好感+3</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
+  }else if(cardId==='phoneCard'){
+    let btns=PRINCES.map(p=>{const af=(S.princeAff[p.id])||0;const yaf=p.id==='yukimura'?(S.aff||0):af;const ok=yaf>=50;
+      return`<button ${ok?`onclick="activatePhone('${p.id}')"`:'disabled'} style="padding:8px 4px;border-radius:12px;background:${ok?'var(--p50)':'#f5f5f5'};border:1px solid ${ok?'var(--border)':'#eee'};cursor:${ok?'pointer':'not-allowed'};font-family:inherit;font-size:11px;text-align:center;${ok?'':'opacity:.5'}">${p.ico}<br/>${p.name}<br/><span style="font-size:9px;color:${ok?'#4CAF50':'var(--muted)'}">Lv${yaf}${ok?' ✓':''}</span></button>`;
+    }).join('');
+    os('📞 选择角色',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">好感≥50可激活来电</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
+  }else if(cardId==='fertCard'){
+    S.bag.cards[cardId]--;
+    if(S.garden?.plants){S.garden.plants.forEach(p=>{if(p?.plantedAt)p.plantedAt-=2*3600000;});};
+    sv();toast('🌿 施肥卡已使用！植物加速2小时');
+  }
+}
+function applyAdvLike(pid){
+  if(!S.bag?.cards?.advLikeCard||S.bag.cards.advLikeCard<=0){toast('没有高级好感卡了');return;}
+  if(!S.princeAff)S.princeAff={};S.princeAff[pid]=(S.princeAff[pid]||0)+3;
+  if(pid==='yukimura')S.aff=(S.aff||0)+3;S.bag.cards.advLikeCard--;sv();uab();cs();
+  toast('💖 '+princeName(pid)+' 好感+3！');
+}
+function activatePhone(pid){
+  if(!S.bag?.cards?.phoneCard||S.bag.cards.phoneCard<=0){toast('没有电话卡了');return;}
+  S.bag.cards.phoneCard--;if(!S.phoneReady)S.phoneReady=[];
+  S.phoneReady.push({prince:pid,ts:Date.now()});sv();cs();
+  toast('📞 '+princeName(pid)+' 的来电已激活！');
+}
+function useGift(idx){
+  if(!S.bag?.gifts?.[idx]){toast('找不到礼物');return;}
+  const g=S.bag.gifts[idx];cs();
+  let btns=PRINCES.map(p=>`<button onclick="giveGiftTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
+  os('🎁 赠送 '+g.name,`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">好感+${g.affUp}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
+}
+function giveGiftTo(gi,pid){
+  const g=S.bag.gifts[gi];if(!g)return;
+  if(!S.princeAff)S.princeAff={};S.princeAff[pid]=(S.princeAff[pid]||0)+g.affUp;
+  if(pid==='yukimura')S.aff=(S.aff||0)+g.affUp;
+  S.bag.gifts.splice(gi,1);sv();uab();cs();
+  toast('🎁 '+princeName(pid)+' 收到了'+g.name+'！好感+'+g.affUp);
+}
+function updateShopTimer(){
+  const diff=getRefreshTime()-Date.now();if(diff<=0){ensureShop();renderShop();return;}
+  const hh=Math.floor(diff/3600000),mm=Math.floor((diff%3600000)/60000),ss=Math.floor((diff%60000)/1000);
+  const el=document.getElementById('shopRefreshHint');
+  if(el)el.textContent='下次上新：'+hh.toString().padStart(2,'0')+':'+mm.toString().padStart(2,'0')+':'+ss.toString().padStart(2,'0');
+}
+setInterval(updateShopTimer,1000);
+
+/* ══ 家园系统 ══ */
+function ensureGarden(){
+  if(!S.garden) S.garden={plants:[null,null,null],deskDecor:[],shelfDecor:[],flowers:{},desserts:[]};
+  if(!S.garden.plants) S.garden.plants=[null,null,null];
+  if(!S.garden.deskDecor) S.garden.deskDecor=[];
+  if(!S.garden.shelfDecor) S.garden.shelfDecor=[];
+  if(!S.garden.flowers) S.garden.flowers={};
+  if(!S.garden.desserts) S.garden.desserts=[];
+}
+
+function showGardenArea(area){
+  ['room','balcony','kitchen'].forEach(a=>{
+    const el=document.getElementById('garden-'+a);
+    if(el) el.style.display=a===area?'flex':'none';
+    const btn=document.getElementById('ga-'+a);
+    if(btn){btn.style.borderColor=a===area?'var(--p500)':'var(--border)';btn.style.background=a===area?'var(--p100)':'white';btn.style.color=a===area?'var(--p600)':'var(--muted)';}
+  });
+  if(area==='room') renderRoom();
+  if(area==='balcony') renderBalcony();
+  if(area==='kitchen') renderKitchen();
+}
+
+/* ── 房间 ── */
+function renderRoom(){
+  ensureGarden();
+  const totalMerch=MERCH_POOL.length;
+  const owned=(S.bag?.merch||[]).length;
+  const uniqueOwned=[...new Set((S.bag?.merch||[]).map(m=>m.name))].length;
+  const rate=totalMerch?Math.round(uniqueOwned/totalMerch*100):0;
+  document.getElementById('collectRate').textContent=rate+'%';
+  document.getElementById('collectBar').style.width=rate+'%';
+  document.getElementById('collectDetail').textContent='已收集 '+uniqueOwned+' / '+totalMerch+' 种';
+  /* 书桌 */
+  const desk=document.getElementById('deskArea');
+  if(desk){
+    if(S.garden.deskDecor.length){
+      desk.innerHTML=S.garden.deskDecor.map((d,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="removeDecor('desk',${i})" title="点击移除"><div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,var(--p100),var(--p50));display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--border);box-shadow:0 2px 6px rgba(0,0,0,.06)">${d.img}</div><span style="font-size:8px;color:var(--muted);max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name.split('·')[1]||d.name}</span></div>`).join('');
+    }else{
+      desk.innerHTML='<div style="width:100%;text-align:center;padding:12px 0;color:var(--muted);font-size:12px">空空的桌面…去桃宝买些周边来装饰吧</div>';
+    }
+  }
+  /* 书架 */
+  const shelf=document.getElementById('shelfArea');
+  if(shelf){
+    if(S.garden.shelfDecor.length){
+      shelf.innerHTML=S.garden.shelfDecor.map((d,i)=>`<div style="display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer" onclick="removeDecor('shelf',${i})" title="点击移除"><div style="width:42px;height:42px;border-radius:10px;background:linear-gradient(135deg,#FFF3E0,#FFE0B2);display:flex;align-items:center;justify-content:center;font-size:22px;border:1px solid #FFE0B2;box-shadow:0 2px 6px rgba(0,0,0,.06)">${d.img}</div><span style="font-size:8px;color:var(--muted);max-width:50px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${d.name.split('·')[1]||d.name}</span></div>`).join('');
+    }else{
+      shelf.innerHTML='<div style="width:100%;text-align:center;padding:12px 0;color:var(--muted);font-size:12px">空空的书架…放些收藏品上去？</div>';
+    }
+  }
+  /* 花瓶 */
+  const vase=document.getElementById('vaseArea');
+  if(vase){
+    const fl=S.garden.flowers;
+    const keys=Object.keys(fl).filter(k=>fl[k]>0);
+    if(keys.length){
+      vase.innerHTML=keys.map(k=>`<div style="padding:4px 10px;border-radius:10px;background:#FCE4EC;font-size:11px;border:1px solid #F8BBD0">${FLOWER_ICO[k]||'🌸'} ${k} ×${fl[k]}</div>`).join('');
+    }else{
+      vase.innerHTML='<div style="font-size:12px;color:var(--muted)">还没有收获花朵</div>';
+    }
+  }
+}
+
+const FLOWER_ICO={雏菊:'🌼',向日葵:'🌻',仙人掌:'🌵',薰衣草:'💜',玫瑰:'🌹',百合:'🤍',郁金香:'🌷'};
+
+function decorDesk(){
+  ensureGarden();
+  const avail=(S.bag?.merch||[]).filter(m=>!S.garden.deskDecor.some(d=>d.ts===m.ts)&&!S.garden.shelfDecor.some(d=>d.ts===m.ts));
+  if(!avail.length){toast('没有可用的周边，去桃宝买一些吧');return;}
+  let btns=avail.map((m,i)=>`<button onclick="placeDecor('desk',${i})" style="padding:6px 10px;border-radius:10px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${m.img} ${m.name}</button>`).join('');
+  os('装饰书桌',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">选择要摆在桌上的周边</div><div style="display:flex;flex-direction:column;gap:6px">${btns}</div>`);
+  window._decorAvail=avail;
+}
+function decorShelf(){
+  ensureGarden();
+  const avail=(S.bag?.merch||[]).filter(m=>!S.garden.deskDecor.some(d=>d.ts===m.ts)&&!S.garden.shelfDecor.some(d=>d.ts===m.ts));
+  if(!avail.length){toast('没有可用的周边，去桃宝买一些吧');return;}
+  let btns=avail.map((m,i)=>`<button onclick="placeDecor('shelf',${i})" style="padding:6px 10px;border-radius:10px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${m.img} ${m.name}</button>`).join('');
+  os('装饰书架',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">选择要放在书架上的周边</div><div style="display:flex;flex-direction:column;gap:6px">${btns}</div>`);
+  window._decorAvail=avail;
+}
+function placeDecor(where,idx){
+  const m=window._decorAvail?.[idx];if(!m)return;
+  ensureGarden();
+  if(where==='desk') S.garden.deskDecor.push(m);
+  else S.garden.shelfDecor.push(m);
+  sv();cs();renderRoom();toast('✨ 已装饰！');
+}
+function removeDecor(where,idx){
+  ensureGarden();
+  if(where==='desk') S.garden.deskDecor.splice(idx,1);
+  else S.garden.shelfDecor.splice(idx,1);
+  sv();renderRoom();toast('已移除');
+}
+
+/* ── 阳台 ── */
+function renderBalcony(){
+  ensureGarden();
+  const area=document.getElementById('potArea');if(!area)return;
+  area.innerHTML='';
+  for(let i=0;i<3;i++){
+    const p=S.garden.plants[i];
+    const div=document.createElement('div');
+    div.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)';
+    if(!p){
+      /* 空花盆 */
+      div.innerHTML=`<div style="padding:16px;text-align:center">
+        <div style="font-size:36px;margin-bottom:6px;opacity:.3">🪴</div>
+        <div style="font-size:13px;color:var(--muted);margin-bottom:10px">花盆 ${i+1} · 空</div>
+        <button onclick="plantFlower(${i})" style="padding:8px 20px;border-radius:14px;background:linear-gradient(135deg,#66BB6A,#388E3C);color:white;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">🌱 种花</button>
+      </div>`;
+    }else{
+      const now=Date.now();
+      const elapsed=now-p.plantedAt;
+      const sinceWater=now-(p.lastWatered||p.plantedAt);
+      const growTime=10*3600000;/* 10h */
+      const wiltTime=5*3600000;/* 5h */
+      const isWilted=sinceWater>=wiltTime;
+      const isReady=elapsed>=growTime&&!isWilted;
+      const progress=Math.min(elapsed/growTime*100,100);
+      const waterPct=Math.max(0,100-sinceWater/wiltTime*100);
+      const flowerIco=FLOWER_ICO[p.flower]||'🌱';
+
+      if(isWilted){
+        div.innerHTML=`<div style="padding:16px;text-align:center">
+          <div style="font-size:36px;margin-bottom:4px;filter:grayscale(1) opacity(.5)">🥀</div>
+          <div style="font-size:13px;font-weight:600;color:#B71C1C">枯萎了…</div>
+          <div style="font-size:11px;color:var(--muted);margin:4px 0 10px">${p.flower} · 超过5小时没有浇水</div>
+          <button onclick="removePlant(${i})" style="padding:8px 20px;border-radius:14px;background:#E57373;color:white;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">铲掉重新种</button>
+        </div>`;
+      }else if(isReady){
+        div.innerHTML=`<div style="padding:16px;text-align:center">
+          <div style="font-size:42px;margin-bottom:4px;animation:chibiBob 2s ease-in-out infinite">${flowerIco}</div>
+          <div style="font-size:14px;font-weight:700;color:#2E7D32">${p.flower} 成熟啦！</div>
+          <div style="font-size:11px;color:var(--muted);margin:4px 0 10px">点击收获</div>
+          <button onclick="harvestFlower(${i})" style="padding:8px 24px;border-radius:14px;background:linear-gradient(135deg,#FFB74D,#FF9800);color:white;border:none;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(255,152,0,.3)">🌸 收获</button>
+        </div>`;
+      }else{
+        const growLeft=growTime-elapsed;
+        const gh=Math.floor(growLeft/3600000);
+        const gm=Math.floor((growLeft%3600000)/60000);
+        div.innerHTML=`<div style="padding:14px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <div style="font-size:32px">${progress<30?'🌱':progress<70?'🌿':flowerIco}</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:600">${p.flower}</div>
+              <div style="font-size:10px;color:var(--muted);margin-top:2px">成熟还需 ${gh}时${gm}分</div>
+              <div style="height:5px;background:var(--p100);border-radius:3px;margin-top:6px;overflow:hidden"><div style="height:100%;width:${progress}%;background:linear-gradient(90deg,#66BB6A,#2E7D32);border-radius:3px;transition:width .5s"></div></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:10px">
+            <div style="flex:1">
+              <div style="font-size:10px;color:${waterPct<30?'#E53935':'var(--muted)'}">💧 水分 ${Math.round(waterPct)}%</div>
+              <div style="height:4px;background:#E3F2FD;border-radius:2px;margin-top:3px;overflow:hidden"><div style="height:100%;width:${waterPct}%;background:${waterPct<30?'#E53935':'#42A5F5'};border-radius:2px;transition:width .5s"></div></div>
+            </div>
+            <button onclick="waterPlant(${i})" style="padding:5px 14px;border-radius:12px;background:#42A5F5;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">💧 浇水</button>
+          </div>
+        </div>`;
+      }
+    }
+    area.appendChild(div);
+  }
+}
+
+function plantFlower(potIdx){
+  ensureGarden();
+  if(!S.bag?.seeds?.length){toast('没有种子，去桃宝买一些吧');return;}
+  let btns=S.bag.seeds.map((s,i)=>`<button onclick="doPlant(${potIdx},${i})" style="padding:8px 12px;border-radius:12px;background:#E8F5E9;border:1px solid #C8E6C9;cursor:pointer;font-family:inherit;font-size:12px;display:flex;align-items:center;gap:6px"><span style="font-size:20px">${s.img}</span>${s.name}</button>`).join('');
+  os('🌱 选择种子',`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">选择要种在花盆${potIdx+1}的种子</div><div style="display:flex;flex-direction:column;gap:6px">${btns}</div>`);
+}
+function doPlant(potIdx,seedIdx){
+  const seed=S.bag.seeds[seedIdx];if(!seed)return;
+  ensureGarden();
+  S.garden.plants[potIdx]={flower:seed.flower,img:seed.img,plantedAt:Date.now(),lastWatered:Date.now()};
+  S.bag.seeds.splice(seedIdx,1);
+  sv();cs();renderBalcony();toast('🌱 '+seed.flower+'已种下！');
+}
+function waterPlant(idx){
+  ensureGarden();
+  const p=S.garden.plants[idx];if(!p)return;
+  p.lastWatered=Date.now();sv();renderBalcony();toast('💧 浇水成功！');
+}
+function removePlant(idx){
+  ensureGarden();S.garden.plants[idx]=null;sv();renderBalcony();toast('已铲掉，可以重新种了');
+}
+function harvestFlower(idx){
+  ensureGarden();
+  const p=S.garden.plants[idx];if(!p)return;
+  const count=Math.random()<0.02?3:1;
+  S.garden.flowers[p.flower]=(S.garden.flowers[p.flower]||0)+count;
+  S.garden.plants[idx]=null;
+  sv();renderBalcony();
+  if(count===3) toast('🌸🌸🌸 大丰收！收获了3朵'+p.flower+'！');
+  else toast('🌸 收获了1朵'+p.flower+'！');
+}
+/* 阳台定时刷新 */
+setInterval(()=>{if(document.getElementById('garden-balcony')?.style.display!=='none')renderBalcony();},30000);
+
+/* ── 厨房 ── */
+function renderKitchen(){
+  ensureGarden();
+  const bag=document.getElementById('dessertBag');if(!bag)return;
+  const ds=S.garden.desserts||[];
+  if(!ds.length){bag.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px">还没有做过甜点</div>';return;}
+  bag.innerHTML=ds.map((d,i)=>{
+    const qColor={普通:'#78909C',美味:'#7B1FA2',超绝:'#FF6F00'};
+    const qBg={普通:'#ECEFF1',美味:'#F3E5F5',超绝:'#FFF3E0'};
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:${qBg[d.quality]};border-radius:12px;border:1px solid ${d.quality==='超绝'?'#FFE0B2':d.quality==='美味'?'#CE93D8':'#CFD8DC'}">
+      <span style="font-size:22px">${d.quality==='超绝'?'🎂':d.quality==='美味'?'🍰':'🧁'}</span>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${d.name}</div><div style="font-size:10px;color:${qColor[d.quality]};font-weight:700">${d.quality} · 得分${d.score}</div></div>
+      <button onclick="giftDessert(${i})" style="padding:4px 10px;border-radius:10px;background:var(--p500);color:white;border:none;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit">赠送</button>
+    </div>`;
+  }).join('');
+}
+
+const DESSERT_NAMES=['草莓蛋糕','提拉米苏','马卡龙','抹茶慕斯','焦糖布丁','蓝莓芝士','蜜桃塔','巧克力熔岩'];
+
+function startKitchenGame(){
+  /* 叠叠乐小游戏 - 在sheet里展示 */
+  os('🍰 叠叠乐',`
+    <div style="text-align:center">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px">点击屏幕叠放方块，时机越准得分越高</div>
+      <div style="position:relative;width:100%;height:280px;background:linear-gradient(180deg,#FFF8E1,#FFECB3);border-radius:14px;overflow:hidden;margin-bottom:10px;border:1px solid #FFE082" id="stackArena">
+        <canvas id="stackCanvas" width="300" height="280" style="width:100%;height:100%"></canvas>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:10px">
+        <span style="font-size:14px;font-weight:700;color:var(--p600)" id="stackScore">得分：0</span>
+        <span style="font-size:12px;color:var(--muted)" id="stackCombo"></span>
+      </div>
+      <button onclick="stackDrop()" id="stackBtn" style="padding:12px 40px;border-radius:16px;background:linear-gradient(135deg,#FF8A65,#E64A19);color:white;border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 3px 12px rgba(230,74,25,.3)">叠！</button>
+    </div>
+  `);
+  setTimeout(initStackGame,100);
+}
+
+let _stack={blocks:[],moving:null,score:0,combo:0,running:false,anim:null};
+/* roundRect polyfill */
+if(!CanvasRenderingContext2D.prototype.roundRect){CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(r,w/2,h/2);this.moveTo(x+r,y);this.lineTo(x+w-r,y);this.quadraticCurveTo(x+w,y,x+w,y+r);this.lineTo(x+w,y+h-r);this.quadraticCurveTo(x+w,y+h,x+w-r,y+h);this.lineTo(x+r,y+h);this.quadraticCurveTo(x,y+h,x,y+h-r);this.lineTo(x,y+r);this.quadraticCurveTo(x,y,x+r,y);}}
+function initStackGame(){
+  const canvas=document.getElementById('stackCanvas');if(!canvas)return;
+  const ctx=canvas.getContext('2d');
+  _stack={blocks:[],moving:null,score:0,combo:0,running:true,anim:null,ctx,canvas,w:300,h:280};
+  /* 底座 */
+  _stack.blocks.push({x:100,y:250,w:100,h:20});
+  /* 生成移动方块 */
+  spawnBlock();
+  drawStack();
+}
+function spawnBlock(){
+  if(!_stack.running)return;
+  const last=_stack.blocks[_stack.blocks.length-1];
+  const w=Math.max(last.w-2,30);
+  _stack.moving={x:0,y:last.y-22,w,h:20,dir:1,speed:2+_stack.blocks.length*0.3};
+  animateBlock();
+}
+function animateBlock(){
+  if(!_stack.running||!_stack.moving)return;
+  const m=_stack.moving;
+  m.x+=m.dir*m.speed;
+  if(m.x+m.w>_stack.w) m.dir=-1;
+  if(m.x<0) m.dir=1;
+  drawStack();
+  _stack.anim=requestAnimationFrame(animateBlock);
+}
+function drawStack(){
+  const{ctx,w,h,blocks,moving}=_stack;
+  ctx.clearRect(0,0,w,h);
+  const hues=['#FF8A65','#FFB74D','#FFD54F','#AED581','#81C784','#4FC3F7','#7986CB','#BA68C8','#F06292','#E57373'];
+  blocks.forEach((b,i)=>{
+    ctx.fillStyle=hues[i%hues.length];
+    ctx.beginPath();
+    ctx.roundRect(b.x,b.y,b.w,b.h,4);
+    ctx.fill();
+  });
+  if(moving){
+    ctx.fillStyle='#E53935';
+    ctx.beginPath();
+    ctx.roundRect(moving.x,moving.y,moving.w,moving.h,4);
+    ctx.fill();
+  }
+  document.getElementById('stackScore').textContent='得分：'+_stack.score;
+}
+function stackDrop(){
+  if(!_stack.running||!_stack.moving)return;
+  cancelAnimationFrame(_stack.anim);
+  const m=_stack.moving;
+  const last=_stack.blocks[_stack.blocks.length-1];
+  /* 计算重叠 */
+  const overlapLeft=Math.max(m.x,last.x);
+  const overlapRight=Math.min(m.x+m.w,last.x+last.w);
+  const overlap=overlapRight-overlapLeft;
+  if(overlap<=0){
+    /* 掉落，游戏结束 */
+    _stack.running=false;_stack.moving=null;
+    drawStack();
+    endKitchenGame();return;
+  }
+  const perfect=overlap>=last.w-4;
+  if(perfect){_stack.combo++;_stack.score+=10+_stack.combo*2;document.getElementById('stackCombo').textContent='🔥 Perfect ×'+_stack.combo;}
+  else{_stack.combo=0;_stack.score+=Math.round(overlap/last.w*10);document.getElementById('stackCombo').textContent='';}
+  _stack.blocks.push({x:overlapLeft,y:m.y,w:overlap,h:m.h});
+  _stack.moving=null;
+  drawStack();
+  /* 画面上移 */
+  if(_stack.blocks.length>10){
+    _stack.blocks.forEach(b=>b.y+=22);
+  }
+  if(_stack.blocks.length>=20){_stack.running=false;endKitchenGame();return;}
+  spawnBlock();
+}
+function endKitchenGame(){
+  const score=_stack.score;
+  const quality=score>=80?'超绝':score>=40?'美味':'普通';
+  const affUp=quality==='超绝'?5:quality==='美味'?3:1;
+  const name=DESSERT_NAMES[Math.floor(Math.random()*DESSERT_NAMES.length)];
+  ensureGarden();
+  S.garden.desserts.push({name,quality,score,affUp,ts:Date.now()});
+  sv();
+  setTimeout(()=>{
+    cs();
+    os('🍰 甜点完成！',`<div style="text-align:center">
+      <div style="font-size:48px;margin-bottom:8px">${quality==='超绝'?'🎂':quality==='美味'?'🍰':'🧁'}</div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">${name}</div>
+      <div style="font-size:14px;font-weight:700;color:${quality==='超绝'?'#FF6F00':quality==='美味'?'#7B1FA2':'#78909C'};margin-bottom:4px">${quality}！</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:12px">得分 ${score} · 赠送可增加好感 +${affUp}</div>
+      <button class="shbtn p" onclick="cs();showGardenArea('kitchen')">收下甜点</button>
+    </div>`);
+  },500);
+}
+
+function giftDessert(idx){
+  ensureGarden();
+  const d=S.garden.desserts[idx];if(!d)return;cs();
+  let btns=PRINCES.map(p=>`<button onclick="giveDessertTo(${idx},'${p.id}')" style="padding:8px 4px;border-radius:12px;background:var(--p50);border:1px solid var(--border);cursor:pointer;font-family:inherit;font-size:11px;text-align:center">${p.ico}<br/>${p.name}</button>`).join('');
+  os('🍰 赠送 '+d.name,`<div style="font-size:12px;color:var(--muted);margin-bottom:8px">${d.quality} · 好感+${d.affUp}</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">${btns}</div>`);
+}
+function giveDessertTo(idx,pid){
+  const d=S.garden.desserts[idx];if(!d)return;
+  if(!S.princeAff)S.princeAff={};
+  S.princeAff[pid]=(S.princeAff[pid]||0)+d.affUp;
+  if(pid==='yukimura')S.aff=(S.aff||0)+d.affUp;
+  S.garden.desserts.splice(idx,1);sv();uab();cs();
+  const reactions={普通:['嗯，谢谢。','收到了。','还不错。'],美味:['很好吃。谢谢你。','手艺不错。','……想再吃一个。'],超绝:['……这个，很好吃。你做的？','每一口都很认真。谢谢。','下次还做给我吧。']};
+  const react=(reactions[d.quality]||reactions['普通']);
+  toast('🍰 '+princeName(pid)+'：「'+react[Math.floor(Math.random()*react.length)]+'」好感+'+d.affUp);
+}
+
+function renderGarden(){ensureGarden();showGardenArea('room');}
 
 /* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
