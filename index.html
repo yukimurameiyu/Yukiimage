@@ -421,13 +421,19 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="sec">
   <div class="sec-t">🎙️ 语音设置（MiniMax）</div>
   <div style="padding:10px 16px 14px">
+    <div style="font-size:12px;color:var(--muted);margin-bottom:6px">站点选择</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+      <div class="pb active" data-mm="cn" onclick="mmSite(this)" id="mmSiteCn" style="padding:8px;font-size:12px">🇨🇳 国内站</div>
+      <div class="pb" data-mm="intl" onclick="mmSite(this)" id="mmSiteIntl" style="padding:8px;font-size:12px">🌏 国外站</div>
+    </div>
+    <div style="font-size:10px;color:var(--muted);margin-bottom:10px" id="mmSiteHint">api.minimax.chat</div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Group ID</div>
     <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
     <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
     <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
     <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
       <input type="checkbox" id="voiceOn" style="width:16px;height:16px;accent-color:var(--p500)"/>
-      <label for="voiceOn" style="font-size:13px">开启幸村语音回复</label>
+      <label for="voiceOn" style="font-size:13px">开启语音回复</label>
     </div>
     <div style="font-size:11px;color:var(--muted);margin-top:6px">Key仅存于本地，不上传任何服务器</div>
   </div>
@@ -601,7 +607,9 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 </div>
 <div class="page" id="pg-inspect">
-<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p>幸村精市 · 实时行踪</p></div>
+<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p id="inspectSubtitle">幸村精市 · 实时行踪</p></div>
+<!-- 角色选择 -->
+<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar"></div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
 
   <!-- 当前状态卡 -->
@@ -636,7 +644,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <!-- 日记内容 -->
   <div id="inspect-diary" style="display:none">
     <div style="background:white;border-radius:var(--r);padding:16px;box-shadow:var(--shadow);border:1px solid var(--border)">
-      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-weight:600;margin-bottom:10px">📓 幸村精市的日记</div>
+      <div style="font-size:10px;color:var(--muted);letter-spacing:1px;font-weight:600;margin-bottom:10px" id="diaryLabel">📓 幸村精市的日记</div>
       <div id="diaryContent" style="font-size:14px;line-height:1.85;color:var(--text)">加载中…</div>
       <button onclick="genDiary()" style="margin-top:12px;padding:8px 16px;border-radius:20px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:12px;cursor:pointer;font-family:inherit">🔄 重新生成</button>
     </div>
@@ -781,7 +789,9 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 </div>
 <div class="page" id="pg-alarm">
-<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>闹钟</h2><p>幸村亲自叫早</p></div>
+<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>闹钟</h2><p id="alarmSubtitle">幸村精市叫你起床</p></div>
+<!-- 角色选择 -->
+<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="alarmCharBar"></div>
 <div class="alarm-list" id="alarmList"></div>
 <button class="add-alarm-btn" onclick="addAlarm()">＋ 添加闹钟</button>
 </div>
@@ -927,7 +937,7 @@ uc();setInterval(()=>{uc();checkAlarms();},1000);
 function sp(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id)?.classList.add('active');
-  if(id==='pg-inspect')setTimeout(renderInspect,50);
+  if(id==='pg-inspect')setTimeout(function(){renderInspectCharBar();renderInspect();},50);
   if(id==='pg-gallery')setTimeout(renderGallery,50);
   if(id==='pg-world')setTimeout(()=>{if(!S.worldEntries)S.worldEntries=[];renderWorldEntries();},50);
   if(id==='pg-memory')setTimeout(()=>{if(!S.memoryEntries)S.memoryEntries=[];renderMemoryEntries();},50);
@@ -938,6 +948,7 @@ function sp(id){
   if(id==='pg-phone')setTimeout(renderPhone,50);
   if(id==='pg-mail')setTimeout(renderMail,50);
   if(id==='pg-games')setTimeout(()=>{renderGameStats();renderGameCharBar();},50);
+  if(id==='pg-alarm')setTimeout(renderAlarmCharBar,50);
 }
 
 /* ══ 世界书 ══ */
@@ -1335,9 +1346,10 @@ function getMemoryLibText(){if(!S.memoryEntries?.length)return'';const r=[...S.m
 function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
 
 /* settings */
-function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat',minimal:'gpt-4o-mini',custom:'gpt-4o-mini'};document.getElementById('mi').value=m[el.dataset.p]||'';const cu=document.getElementById('customUrlWrap');if(cu)cu.style.display=el.dataset.p==='custom'?'block':'none'}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked,customUrl:document.getElementById('customUrl')?.value.trim()||''};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
-function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn;const cu=document.getElementById('customUrl');if(cu)cu.value=s.customUrl||'';const cw=document.getElementById('customUrlWrap');if(cw)cw.style.display=s.prov==='custom'?'block':'none'}
+function sp2(el){document.querySelectorAll('.pb[data-p]').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat',minimal:'gpt-4o-mini',custom:'gpt-4o-mini'};document.getElementById('mi').value=m[el.dataset.p]||'';const cu=document.getElementById('customUrlWrap');if(cu)cu.style.display=el.dataset.p==='custom'?'block':'none'}
+function mmSite(el){document.querySelectorAll('.pb[data-mm]').forEach(b=>b.classList.remove('active'));el.classList.add('active');const h=document.getElementById('mmSiteHint');if(h)h.textContent=el.dataset.mm==='cn'?'api.minimax.chat':'api.minimaxi.chat'}
+function saveSt(){const p=document.querySelector('.pb.active[data-p]')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked,customUrl:document.getElementById('customUrl')?.value.trim()||'',mmSite:document.querySelector('.pb.active[data-mm]')?.dataset.mm||'cn'};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
+function lsi(){const s=S.set;document.querySelectorAll('.pb[data-p]').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn;const cu=document.getElementById('customUrl');if(cu)cu.value=s.customUrl||'';const cw=document.getElementById('customUrlWrap');if(cw)cw.style.display=s.prov==='custom'?'block':'none';/* mmSite */document.querySelectorAll('.pb[data-mm]').forEach(b=>b.classList.toggle('active',b.dataset.mm===(s.mmSite||'cn')));const mh=document.getElementById('mmSiteHint');if(mh)mh.textContent=(s.mmSite||'cn')==='cn'?'api.minimax.chat':'api.minimaxi.chat'}
 lsi();
 function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2);const sw=document.getElementById('shopWallet');if(sw)sw.textContent='¥'+(S.wallet||0).toFixed(0);}
 uwb();
@@ -1503,7 +1515,7 @@ function openCharChat(cid){
       translateToJP(m.text).then(jp=>{
         return fetch('/.netlify/functions/tts',{method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,
+          body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,site:s.mmSite||"cn",
             voiceId:vid})});
       }).then(r=>r.json()).then(d=>{
         if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
@@ -1718,10 +1730,12 @@ function rm(){
   const msgs=getChatMsgs(_curChatId);
   const ch=CHAR_PACKS[_curChatId]||CHAR_PACKS.yukimura;
   let lt=0;
+  window._vm=window._vm||{};
   for(const m of msgs){
     if(m.time-lt>5*60*1000){const t=document.createElement('div');t.className='ts';t.textContent=new Date(m.time).toLocaleString('zh-CN',{hour:'2-digit',minute:'2-digit',month:'short',day:'numeric'});box.appendChild(t);lt=m.time}
     if(m.type==='sys'){const d=document.createElement('div');d.className='sys';d.textContent=m.text;box.appendChild(d);continue}
     const mine=m.sender==='me';
+    const mid=m.id||(m.id=rid());
     const row=document.createElement('div');row.className='mr'+(mine?' me':'');
     if(!mine){const a=document.createElement('div');a.className='ma';
       const charAva2=(S.charAvatars&&S.charAvatars[_curChatId])?S.charAvatars[_curChatId]:(_curChatId==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
@@ -1732,10 +1746,8 @@ function rm(){
     else if(m.type==='tf')rtf(b,m,mine);
     else if(m.type==='voice'&&m.audioB64)makeAudioBubble(b,m.audioB64,m.jpText||m.text,m.text,mine);
     else{
-      const mid=m.id||(m.id=rid());
       if(!mine&&S.set.voiceOn&&ch.voiceId){
-        window._vm=window._vm||{};window._vm[mid]=m;
-        window._vm[mid]._chatId=_curChatId;
+        window._vm[mid]=m;m._chatId=_curChatId;
         b.innerHTML=esc(m.text||'')+'<br><button class="voice-play-btn" data-mid="'+mid+'" style="margin-top:6px;padding:4px 12px;border-radius:16px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:12px;cursor:pointer;font-family:inherit">▶ 语音</button>';
       }else{
         b.innerHTML=esc(m.text||'');
@@ -1747,24 +1759,20 @@ function rm(){
       else{ua.innerHTML=`<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--p400),var(--p600));display:flex;align-items:center;justify-content:center;color:white;font-size:16px">${(S.set.name||'我').slice(-1)||'🧡'}</div>`;}
       row.insertBefore(ua, row.firstChild);
     }
-    /* 长按气泡弹出菜单（所有消息） */
-    {
-      const mid=m.id||(m.id=rid());
-      window._vm=window._vm||{};
-      window._vm[mid]=m;
-      window._vm[mid]._chatId=_curChatId;
-      let pt=null;
-      b.dataset.mid=mid;
-      const isMine=mine;
-      b.addEventListener('touchstart',function(){pt=setTimeout(()=>{showBubbleMenu(mid,b,isMine);},500);},{passive:true});
-      b.addEventListener('touchend',function(){if(pt)clearTimeout(pt);},{passive:true});
-      b.addEventListener('touchmove',function(){if(pt)clearTimeout(pt);},{passive:true});
-      b.addEventListener('contextmenu',function(e){e.preventDefault();showBubbleMenu(mid,b,isMine);});
-    }
+    /* 长按气泡弹出菜单 */
+    window._vm[mid]=m;m._chatId=_curChatId;
+    b.dataset.mid=mid;
+    (function(_mid,_b,_isMine){
+      var pt=null;
+      _b.addEventListener('touchstart',function(){pt=setTimeout(function(){showBubbleMenu(_mid,_b,_isMine);},500);},{passive:true});
+      _b.addEventListener('touchend',function(){if(pt)clearTimeout(pt);},{passive:true});
+      _b.addEventListener('touchmove',function(){if(pt)clearTimeout(pt);},{passive:true});
+      _b.addEventListener('contextmenu',function(e){e.preventDefault();showBubbleMenu(_mid,_b,_isMine);});
+    })(mid,b,mine);
     row.appendChild(b);
     box.appendChild(row);
   }
-  setTimeout(()=>box.scrollTop=box.scrollHeight,30);
+  setTimeout(function(){box.scrollTop=box.scrollHeight},30);
 }
 function rhb(b,m,mine){
   b.style.cssText='padding:0;background:transparent;border:none;box-shadow:none';
@@ -2062,7 +2070,7 @@ async function genVoice(text){
   try{
     const r=await fetch('/.netlify/functions/tts',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid})
+      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||'cn'})
     });
     const d=await r.json();
     if(d.base_resp?.status_code!==0){toast('❌ TTS:'+d.base_resp?.status_msg);return null;}
@@ -2101,7 +2109,7 @@ async function playMsgVoice(m, btn){
   btn.innerHTML='⏳';
   try{
     const jp=await translateToJP(m.text);
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:VOICE_ID})});
+    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,site:s.mmSite||"cn",voiceId:VOICE_ID})});
     const d=await r.json();
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
     const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
@@ -2171,7 +2179,7 @@ function bmPlayVoice(){
   toast('🎙️ 生成语音中…');
   translateToJP(m.text).then(jp=>{
     return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid})});
+      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,site:s.mmSite||"cn",voiceId:vid})});
   }).then(r=>r.json()).then(d=>{
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));actx.close();return;}
     m._audioB64=d.data.audio;
@@ -2562,33 +2570,43 @@ function getCurrentStatus(){
 }
 
 function renderInspect(){
+  var cid=_inspectCharId||'yukimura';
+  var ch=CHAR_PACKS[cid]||CHAR_PACKS.yukimura;
   const st=getCurrentStatus();
   const now=new Date();
   document.getElementById('inspectStatus').textContent=st.label;
   document.getElementById('inspectDetail').textContent=st.detail;
   document.getElementById('inspectTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' · '+(isWeekend()?'周末':'工作日');
   const chi=document.getElementById('inspectChibi');
-  if(chi){chi.src=st.img;chi.onerror=()=>chi.style.display='none';}
+  if(chi){var ca=(S.charAvatars&&S.charAvatars[cid])?S.charAvatars[cid]:(cid==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');chi.src=ca||ch.img||st.img||'chibi-normal.png';chi.onerror=function(){chi.style.display='none'};}
 
-  /* 今日行程 */
+  /* 今日行程 - 使用选中角色的数据 */
   const list=document.getElementById('scheduleList');
   if(list){
-    const h=getHour();
-    const slots=isWeekend()?[
-      {s:0,e:6,label:'💤 灭五感中'},{s:6,e:9,label:'🌅 起床/早晨时光'},
-      {s:9,e:12,label:'🌸 上午自由活动'},{s:12,e:13.5,label:'🍱 午餐'},
-      {s:13.5,e:18,label:'☀️ 下午自由活动'},{s:18,e:20,label:'🍜 晚餐/休息'},
-      {s:20,e:24,label:'🌙 晚间时光'},
-    ]:WEEKDAY_SCHEDULE;
-    list.innerHTML=slots.map(s=>{
-      const isPast=h>s.e;const isCurr=h>=s.s&&h<s.e;
-      const sh=Math.floor(s.s).toString().padStart(2,'0')+':'+(s.s%1===0.5?'30':'00');
-      return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:${isCurr?'var(--p100)':'white'};border:1px solid ${isCurr?'var(--p300)':'var(--border)'}">
-        <div style="font-size:10px;color:var(--muted);white-space:nowrap;margin-top:2px;font-weight:${isCurr?'700':'400'};color:${isCurr?'var(--p500)':'var(--muted)'}">${sh}</div>
-        <div style="font-size:13px;color:${isPast?'var(--muted)':isCurr?'var(--p700)':'var(--text)'};${isPast?'text-decoration:line-through;opacity:.6':''};font-weight:${isCurr?'600':'400'}">${s.label}</div>
-        ${isCurr?'<div style="margin-left:auto;font-size:10px;color:var(--p500);font-weight:700;white-space:nowrap">← 现在</div>':''}
-      </div>`;
-    }).join('');
+    var charSched=INSPECT_SCHEDULES[cid];
+    if(charSched){
+      var h=getHour();
+      list.innerHTML=charSched.map(function(s){
+        var sh=parseInt(s.t.split(':')[0]);var sm=parseInt(s.t.split(':')[1]||0);var sH=sh+sm/60;
+        var nextIdx=charSched.indexOf(s)+1;
+        var eH=nextIdx<charSched.length?(parseInt(charSched[nextIdx].t.split(':')[0])+parseInt(charSched[nextIdx].t.split(':')[1]||0)/60):24;
+        var isPast=h>eH;var isCurr=h>=sH&&h<eH;
+        return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:'+(isCurr?'var(--p100)':'white')+';border:1px solid '+(isCurr?'var(--p300)':'var(--border)')+'"><div style="font-size:10px;color:'+(isCurr?'var(--p500)':'var(--muted)')+';white-space:nowrap;margin-top:2px;font-weight:'+(isCurr?'700':'400')+'">'+s.t+'</div><div style="flex:1;font-size:13px;color:'+(isPast?'var(--muted)':isCurr?'var(--p700)':'var(--text)')+';'+(isPast?'text-decoration:line-through;opacity:.6':'')+';font-weight:'+(isCurr?'600':'400')+'">'+s.l+' · '+s.d+'</div>'+(isCurr?'<div style="margin-left:auto;font-size:10px;color:var(--p500);font-weight:700;white-space:nowrap">← 现在</div>':'')+'</div>';
+      }).join('');
+    }else{
+      var h=getHour();
+      var slots=isWeekend()?[
+        {s:0,e:6,label:'💤 灭五感中'},{s:6,e:9,label:'🌅 起床/早晨时光'},
+        {s:9,e:12,label:'🌸 上午自由活动'},{s:12,e:13.5,label:'🍱 午餐'},
+        {s:13.5,e:18,label:'☀️ 下午自由活动'},{s:18,e:20,label:'🍜 晚餐/休息'},
+        {s:20,e:24,label:'🌙 晚间时光'},
+      ]:WEEKDAY_SCHEDULE;
+      list.innerHTML=slots.map(function(s){
+        var isPast=h>s.e;var isCurr=h>=s.s&&h<s.e;
+        var sh=Math.floor(s.s).toString().padStart(2,'0')+':'+(s.s%1===0.5?'30':'00');
+        return '<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:'+(isCurr?'var(--p100)':'white')+';border:1px solid '+(isCurr?'var(--p300)':'var(--border)')+'"><div style="font-size:10px;color:'+(isCurr?'var(--p500)':'var(--muted)')+';white-space:nowrap;margin-top:2px;font-weight:'+(isCurr?'700':'400')+'">'+sh+'</div><div style="font-size:13px;color:'+(isPast?'var(--muted)':isCurr?'var(--p700)':'var(--text)')+';'+(isPast?'text-decoration:line-through;opacity:.6':'')+';font-weight:'+(isCurr?'600':'400')+'">'+s.label+'</div>'+(isCurr?'<div style="margin-left:auto;font-size:10px;color:var(--p500);font-weight:700;white-space:nowrap">← 现在</div>':'')+'</div>';
+      }).join('');
+    }
   }
 
   /* 购物记录 */
@@ -3752,6 +3770,93 @@ function getGameLoseMsg(){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 function getGameCharName(){return CHAR_PACKS[_gameCharId]?.name||'幸村精市';}
+
+/* ══ 查岗角色选择 ══ */
+let _inspectCharId='yukimura';
+const INSPECT_SCHEDULES={
+  yukimura:[
+    {t:'06:30',l:'自宅',d:'晨跑 + 拉伸'},
+    {t:'07:30',l:'厨房',d:'泡了一壶白茶'},
+    {t:'08:00',l:'立海大',d:'到校'},
+    {t:'09:00',l:'教室',d:'上课中'},
+    {t:'12:00',l:'食堂',d:'午餐'},
+    {t:'13:30',l:'花道室',d:'插花练习'},
+    {t:'15:00',l:'网球场',d:'部活·训练'},
+    {t:'17:30',l:'部室',d:'整理器材'},
+    {t:'18:30',l:'回家路上',d:'散步'},
+  ],
+  fuji:[
+    {t:'07:00',l:'自宅',d:'喂仙人掌'},
+    {t:'07:30',l:'通学路',d:'拍了路边的花'},
+    {t:'08:00',l:'青学',d:'到校'},
+    {t:'09:00',l:'教室',d:'上课中（在笑）'},
+    {t:'12:00',l:'天台',d:'吃便当'},
+    {t:'13:30',l:'图书室',d:'看书'},
+    {t:'15:00',l:'网球场',d:'部活·训练'},
+    {t:'17:00',l:'街头',d:'散步拍照'},
+    {t:'18:30',l:'辣味拉面店',d:'独自品尝限定辣味'},
+  ],
+  ryoma:[
+    {t:'07:30',l:'自宅',d:'被南次郎叫醒'},
+    {t:'07:45',l:'便利店',d:'买了Ponta'},
+    {t:'08:10',l:'青学',d:'迟到边缘'},
+    {t:'09:00',l:'教室',d:'上课（在睡）'},
+    {t:'12:00',l:'屋顶',d:'喝Ponta+睡觉'},
+    {t:'15:00',l:'网球场',d:'部活'},
+    {t:'17:00',l:'街头网球场',d:'自主练习'},
+    {t:'18:30',l:'回家路上',d:'和卡鲁宾汇合'},
+  ],
+};
+function renderInspectCharBar(){
+  const bar=document.getElementById('inspectCharBar');if(!bar)return;
+  const chars=getActivePrinces();
+  bar.innerHTML=chars.map(function(ch){
+    var sel=ch.id===_inspectCharId;
+    return '<div onclick="switchInspectChar(\''+ch.id+'\')" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:2px solid '+(sel?ch.color:'var(--border)')+';background:'+(sel?ch.color+'18':'white')+';cursor:pointer;flex-shrink:0;transition:all .2s"><span style="font-size:14px">'+ch.ico+'</span><span style="font-size:12px;font-weight:'+(sel?700:400)+';color:'+(sel?ch.color:'var(--muted)')+'">'+ch.name+'</span></div>';
+  }).join('');
+}
+function switchInspectChar(cid){
+  _inspectCharId=cid;
+  renderInspectCharBar();
+  var ch=CHAR_PACKS[cid];if(!ch)return;
+  var sub=document.getElementById('inspectSubtitle');if(sub)sub.textContent=ch.name+' · 实时行踪';
+  var dl=document.getElementById('diaryLabel');if(dl)dl.textContent='📓 '+ch.name+'的日记';
+  renderInspect();
+}
+
+/* ══ 闹钟角色选择 ══ */
+let _alarmCharId='yukimura';
+const ALARM_CHAR_MSGS={
+  yukimura:{
+    morning:['该起床了。不要赖床。','早上好。起来了。','嗯……几点了。你还不起？'],
+    late:['都几点了。','起床。','你在睡懒觉？'],
+    default:['该起了。','嗯，时间到了。']
+  },
+  fuji:{
+    morning:['早上好呢～该起了。','呐，再不起来就迟到了哦。','嗯，早安。起来了吗？'],
+    late:['都这个时间了呢。','该不会还在睡吧。'],
+    default:['时间到了哦。','呐，醒醒。']
+  },
+  ryoma:{
+    morning:['……起床了。','啊，早。快点。','切，还不起。'],
+    late:['……要迟到了。','快起来。'],
+    default:['时间到了。','……（戳）起来。']
+  },
+};
+function renderAlarmCharBar(){
+  var bar=document.getElementById('alarmCharBar');if(!bar)return;
+  var chars=getActivePrinces();
+  bar.innerHTML=chars.map(function(ch){
+    var sel=ch.id===_alarmCharId;
+    return '<div onclick="switchAlarmChar(\''+ch.id+'\')" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:2px solid '+(sel?ch.color:'var(--border)')+';background:'+(sel?ch.color+'18':'white')+';cursor:pointer;flex-shrink:0;transition:all .2s"><span style="font-size:14px">'+ch.ico+'</span><span style="font-size:12px;font-weight:'+(sel?700:400)+';color:'+(sel?ch.color:'var(--muted)')+'">'+ch.name+'</span></div>';
+  }).join('');
+}
+function switchAlarmChar(cid){
+  _alarmCharId=cid;
+  renderAlarmCharBar();
+  var ch=CHAR_PACKS[cid];if(!ch)return;
+  var sub=document.getElementById('alarmSubtitle');if(sub)sub.textContent=ch.name+'叫你起床';
+}
 
 /* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
