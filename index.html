@@ -667,7 +667,78 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <button onclick="addMemoryEntry()" style="padding:13px;background:linear-gradient(135deg,var(--p600),var(--p400));color:white;border:none;border-radius:14px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit">＋ 写一篇新日记</button>
 </div>
 </div>
-<div class="page" id="pg-games"><div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>小游戏</h2><p>五子棋 · 斗地主 · 反应测试</p></div><div class="stub"><div class="stub-i">🎮</div><div class="stub-t">游戏中心</div><div class="stub-d">和幸村一起下棋、斗地主<br/>还有刺激的反应速度测试</div><div class="stub-b">即将开放</div></div></div>
+<div class="page" id="pg-games">
+<div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1A3A40 0%,#2A5A50 30%,#408878 60%,#60A898 100%);position:relative;overflow:hidden">
+  <div style="position:absolute;top:8px;right:16px;font-size:44px;opacity:.06;animation:decoSpin 20s linear infinite">🎾</div>
+  <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
+  <h2>🎮 游戏中心</h2><p>和幸村一起玩游戏吧</p>
+</div>
+<div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
+  <!-- 扫雷 -->
+  <div onclick="openMinesweeper()" style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:transform .15s;position:relative" ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform=''">
+    <div style="height:90px;background:linear-gradient(135deg,#1B5E20,#4CAF50);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.08;font-size:28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;line-height:1">🎾💣🎾💣🎾💣🎾💣🎾💣🎾💣</div>
+      <div style="font-size:42px;position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))">💣</div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font-size:14px;font-weight:700;color:var(--text)">网球扫雷</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5">找出球场里的炸弹<br/>胜利好感+2~5</div>
+    </div>
+  </div>
+  <!-- 色彩整理 -->
+  <div onclick="openColorSort()" style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:transform .15s;position:relative" ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform=''">
+    <div style="height:90px;background:linear-gradient(135deg,#4A2E80,#8B6BC0);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;opacity:.08;font-size:28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;line-height:1">🟡🟢🟣🟠🔵🟡🟢🟣🟠🔵</div>
+      <div style="font-size:42px;position:relative;z-index:1;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))">🧪</div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font-size:14px;font-weight:700;color:var(--text)">网球色彩整理</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5">分类不同颜色的球<br/>超解压 · 好感+3</div>
+    </div>
+  </div>
+  <!-- 五子棋 -->
+  <div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;opacity:.5;position:relative" onclick="toast('五子棋即将开放，敬请期待～')">
+    <div style="height:90px;background:linear-gradient(135deg,#37474F,#607D8B);display:flex;align-items:center;justify-content:center">
+      <div style="font-size:42px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))">⚫</div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font-size:14px;font-weight:700;color:var(--text)">五子棋</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">即将开放</div>
+    </div>
+    <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:white;font-size:9px;padding:2px 8px;border-radius:8px">🔒 SOON</div>
+  </div>
+  <!-- 斗地主 -->
+  <div style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;opacity:.5;position:relative" onclick="toast('斗地主即将开放，敬请期待～')">
+    <div style="height:90px;background:linear-gradient(135deg,#B71C1C,#E53935);display:flex;align-items:center;justify-content:center">
+      <div style="font-size:42px;filter:drop-shadow(0 2px 8px rgba(0,0,0,.3))">🃏</div>
+    </div>
+    <div style="padding:12px 14px">
+      <div style="font-size:14px;font-weight:700;color:var(--text)">斗地主</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px">即将开放</div>
+    </div>
+    <div style="position:absolute;top:8px;right:8px;background:rgba(0,0,0,.5);color:white;font-size:9px;padding:2px 8px;border-radius:8px">🔒 SOON</div>
+  </div>
+</div>
+<div style="padding:0 14px 14px">
+  <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px;margin-bottom:8px">🏆 游戏战绩</div>
+    <div id="gameStats" style="display:flex;gap:12px;flex-wrap:wrap">
+      <div style="flex:1;min-width:80px;background:var(--p50);border-radius:12px;padding:10px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:var(--p600)" id="mineWins">0</div>
+        <div style="font-size:10px;color:var(--muted)">扫雷胜场</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:var(--p50);border-radius:12px;padding:10px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:var(--p600)" id="sortWins">0</div>
+        <div style="font-size:10px;color:var(--muted)">整理完成</div>
+      </div>
+      <div style="flex:1;min-width:80px;background:var(--p50);border-radius:12px;padding:10px;text-align:center">
+        <div style="font-size:18px;font-weight:800;color:var(--p600)" id="totalAffFromGames">0</div>
+        <div style="font-size:10px;color:var(--muted)">获得好感</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
 <!-- 电话 -->
 <div class="page" id="pg-phone">
 <div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1B5E20 0%,#2E7D32 40%,#43A047 80%,#66BB6A 100%)">
@@ -853,6 +924,7 @@ function sp(id){
   if(id==='pg-garden')setTimeout(renderGarden,50);
   if(id==='pg-phone')setTimeout(renderPhone,50);
   if(id==='pg-mail')setTimeout(renderMail,50);
+  if(id==='pg-games')setTimeout(renderGameStats,50);
 }
 
 /* ══ 世界书 ══ */
@@ -3142,6 +3214,273 @@ function giveDessertTo(idx,pid){
 }
 
 function renderGarden(){ensureGarden();showGardenArea('room');}
+
+/* ══ 游戏系统 ══ */
+function ensureGameStats(){if(!S.gameStats)S.gameStats={mineWins:0,sortWins:0,totalAff:0};}
+function renderGameStats(){
+  ensureGameStats();
+  const el1=document.getElementById('mineWins');if(el1)el1.textContent=S.gameStats.mineWins;
+  const el2=document.getElementById('sortWins');if(el2)el2.textContent=S.gameStats.sortWins;
+  const el3=document.getElementById('totalAffFromGames');if(el3)el3.textContent=S.gameStats.totalAff;
+}
+function gameAffUp(amt){
+  ensureGameStats();
+  S.aff=(S.aff||0)+amt;
+  S.gameStats.totalAff+=amt;
+  sv();uab();
+}
+const YUKI_WIN=['干得不错。','……嗯，这局你赢了。','果然，你也很有实力呢。','漂亮的一局。','……看来我不能小看你了。','你认真起来的样子，我很喜欢。'];
+const YUKI_LOSE=['再来一次？我等你。','别灰心，下次一定。','……你的表情，有点可爱。','没关系，有我在。','下次我教你。'];
+
+/* ══ 扫雷 ══ */
+let _mine={};
+function openMinesweeper(){
+  os('💣 网球扫雷',`
+    <div id="mineContainer" style="text-align:center">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">找出隐藏在球场里的炸弹，长按标记</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+        <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">初级 8×8</button>
+        <button onclick="initMine(10,10,18,'med')" class="mine-diff" id="md-med" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">中级 10×10</button>
+        <button onclick="initMine(12,10,28,'hard')" class="mine-diff" id="md-hard" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">高级 12×10</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px">
+        <span style="font-size:13px;font-weight:700;color:#E53935" id="mineCount">🎾 10</span>
+        <span style="font-size:13px;font-weight:700;color:var(--p600)" id="mineTimer">⏱ 0s</span>
+      </div>
+      <div id="mineGrid" style="display:inline-grid;gap:2px;background:var(--p100);padding:4px;border-radius:12px;border:2px solid var(--border);touch-action:manipulation"></div>
+      <div id="mineResult" style="margin-top:12px;display:none"></div>
+    </div>
+  `);
+  setTimeout(()=>initMine(8,8,10,'easy'),100);
+}
+function initMine(rows,cols,mines,diff){
+  document.querySelectorAll('.mine-diff').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='white';b.style.color='var(--muted)'});
+  const btn=document.getElementById('md-'+diff);
+  if(btn){btn.style.borderColor='var(--p400)';btn.style.background='var(--p100)';btn.style.color='var(--p600)';}
+  if(_mine.timer)clearInterval(_mine.timer);
+  const grid=[];
+  for(let r=0;r<rows;r++){grid[r]=[];for(let c=0;c<cols;c++)grid[r][c]={mine:false,revealed:false,flagged:false,adj:0};}
+  let placed=0;
+  while(placed<mines){const r=Math.floor(Math.random()*rows),c=Math.floor(Math.random()*cols);if(!grid[r][c].mine){grid[r][c].mine=true;placed++;}}
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){if(grid[r][c].mine)continue;let cnt=0;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].mine)cnt++;}grid[r][c].adj=cnt;}
+  _mine={grid,rows,cols,mines,flagged:0,revealed:0,over:false,won:false,time:0,timer:null,diff};
+  _mine.timer=setInterval(()=>{if(!_mine.over){_mine.time++;const el=document.getElementById('mineTimer');if(el)el.textContent='⏱ '+_mine.time+'s';}},1000);
+  document.getElementById('mineResult').style.display='none';
+  renderMineGrid();
+}
+function renderMineGrid(){
+  const{grid,rows,cols}=_mine;
+  const el=document.getElementById('mineGrid');if(!el)return;
+  const sz=Math.min(Math.floor((window.innerWidth-80)/cols),32);
+  el.style.gridTemplateColumns=`repeat(${cols},${sz}px)`;
+  el.innerHTML='';
+  const NUM_COLORS=['','#1976D2','#388E3C','#D32F2F','#7B1FA2','#FF8F00','#0097A7','#424242','#78909C'];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const cell=grid[r][c];
+    const d=document.createElement('div');
+    d.style.cssText=`width:${sz}px;height:${sz}px;border-radius:${sz>24?6:4}px;display:flex;align-items:center;justify-content:center;font-size:${sz>24?13:11}px;font-weight:700;cursor:pointer;user-select:none;-webkit-user-select:none;transition:all .12s`;
+    if(cell.revealed){
+      d.style.background='rgba(255,255,255,.9)';
+      d.style.boxShadow='inset 0 1px 3px rgba(0,0,0,.08)';
+      if(cell.mine){d.textContent='💣';d.style.background='#FFCDD2';}
+      else if(cell.adj>0){d.textContent=cell.adj;d.style.color=NUM_COLORS[cell.adj];}
+    }else{
+      d.style.background='linear-gradient(135deg,#A5D6A7,#66BB6A)';
+      d.style.boxShadow='0 2px 4px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.3)';
+      if(cell.flagged){d.textContent='🚩';d.style.background='linear-gradient(135deg,#FFE082,#FFB74D)';}
+    }
+    d.addEventListener('click',(e)=>{e.preventDefault();mineClick(r,c);});
+    let lt;
+    d.addEventListener('touchstart',(e)=>{lt=setTimeout(()=>{e.preventDefault();mineFlag(r,c);},400);},{passive:false});
+    d.addEventListener('touchend',()=>clearTimeout(lt));
+    d.addEventListener('touchmove',()=>clearTimeout(lt));
+    d.addEventListener('contextmenu',(e)=>{e.preventDefault();mineFlag(r,c);});
+    el.appendChild(d);
+  }
+  document.getElementById('mineCount').textContent='🎾 '+(_mine.mines-_mine.flagged);
+}
+function mineClick(r,c){
+  if(_mine.over)return;
+  const cell=_mine.grid[r][c];
+  if(cell.flagged||cell.revealed)return;
+  if(cell.mine){cell.revealed=true;_mine.over=true;revealAll();showMineResult(false);return;}
+  floodReveal(r,c);
+  checkMineWin();
+  renderMineGrid();
+}
+function mineFlag(r,c){
+  if(_mine.over)return;
+  const cell=_mine.grid[r][c];
+  if(cell.revealed)return;
+  cell.flagged=!cell.flagged;
+  _mine.flagged+=cell.flagged?1:-1;
+  renderMineGrid();
+}
+function floodReveal(r,c){
+  const{grid,rows,cols}=_mine;
+  if(r<0||r>=rows||c<0||c>=cols)return;
+  const cell=grid[r][c];
+  if(cell.revealed||cell.flagged||cell.mine)return;
+  cell.revealed=true;_mine.revealed++;
+  if(cell.adj===0){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)floodReveal(r+dr,c+dc);}
+}
+function checkMineWin(){
+  const total=_mine.rows*_mine.cols;
+  if(_mine.revealed>=total-_mine.mines){_mine.over=true;_mine.won=true;revealAll();showMineResult(true);}
+}
+function revealAll(){_mine.grid.forEach(row=>row.forEach(c=>{c.revealed=true}));renderMineGrid();}
+function showMineResult(won){
+  clearInterval(_mine.timer);
+  ensureGameStats();
+  const affAmt=won?(_mine.diff==='hard'?5:_mine.diff==='med'?3:2):0;
+  if(won){S.gameStats.mineWins++;gameAffUp(affAmt);}
+  sv();
+  const msg=won?YUKI_WIN[Math.floor(Math.random()*YUKI_WIN.length)]:YUKI_LOSE[Math.floor(Math.random()*YUKI_LOSE.length)];
+  const el=document.getElementById('mineResult');
+  if(el){
+    el.style.display='block';
+    el.innerHTML=`
+      <div style="background:${won?'linear-gradient(135deg,#E8F5E9,#C8E6C9)':'linear-gradient(135deg,#FFEBEE,#FFCDD2)'};border-radius:14px;padding:16px;text-align:center">
+        <div style="font-size:32px;margin-bottom:6px">${won?'🎉':'💥'}</div>
+        <div style="font-size:16px;font-weight:700;color:${won?'#2E7D32':'#C62828'};margin-bottom:4px">${won?'胜利！':'踩雷了…'}</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">幸村：「${msg}」</div>
+        ${won?`<div style="font-size:12px;color:var(--p500);font-weight:700">好感 +${affAmt} · 用时 ${_mine.time}s</div>`:''}
+        <button onclick="initMine(${_mine.rows},${_mine.cols},${_mine.mines},'${_mine.diff}')" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
+      </div>`;
+  }
+}
+
+/* ══ 色彩整理（Color Sort） ══ */
+let _sort={};
+const SORT_COLORS=[
+  {name:'网球黄',hex:'#CDDC39',light:'#E6EE9C',dark:'#9E9D24',emoji:'🎾'},
+  {name:'球场绿',hex:'#4CAF50',light:'#A5D6A7',dark:'#2E7D32',emoji:'🟢'},
+  {name:'立海紫',hex:'#7E57C2',light:'#B39DDB',dark:'#4527A0',emoji:'🟣'},
+  {name:'夕阳橙',hex:'#FF7043',light:'#FFAB91',dark:'#D84315',emoji:'🟠'},
+  {name:'天空蓝',hex:'#42A5F5',light:'#90CAF9',dark:'#1565C0',emoji:'🔵'},
+  {name:'樱花粉',hex:'#EC407A',light:'#F48FB1',dark:'#AD1457',emoji:'🩷'},
+];
+function openColorSort(){
+  os('🧪 网球色彩整理',`
+    <div id="sortContainer" style="text-align:center">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6">把同色的球归到同一个管子里<br/>点击管子选取最上面的球，再点目标管放入</div>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
+        <button onclick="initSort(4,4)" class="sort-diff" id="sd-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">简单 4色</button>
+        <button onclick="initSort(5,4)" class="sort-diff" id="sd-med" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">中等 5色</button>
+        <button onclick="initSort(6,4)" class="sort-diff" id="sd-hard" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">困难 6色</button>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px">
+        <span style="font-size:13px;font-weight:700;color:var(--p600)" id="sortMoves">步数：0</span>
+        <button onclick="undoSort()" style="padding:4px 12px;border-radius:8px;border:1px solid var(--border);background:var(--p50);color:var(--p500);font-size:11px;cursor:pointer;font-family:inherit;font-weight:600">↩ 撤销</button>
+      </div>
+      <div id="sortArea" style="display:flex;gap:6px;justify-content:center;align-items:flex-end;flex-wrap:wrap;min-height:200px;padding:10px 0"></div>
+      <div id="sortResult" style="margin-top:10px;display:none"></div>
+    </div>
+  `);
+  setTimeout(()=>initSort(4,4),100);
+}
+function initSort(numColors,perTube){
+  document.querySelectorAll('.sort-diff').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='white';b.style.color='var(--muted)'});
+  const diffId=numColors<=4?'sd-easy':numColors<=5?'sd-med':'sd-hard';
+  const btn=document.getElementById(diffId);
+  if(btn){btn.style.borderColor='var(--p400)';btn.style.background='var(--p100)';btn.style.color='var(--p600)';}
+  const colors=SORT_COLORS.slice(0,numColors);
+  const balls=[];
+  colors.forEach((c,ci)=>{for(let i=0;i<perTube;i++)balls.push(ci);});
+  /* shuffle */
+  for(let i=balls.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[balls[i],balls[j]]=[balls[j],balls[i]];}
+  /* fill tubes */
+  const tubes=[];
+  for(let t=0;t<numColors;t++){tubes.push(balls.slice(t*perTube,(t+1)*perTube));}
+  /* add 2 empty tubes */
+  tubes.push([]);tubes.push([]);
+  _sort={tubes,numColors,perTube,colors,selected:null,moves:0,history:[],over:false};
+  document.getElementById('sortResult').style.display='none';
+  renderSort();
+}
+function renderSort(){
+  const{tubes,colors,perTube,selected}=_sort;
+  const area=document.getElementById('sortArea');if(!area)return;
+  document.getElementById('sortMoves').textContent='步数：'+_sort.moves;
+  const tubeH=perTube*32+16;
+  area.innerHTML=tubes.map((tube,ti)=>{
+    const isSelected=selected===ti;
+    const balls=tube.map((ci,bi)=>{
+      const c=colors[ci];
+      const isTop=bi===tube.length-1;
+      return `<div style="width:36px;height:28px;border-radius:14px;background:${c.hex};box-shadow:inset 0 -3px 0 ${c.dark},inset 0 3px 6px ${c.light},0 1px 3px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .2s ease${isTop&&isSelected?';transform:translateY(-12px);box-shadow:inset 0 -3px 0 '+c.dark+',inset 0 3px 6px '+c.light+',0 4px 12px rgba(0,0,0,.25)':''}">${isTop?c.emoji:''}</div>`;
+    }).reverse().join('');
+    return `<div onclick="sortTap(${ti})" style="cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:transform .15s${isSelected?';transform:scale(1.05)':''}">
+      <div style="width:44px;min-height:${tubeH}px;background:${isSelected?'rgba(139,107,192,.15)':'rgba(232,224,245,.4)'};border:2px solid ${isSelected?'var(--p400)':'var(--border)'};border-radius:0 0 16px 16px;border-top:none;padding:4px 2px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;transition:all .2s">
+        ${balls}
+      </div>
+    </div>`;
+  }).join('');
+}
+function sortTap(ti){
+  if(_sort.over)return;
+  const{tubes,perTube}=_sort;
+  if(_sort.selected===null){
+    if(tubes[ti].length===0)return;
+    _sort.selected=ti;
+  }else{
+    const from=_sort.selected;
+    if(from===ti){_sort.selected=null;renderSort();return;}
+    const to=ti;
+    if(tubes[to].length>=perTube){_sort.selected=null;renderSort();toast('管子满了');return;}
+    const ball=tubes[from][tubes[from].length-1];
+    if(tubes[to].length>0){
+      const topTo=tubes[to][tubes[to].length-1];
+      if(topTo!==ball){_sort.selected=null;renderSort();toast('只能放同色球');return;}
+    }
+    /* move */
+    _sort.history.push({from,to});
+    tubes[from].pop();
+    tubes[to].push(ball);
+    _sort.moves++;
+    _sort.selected=null;
+    checkSortWin();
+  }
+  renderSort();
+}
+function undoSort(){
+  if(_sort.over||!_sort.history.length)return;
+  const{from,to}=_sort.history.pop();
+  const ball=_sort.tubes[to].pop();
+  _sort.tubes[from].push(ball);
+  _sort.moves--;
+  _sort.selected=null;
+  renderSort();
+}
+function checkSortWin(){
+  const{tubes,numColors,perTube,colors}=_sort;
+  let solved=0;
+  tubes.forEach(t=>{
+    if(t.length===perTube&&t.every(b=>b===t[0]))solved++;
+    if(t.length===0){}/* empty is ok */
+  });
+  if(solved>=numColors){
+    _sort.over=true;
+    ensureGameStats();
+    const affAmt=3;
+    S.gameStats.sortWins++;
+    gameAffUp(affAmt);
+    sv();
+    const msg=YUKI_WIN[Math.floor(Math.random()*YUKI_WIN.length)];
+    const el=document.getElementById('sortResult');
+    if(el){
+      el.style.display='block';
+      el.innerHTML=`
+        <div style="background:linear-gradient(135deg,#EDE7F6,#D1C4E9);border-radius:14px;padding:16px;text-align:center">
+          <div style="font-size:32px;margin-bottom:6px">✨</div>
+          <div style="font-size:16px;font-weight:700;color:var(--p700);margin-bottom:4px">完美整理！</div>
+          <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">幸村：「${msg}」</div>
+          <div style="font-size:12px;color:var(--p500);font-weight:700">好感 +${affAmt} · ${_sort.moves}步完成</div>
+          <button onclick="initSort(${_sort.numColors},${_sort.perTube})" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
+        </div>`;
+    }
+  }
+}
 
 /* ══ 电话系统 ══ */
 function renderPhone(){
