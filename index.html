@@ -259,6 +259,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .bubble-menu.show{display:block;animation:pu .18s ease}
 .bm-item{padding:10px 14px;color:white;font-size:14px;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px}
 .bm-item:active{background:rgba(255,255,255,.15)}
+.bm-mine{display:none}
 
 /* ── 聊天列表 ── */
 .chat-list-overlay{position:fixed;inset:0;z-index:98;display:none;flex-direction:column;background:var(--bg)}
@@ -787,9 +788,10 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 
 <!-- 气泡右键菜单 -->
 <div class="bubble-menu" id="bubbleMenu" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()">
-  <div class="bm-item" id="bmPlay" onclick="bmPlayVoice()">🔊 播放语音</div>
+  <div class="bm-item bm-other" id="bmPlay" onclick="bmPlayVoice()">🔊 播放语音</div>
   <div class="bm-item" onclick="bmCopy()">📋 复制文字</div>
-  <div class="bm-item" onclick="bmRegen()">🔄 重新生成</div>
+  <div class="bm-item bm-other" onclick="bmRegen()">🔄 重新生成</div>
+  <div class="bm-item bm-mine" onclick="bmRecall()">↩️ 撤回</div>
   <div class="bm-item" onclick="bmDelete()" style="color:#FF8A80">🗑️ 删除消息</div>
   <div class="bm-item" onclick="closeBubbleMenu()">✕ 关闭</div>
 </div>
@@ -1745,18 +1747,19 @@ function rm(){
       else{ua.innerHTML=`<div style="width:100%;height:100%;background:linear-gradient(135deg,var(--p400),var(--p600));display:flex;align-items:center;justify-content:center;color:white;font-size:16px">${(S.set.name||'我').slice(-1)||'🧡'}</div>`;}
       row.insertBefore(ua, row.firstChild);
     }
-    /* 长按气泡弹出菜单（所有角色消息） */
-    if(!mine){
+    /* 长按气泡弹出菜单（所有消息） */
+    {
       const mid=m.id||(m.id=rid());
       window._vm=window._vm||{};
       window._vm[mid]=m;
       window._vm[mid]._chatId=_curChatId;
       let pt=null;
       b.dataset.mid=mid;
-      b.addEventListener('touchstart',function(){pt=setTimeout(()=>{showBubbleMenu(mid,b);},500);},{passive:true});
+      const isMine=mine;
+      b.addEventListener('touchstart',function(){pt=setTimeout(()=>{showBubbleMenu(mid,b,isMine);},500);},{passive:true});
       b.addEventListener('touchend',function(){if(pt)clearTimeout(pt);},{passive:true});
       b.addEventListener('touchmove',function(){if(pt)clearTimeout(pt);},{passive:true});
-      b.addEventListener('contextmenu',function(e){e.preventDefault();showBubbleMenu(mid,b);});
+      b.addEventListener('contextmenu',function(e){e.preventDefault();showBubbleMenu(mid,b,isMine);});
     }
     row.appendChild(b);
     box.appendChild(row);
@@ -2112,13 +2115,18 @@ async function playMsgVoice(m, btn){
 }
 
 /* ── 气泡菜单 ── */
-let _curMid=null,_curBub=null;
-function showBubbleMenu(mid,bub){
-  _curMid=mid;_curBub=bub;
+let _curMid=null,_curBub=null,_curIsMine=false;
+function showBubbleMenu(mid,bub,isMine){
+  _curMid=mid;_curBub=bub;_curIsMine=!!isMine;
   const menu=document.getElementById('bubbleMenu');
   const r=bub.getBoundingClientRect();
-  menu.style.left=Math.min(r.left,window.innerWidth-150)+'px';
+  /* 我的消息靠右对齐 */
+  if(isMine){menu.style.left='';menu.style.right=Math.max(8,window.innerWidth-r.right)+'px';}
+  else{menu.style.right='';menu.style.left=Math.min(r.left,window.innerWidth-150)+'px';}
   menu.style.top=(r.bottom+6)+'px';
+  /* 根据是否自己的消息显示不同选项 */
+  menu.querySelectorAll('.bm-other').forEach(el=>el.style.display=isMine?'none':'flex');
+  menu.querySelectorAll('.bm-mine').forEach(el=>el.style.display=isMine?'flex':'none');
   menu.classList.add('show');
   /* 用setTimeout+click代替touchstart，避免移动端touchstart先于onclick导致菜单项点不到 */
   setTimeout(()=>{
@@ -2213,6 +2221,35 @@ function bmDelete(){
   if(cid==='yukimura')S.msgs=msgs;
   sv();rm();
   toast('🗑️ 已删除');
+}
+
+/* ── 撤回消息 ── */
+function bmRecall(){
+  closeBubbleMenu();
+  const m=window._vm&&window._vm[_curMid];
+  if(!m)return;
+  const cid=m._chatId||_curChatId;
+  const msgs=getChatMsgs(cid);
+  const idx=msgs.findIndex(x=>x.id===_curMid);
+  if(idx<0)return;
+  const ch=CHAR_PACKS[cid];
+  /* 替换为撤回提示 */
+  msgs.splice(idx,1,{id:rid(),sender:'sys',text:'你撤回了一条消息',time:Date.now(),type:'sys'});
+  if(cid==='yukimura')S.msgs=msgs;
+  sv();rm();
+  /* 角色随机吐槽撤回 */
+  const RECALL_REACT={
+    yukimura:['……我看到了。','撤回也没用，我记得。','嗯？','想说什么。','……（笑了一下）被我看到了。'],
+    fuji:['呐，我已经看到了哦。','撤回了？有意思。','嗯……（微笑）','来不及了呢。','被我看到了。'],
+    ryoma:['切，我已经看到了。','……哦。','干嘛撤回。','别にいいけど。','哼。'],
+  };
+  const pool=RECALL_REACT[cid]||RECALL_REACT.yukimura;
+  if(Math.random()<0.7){
+    setTimeout(()=>{
+      msgs.push({id:rid(),sender:'c',text:pool[Math.floor(Math.random()*pool.length)],time:Date.now(),type:'txt'});
+      sv();rm();
+    },800+Math.random()*1500);
+  }
 }
 
 
