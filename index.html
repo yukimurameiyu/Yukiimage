@@ -322,19 +322,22 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="page active" id="pg-home">
 <div class="hero">
 <div class="hero-sparkles" id="heroSparkles"></div>
-<img class="hero-bg" src="IMG_3016.jpeg" alt="" onerror="this.style.display='none'"/>
+<img class="hero-bg" id="heroBg" src="IMG_3016.jpeg" alt="" onclick="document.getElementById('heroBgInput').click()" style="cursor:pointer" onerror="this.style.display='none'" title="点击更换背景图"/>
+<input type="file" id="heroBgInput" accept="image/*" style="display:none" onchange="uploadHeroBg(this)"/>
 <!-- cute star decorations -->
 <svg class="hero-deco" style="position:absolute;top:15px;right:16px;width:60px;height:60px;opacity:.15;z-index:1;animation:decoSpin 20s linear infinite" viewBox="0 0 60 60"><path d="M30 5 l3 10 h10 l-8 6 3 10-8-6-8 6 3-10-8-6h10z" fill="white"/></svg>
 <svg class="hero-deco" style="position:absolute;bottom:50px;right:30px;width:24px;height:24px;opacity:.12;z-index:1;animation:decoSpin 15s linear infinite reverse" viewBox="0 0 60 60"><path d="M30 5 l3 10 h10 l-8 6 3 10-8-6-8 6 3-10-8-6h10z" fill="white"/></svg>
 <style>@keyframes decoSpin{to{transform:rotate(360deg)}}</style>
   <div class="h-top">
     <div><div class="h-clock" id="bc">--:--</div><div class="h-date" id="ds">--</div></div>
-    
+    <!-- 角色切换按钮 -->
+    <div style="display:flex;gap:6px;position:relative;z-index:2" id="homeCharSwitcher"></div>
   </div>
   <div class="h-char">
-    <img class="h-chibi" src="chibi-normal.png" id="chibi"
+    <img class="h-chibi" src="chibi-normal.png" id="chibi" onclick="document.getElementById('chibiInput').click()" style="cursor:pointer" title="点击更换立绘"
       onerror="this.src='data:image/svg+xml,<svg xmlns=&quot;http://www.w3.org/2000/svg&quot; width=&quot;130&quot; height=&quot;150&quot;><text y=&quot;100&quot; font-size=&quot;80&quot;>👑</text></svg>'"/>
-    <div class="h-bubble"><div class="bn">幸村精市</div><div class="bt" id="hs">今天也很好。</div></div>
+    <input type="file" id="chibiInput" accept="image/*" style="display:none" onchange="uploadChibi(this)"/>
+    <div class="h-bubble"><div class="bn" id="homeBubbleName">幸村精市</div><div class="bt" id="hs">今天也很好。</div></div>
   </div>
 </div>
 <div class="days">
@@ -386,13 +389,19 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="wallet" style="margin-top:14px"><span class="wl">💰 我的钱包</span><span class="wa" id="wd">¥200.00</span></div>
 <div class="sec">
   <div class="sec-t">AI 引擎</div>
-  <div class="pg" id="pg">
+  <div class="pg" id="pg" style="grid-template-columns:1fr 1fr 1fr">
     <div class="pb active" data-p="gemini" onclick="sp2(this)">✦ Gemini</div>
     <div class="pb" data-p="openai" onclick="sp2(this)">✦ GPT</div>
     <div class="pb" data-p="claude" onclick="sp2(this)">✦ Claude</div>
     <div class="pb" data-p="deepseek" onclick="sp2(this)">✦ DeepSeek</div>
+    <div class="pb" data-p="minimal" onclick="sp2(this)">✦ Minimal</div>
+    <div class="pb" data-p="custom" onclick="sp2(this)">✦ 自定义</div>
   </div>
   <div style="padding:0 16px 14px">
+    <div id="customUrlWrap" style="display:none;margin-bottom:10px">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">API 地址</div>
+      <input class="si" id="customUrl" placeholder="https://api.example.com/v1/chat/completions"/>
+    </div>
     <div style="font-size:12px;color:var(--muted);margin-bottom:4px">模型名称</div>
     <input class="si" id="mi" placeholder="例：gemini-2.5-flash"/>
     <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">API Key</div>
@@ -671,8 +680,10 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="ph" style="padding-top:14px;background:linear-gradient(160deg,#1A3A40 0%,#2A5A50 30%,#408878 60%,#60A898 100%);position:relative;overflow:hidden">
   <div style="position:absolute;top:8px;right:16px;font-size:44px;opacity:.06;animation:decoSpin 20s linear infinite">🎾</div>
   <div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px;position:relative;z-index:1">‹ 返回</div>
-  <h2>🎮 游戏中心</h2><p>和幸村一起玩游戏吧</p>
+  <h2>🎮 游戏中心</h2><p>和<span id="gameCharName">幸村</span>一起玩游戏吧</p>
 </div>
+<!-- 游戏角色选择 -->
+<div style="padding:10px 14px 4px;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="gameCharBar"></div>
 <div style="padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:12px">
   <!-- 扫雷 -->
   <div onclick="openMinesweeper()" style="background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:transform .15s;position:relative" ontouchstart="this.style.transform='scale(.96)'" ontouchend="this.style.transform=''">
@@ -775,7 +786,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 
 <!-- 气泡右键菜单 -->
-<div class="bubble-menu" id="bubbleMenu">
+<div class="bubble-menu" id="bubbleMenu" onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()">
   <div class="bm-item" id="bmPlay" onclick="bmPlayVoice()">🔊 播放语音</div>
   <div class="bm-item" onclick="bmCopy()">📋 复制文字</div>
   <div class="bm-item" onclick="bmRegen()">🔄 重新生成</div>
@@ -924,7 +935,7 @@ function sp(id){
   if(id==='pg-garden')setTimeout(renderGarden,50);
   if(id==='pg-phone')setTimeout(renderPhone,50);
   if(id==='pg-mail')setTimeout(renderMail,50);
-  if(id==='pg-games')setTimeout(renderGameStats,50);
+  if(id==='pg-games')setTimeout(()=>{renderGameStats();renderGameCharBar();},50);
 }
 
 /* ══ 世界书 ══ */
@@ -1322,9 +1333,9 @@ function getMemoryLibText(){if(!S.memoryEntries?.length)return'';const r=[...S.m
 function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));el.classList.add('active')}
 
 /* settings */
-function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat'};document.getElementById('mi').value=m[el.dataset.p]||''}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
-function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn}
+function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat',minimal:'gpt-4o-mini',custom:'gpt-4o-mini'};document.getElementById('mi').value=m[el.dataset.p]||'';const cu=document.getElementById('customUrlWrap');if(cu)cu.style.display=el.dataset.p==='custom'?'block':'none'}
+function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked,customUrl:document.getElementById('customUrl')?.value.trim()||''};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
+function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn;const cu=document.getElementById('customUrl');if(cu)cu.value=s.customUrl||'';const cw=document.getElementById('customUrlWrap');if(cw)cw.style.display=s.prov==='custom'?'block':'none'}
 lsi();
 function uwb(){document.getElementById('wd').textContent='¥'+(S.wallet||200).toFixed(2);const sw=document.getElementById('shopWallet');if(sw)sw.textContent='¥'+(S.wallet||0).toFixed(0);}
 uwb();
@@ -1779,6 +1790,8 @@ const PC={
   openai:{url:()=>'https://api.openai.com/v1/chat/completions',hd:k=>({'Content-Type':'application/json','Authorization':'Bearer '+k}),body:(sys,msgs)=>({model:S.set.model||'gpt-4o-mini',max_tokens:200,messages:[{role:'system',content:sys},...msgs]}),parse:d=>d.choices?.[0]?.message?.content||''},
   claude:{url:()=>'https://api.anthropic.com/v1/messages',hd:k=>({'Content-Type':'application/json','x-api-key':k,'anthropic-version':'2023-06-01'}),body:(sys,msgs)=>({model:S.set.model||'claude-haiku-4-5-20251001',max_tokens:200,system:sys,messages:msgs}),parse:d=>d.content?.[0]?.text||''},
   deepseek:{url:()=>'https://api.deepseek.com/chat/completions',hd:k=>({'Content-Type':'application/json','Authorization':'Bearer '+k}),body:(sys,msgs)=>({model:S.set.model||'deepseek-chat',max_tokens:200,messages:[{role:'system',content:sys},...msgs]}),parse:d=>d.choices?.[0]?.message?.content||''},
+  minimal:{url:()=>'https://minimal.chat/api/v1/chat/completions',hd:k=>({'Content-Type':'application/json','Authorization':'Bearer '+k}),body:(sys,msgs)=>({model:S.set.model||'gpt-4o-mini',max_tokens:200,messages:[{role:'system',content:sys},...msgs]}),parse:d=>d.choices?.[0]?.message?.content||''},
+  custom:{url:()=>S.set.customUrl||'https://api.openai.com/v1/chat/completions',hd:k=>({'Content-Type':'application/json','Authorization':'Bearer '+k}),body:(sys,msgs)=>({model:S.set.model||'gpt-4o-mini',max_tokens:200,messages:[{role:'system',content:sys},...msgs]}),parse:d=>d.choices?.[0]?.message?.content||''},
 };
 async function callApi(charId){
   const cid=charId||_curChatId;
@@ -2107,7 +2120,15 @@ function showBubbleMenu(mid,bub){
   menu.style.left=Math.min(r.left,window.innerWidth-150)+'px';
   menu.style.top=(r.bottom+6)+'px';
   menu.classList.add('show');
-  setTimeout(()=>document.addEventListener('touchstart',closeBubbleMenu,{once:true}),100);
+  /* 用setTimeout+click代替touchstart，避免移动端touchstart先于onclick导致菜单项点不到 */
+  setTimeout(()=>{
+    document.addEventListener('click',function _bmClose(e){
+      if(!menu.contains(e.target)){closeBubbleMenu();document.removeEventListener('click',_bmClose);}
+    });
+    document.addEventListener('touchstart',function _bmCloseT(e){
+      if(!menu.contains(e.target)){closeBubbleMenu();document.removeEventListener('touchstart',_bmCloseT);}
+    },{passive:true});
+  },300);
 }
 function closeBubbleMenu(){document.getElementById('bubbleMenu').classList.remove('show');}
 function bmCopy(){
@@ -2648,7 +2669,7 @@ const CHAR_PACKS={
   /* ── 已接入角色 ── */
   fuji:{name:'不二周助',school:'青春学园',pos:'天才',ico:'🌵',color:'#2E7D32',active:true,
     bio:'笑容下藏着锋芒的天才球员。永远微笑，极少展露真正的情绪。',img:'char-fuji.png',
-    voiceId:'moss_audio_ff087991-7273-11f0-bc91-52a381e8d17b',
+    voiceId:'moss_audio_046b037b-5268-11f1-a392-62a1f5ede8a7',
     sys:`你是不二周助，青春学园网球部天才选手，被称为"天才"。你永远带着温和的微笑，说话轻柔温和但话里总藏着深意。极少对外展露真正情绪，但一旦认定的人会格外在乎。性格特点：表面温和随和实则观察力极强、有些腹黑和恶趣味、喜欢仙人掌和辣的食物、对弟弟裕太有复杂的牵挂、拍照是爱好。说话特征：语气温柔但偶尔一句话能让人后背发凉、喜欢用"呐""嗯"开头、很少直接表达情感但字里行间都是在意、偶尔冒出让人脸红的话但本人若无其事。不说"哈哈"，不用颜文字。用中文自然聊天，回复1-3句，保持天才的神秘温柔感。`},
   ryoma:{name:'越前龙马',school:'青春学园',pos:'超级新星',ico:'🎾',color:'#1565C0',active:true,
     bio:'まだまだだね。毒舌傲娇的天才一年级生。',img:'char-ryoma.png',
@@ -3237,7 +3258,7 @@ let _mine={};
 function openMinesweeper(){
   os('💣 网球扫雷',`
     <div id="mineContainer" style="text-align:center">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">找出隐藏在球场里的炸弹，长按标记</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">和${getGameCharName()}轮流翻格子！长按标记</div>
       <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
         <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">初级 8×8</button>
         <button onclick="initMine(10,10,18,'med')" class="mine-diff" id="md-med" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">中级 10×10</button>
@@ -3245,6 +3266,7 @@ function openMinesweeper(){
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px">
         <span style="font-size:13px;font-weight:700;color:#E53935" id="mineCount">🎾 10</span>
+        <span style="font-size:12px;font-weight:600;color:var(--p600)" id="mineTurn">👤 你的回合</span>
         <span style="font-size:13px;font-weight:700;color:var(--p600)" id="mineTimer">⏱ 0s</span>
       </div>
       <div id="mineGrid" style="display:inline-grid;gap:2px;background:var(--p100);padding:4px;border-radius:12px;border:2px solid var(--border);touch-action:manipulation"></div>
@@ -3259,14 +3281,21 @@ function initMine(rows,cols,mines,diff){
   if(btn){btn.style.borderColor='var(--p400)';btn.style.background='var(--p100)';btn.style.color='var(--p600)';}
   if(_mine.timer)clearInterval(_mine.timer);
   const grid=[];
-  for(let r=0;r<rows;r++){grid[r]=[];for(let c=0;c<cols;c++)grid[r][c]={mine:false,revealed:false,flagged:false,adj:0};}
+  for(let r=0;r<rows;r++){grid[r]=[];for(let c=0;c<cols;c++)grid[r][c]={mine:false,revealed:false,flagged:false,adj:0,by:null};}
   let placed=0;
   while(placed<mines){const r=Math.floor(Math.random()*rows),c=Math.floor(Math.random()*cols);if(!grid[r][c].mine){grid[r][c].mine=true;placed++;}}
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){if(grid[r][c].mine)continue;let cnt=0;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].mine)cnt++;}grid[r][c].adj=cnt;}
-  _mine={grid,rows,cols,mines,flagged:0,revealed:0,over:false,won:false,time:0,timer:null,diff};
+  _mine={grid,rows,cols,mines,flagged:0,revealed:0,over:false,won:false,time:0,timer:null,diff,myTurn:true,aiWaiting:false,myScore:0,aiScore:0};
   _mine.timer=setInterval(()=>{if(!_mine.over){_mine.time++;const el=document.getElementById('mineTimer');if(el)el.textContent='⏱ '+_mine.time+'s';}},1000);
   document.getElementById('mineResult').style.display='none';
+  updateMineTurn();
   renderMineGrid();
+}
+function updateMineTurn(){
+  const el=document.getElementById('mineTurn');if(!el)return;
+  const ch=CHAR_PACKS[_gameCharId];
+  if(_mine.myTurn)el.innerHTML='👤 <span style="color:var(--p600)">你的回合</span>';
+  else el.innerHTML=(ch?.ico||'👑')+' <span style="color:'+((ch?.color)||'var(--p500)')+'">'+getGameCharName()+'的回合</span>';
 }
 function renderMineGrid(){
   const{grid,rows,cols}=_mine;
@@ -3275,12 +3304,15 @@ function renderMineGrid(){
   el.style.gridTemplateColumns=`repeat(${cols},${sz}px)`;
   el.innerHTML='';
   const NUM_COLORS=['','#1976D2','#388E3C','#D32F2F','#7B1FA2','#FF8F00','#0097A7','#424242','#78909C'];
+  const ch=CHAR_PACKS[_gameCharId];
+  const aiColor=ch?.color||'var(--p500)';
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
     const cell=grid[r][c];
     const d=document.createElement('div');
     d.style.cssText=`width:${sz}px;height:${sz}px;border-radius:${sz>24?6:4}px;display:flex;align-items:center;justify-content:center;font-size:${sz>24?13:11}px;font-weight:700;cursor:pointer;user-select:none;-webkit-user-select:none;transition:all .12s`;
     if(cell.revealed){
-      d.style.background='rgba(255,255,255,.9)';
+      const bgColor=cell.by==='ai'?aiColor+'20':'rgba(255,255,255,.9)';
+      d.style.background=bgColor;
       d.style.boxShadow='inset 0 1px 3px rgba(0,0,0,.08)';
       if(cell.mine){d.textContent='💣';d.style.background='#FFCDD2';}
       else if(cell.adj>0){d.textContent=cell.adj;d.style.color=NUM_COLORS[cell.adj];}
@@ -3300,33 +3332,76 @@ function renderMineGrid(){
   document.getElementById('mineCount').textContent='🎾 '+(_mine.mines-_mine.flagged);
 }
 function mineClick(r,c){
-  if(_mine.over)return;
+  if(_mine.over||!_mine.myTurn||_mine.aiWaiting)return;
   const cell=_mine.grid[r][c];
   if(cell.flagged||cell.revealed)return;
-  if(cell.mine){cell.revealed=true;_mine.over=true;revealAll();showMineResult(false);return;}
-  floodReveal(r,c);
-  checkMineWin();
+  if(cell.mine){cell.revealed=true;cell.by='me';_mine.over=true;revealAll();showMineResult(false);return;}
+  floodReveal(r,c,'me');
+  if(checkMineWin())return;
+  renderMineGrid();
+  /* AI的回合 */
+  _mine.myTurn=false;
+  _mine.aiWaiting=true;
+  updateMineTurn();
+  setTimeout(()=>{
+    _mine.aiWaiting=false;
+    aiMineMove();
+  },600+Math.random()*800);
+}
+function aiMineMove(){
+  if(_mine.over)return;
+  const{grid,rows,cols}=_mine;
+  /* AI策略：优先翻开已知安全的格子（邻近已揭开数字为0的），否则随机 */
+  const candidates=[];
+  const safe=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const cell=grid[r][c];
+    if(!cell.revealed&&!cell.flagged){
+      candidates.push([r,c]);
+      /* 检查是否邻近已揭开的0格 */
+      for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){
+        const nr=r+dr,nc=c+dc;
+        if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].revealed&&!grid[nr][nc].mine&&grid[nr][nc].adj<=1){
+          safe.push([r,c]);break;
+        }
+      }
+    }
+  }
+  if(!candidates.length){_mine.myTurn=true;updateMineTurn();return;}
+  /* 70%概率选安全的，30%概率随机（让玩家有机会赢） */
+  let pick;
+  if(safe.length&&Math.random()<0.7)pick=safe[Math.floor(Math.random()*safe.length)];
+  else pick=candidates[Math.floor(Math.random()*candidates.length)];
+  const [ar,ac]=pick;
+  const cell=grid[ar][ac];
+  if(cell.mine){cell.revealed=true;cell.by='ai';_mine.over=true;_mine.won=true;revealAll();showMineResult(true);return;}
+  floodReveal(ar,ac,'ai');
+  if(checkMineWin())return;
+  _mine.myTurn=true;
+  updateMineTurn();
   renderMineGrid();
 }
 function mineFlag(r,c){
-  if(_mine.over)return;
+  if(_mine.over||!_mine.myTurn)return;
   const cell=_mine.grid[r][c];
   if(cell.revealed)return;
   cell.flagged=!cell.flagged;
   _mine.flagged+=cell.flagged?1:-1;
   renderMineGrid();
 }
-function floodReveal(r,c){
+function floodReveal(r,c,by){
   const{grid,rows,cols}=_mine;
   if(r<0||r>=rows||c<0||c>=cols)return;
   const cell=grid[r][c];
   if(cell.revealed||cell.flagged||cell.mine)return;
-  cell.revealed=true;_mine.revealed++;
-  if(cell.adj===0){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)floodReveal(r+dr,c+dc);}
+  cell.revealed=true;cell.by=by;_mine.revealed++;
+  if(by==='me')_mine.myScore++;else _mine.aiScore++;
+  if(cell.adj===0){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)floodReveal(r+dr,c+dc,by);}
 }
 function checkMineWin(){
   const total=_mine.rows*_mine.cols;
-  if(_mine.revealed>=total-_mine.mines){_mine.over=true;_mine.won=true;revealAll();showMineResult(true);}
+  if(_mine.revealed>=total-_mine.mines){_mine.over=true;_mine.won=true;revealAll();showMineResult(true);return true;}
+  return false;
 }
 function revealAll(){_mine.grid.forEach(row=>row.forEach(c=>{c.revealed=true}));renderMineGrid();}
 function showMineResult(won){
@@ -3335,7 +3410,8 @@ function showMineResult(won){
   const affAmt=won?(_mine.diff==='hard'?5:_mine.diff==='med'?3:2):0;
   if(won){S.gameStats.mineWins++;gameAffUp(affAmt);}
   sv();
-  const msg=won?YUKI_WIN[Math.floor(Math.random()*YUKI_WIN.length)]:YUKI_LOSE[Math.floor(Math.random()*YUKI_LOSE.length)];
+  const chName=getGameCharName();
+  const msg=won?getGameWinMsg():getGameLoseMsg();
   const el=document.getElementById('mineResult');
   if(el){
     el.style.display='block';
@@ -3343,7 +3419,8 @@ function showMineResult(won){
       <div style="background:${won?'linear-gradient(135deg,#E8F5E9,#C8E6C9)':'linear-gradient(135deg,#FFEBEE,#FFCDD2)'};border-radius:14px;padding:16px;text-align:center">
         <div style="font-size:32px;margin-bottom:6px">${won?'🎉':'💥'}</div>
         <div style="font-size:16px;font-weight:700;color:${won?'#2E7D32':'#C62828'};margin-bottom:4px">${won?'胜利！':'踩雷了…'}</div>
-        <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">幸村：「${msg}」</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">你翻开 ${_mine.myScore} 格 · ${chName}翻开 ${_mine.aiScore} 格</div>
+        <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">${chName}：「${msg}」</div>
         ${won?`<div style="font-size:12px;color:var(--p500);font-weight:700">好感 +${affAmt} · 用时 ${_mine.time}s</div>`:''}
         <button onclick="initMine(${_mine.rows},${_mine.cols},${_mine.mines},'${_mine.diff}')" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
       </div>`;
@@ -3466,7 +3543,7 @@ function checkSortWin(){
     S.gameStats.sortWins++;
     gameAffUp(affAmt);
     sv();
-    const msg=YUKI_WIN[Math.floor(Math.random()*YUKI_WIN.length)];
+    const msg=getGameWinMsg();
     const el=document.getElementById('sortResult');
     if(el){
       el.style.display='block';
@@ -3474,7 +3551,7 @@ function checkSortWin(){
         <div style="background:linear-gradient(135deg,#EDE7F6,#D1C4E9);border-radius:14px;padding:16px;text-align:center">
           <div style="font-size:32px;margin-bottom:6px">✨</div>
           <div style="font-size:16px;font-weight:700;color:var(--p700);margin-bottom:4px">完美整理！</div>
-          <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">幸村：「${msg}」</div>
+          <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">${getGameCharName()}：「${msg}」</div>
           <div style="font-size:12px;color:var(--p500);font-weight:700">好感 +${affAmt} · ${_sort.moves}步完成</div>
           <button onclick="initSort(${_sort.numColors},${_sort.perTube})" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
         </div>`;
@@ -3539,11 +3616,111 @@ function openMailIdx(i){
   </div>`);
 }
 
+/* ══ 主页角色选择 & 图片上传 ══ */
+let _homeCharId='yukimura';
+const HOME_GREETINGS={
+  yukimura:['浇完花，想起你了。','今天训练很顺。但你没来，有点……没意思。','茶泡好了，少了个人喝。','球场上风很大，莫名想发消息给你。'],
+  fuji:['呐，今天天气真好呢。','拍到一张不错的照片。','仙人掌又长大了一点。','嗯，你来了。'],
+  ryoma:['……无聊。','Ponta喝完了。','まだまだだね。','卡鲁宾今天很乖。'],
+};
+function renderHomeCharSwitcher(){
+  const bar=document.getElementById('homeCharSwitcher');if(!bar)return;
+  const chars=getActivePrinces();
+  bar.innerHTML=chars.map(ch=>{
+    const sel=ch.id===_homeCharId;
+    const ava=(S.charAvatars&&S.charAvatars[ch.id])?S.charAvatars[ch.id]:(ch.id==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
+    return`<div onclick="switchHomeChar('${ch.id}')" style="width:36px;height:36px;border-radius:10px;overflow:hidden;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:16px;color:white;cursor:pointer;border:2px solid ${sel?'white':'transparent'};box-shadow:${sel?'0 0 0 2px '+ch.color:'none'};transition:all .2s;flex-shrink:0">${ava?`<img src="${ava}" style="width:100%;height:100%;object-fit:cover"/>`:ch.ico}</div>`;
+  }).join('');
+}
+function switchHomeChar(cid){
+  _homeCharId=cid;
+  const ch=CHAR_PACKS[cid];if(!ch)return;
+  /* 更新问候 */
+  const pool=HOME_GREETINGS[cid]||HOME_GREETINGS.yukimura;
+  document.getElementById('hs').textContent=pool[Math.floor(Math.random()*pool.length)];
+  document.getElementById('homeBubbleName').textContent=ch.name;
+  /* 更新立绘 */
+  const chibi=document.getElementById('chibi');
+  const chibiImg=(S.heroChibi&&S.heroChibi[cid])?S.heroChibi[cid]:ch.img||'chibi-normal.png';
+  chibi.src=chibiImg;
+  renderHomeCharSwitcher();
+}
+function uploadHeroBg(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    S.heroBgImg=e.target.result;sv();
+    document.getElementById('heroBg').src=e.target.result;
+    document.getElementById('heroBg').style.display='';
+    toast('✅ 背景图已更换');
+  };
+  reader.readAsDataURL(file);
+}
+function uploadChibi(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    if(!S.heroChibi)S.heroChibi={};
+    S.heroChibi[_homeCharId]=e.target.result;sv();
+    document.getElementById('chibi').src=e.target.result;
+    toast('✅ 立绘已更换');
+  };
+  reader.readAsDataURL(file);
+}
+function restoreHeroImages(){
+  if(S.heroBgImg){
+    const bg=document.getElementById('heroBg');
+    if(bg){bg.src=S.heroBgImg;bg.style.display='';}
+  }
+  if(S.heroChibi&&S.heroChibi[_homeCharId]){
+    document.getElementById('chibi').src=S.heroChibi[_homeCharId];
+  }
+}
+
+/* ══ 游戏角色选择 ══ */
+let _gameCharId='yukimura';
+const GAME_WIN_LINES={
+  yukimura:YUKI_WIN,
+  fuji:['呐，你赢了呢。','有意思。','嗯，不错。','你比想象中厉害呢。','……再来一次？','让我认真起来了。'],
+  ryoma:['切，运气好。','……下次不会输。','哼。','まだまだだね……才怪。','不服。再来。','……你还行。'],
+};
+const GAME_LOSE_LINES={
+  yukimura:YUKI_LOSE,
+  fuji:['呐，不要灰心。','嗯，再试试？','失败也是乐趣之一。','下次一定行的。','……（微笑）没关系。'],
+  ryoma:['まだまだだね。','太弱了。','哼，正常。','切，这都不行。','……再练练吧。'],
+};
+function renderGameCharBar(){
+  const bar=document.getElementById('gameCharBar');if(!bar)return;
+  const chars=getActivePrinces();
+  bar.innerHTML=chars.map(ch=>{
+    const sel=ch.id===_gameCharId;
+    return`<div onclick="switchGameChar('${ch.id}')" style="display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:20px;border:2px solid ${sel?ch.color:'var(--border)'};background:${sel?ch.color+'18':'white'};cursor:pointer;flex-shrink:0;transition:all .2s">
+      <span style="font-size:14px">${ch.ico}</span>
+      <span style="font-size:12px;font-weight:${sel?700:400};color:${sel?ch.color:'var(--muted)'}">${ch.name}</span>
+    </div>`;
+  }).join('');
+  const nm=document.getElementById('gameCharName');
+  if(nm)nm.textContent=CHAR_PACKS[_gameCharId]?.name||'幸村';
+}
+function switchGameChar(cid){
+  _gameCharId=cid;
+  renderGameCharBar();
+}
+function getGameWinMsg(){
+  const pool=GAME_WIN_LINES[_gameCharId]||GAME_WIN_LINES.yukimura;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function getGameLoseMsg(){
+  const pool=GAME_LOSE_LINES[_gameCharId]||GAME_LOSE_LINES.yukimura;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function getGameCharName(){return CHAR_PACKS[_gameCharId]?.name||'幸村精市';}
+
 /* init 时渲染查岗 */
 document.getElementById('tm').textContent=TM[Math.floor(Math.random()*TM.length)];
 document.getElementById('hs').textContent=IM[Math.floor(Math.random()*IM.length)];
 renderGallery();renderAlarms();initXhs();
-updateMyAva();
+updateMyAva();restoreHeroImages();renderHomeCharSwitcher();
 if(S.yukiStatus) document.getElementById('yukiStatus').textContent=S.yukiStatus;
 /* 切换到查岗页自动刷新 */
 
