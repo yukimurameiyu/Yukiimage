@@ -4177,8 +4177,8 @@ let _phoneCallIdx=-1;
 function renderPhone(){
   const list=document.getElementById('phoneReadyList');if(!list)return;
   const ready=(S.phoneReady||[]).filter(r=>S.unlockedChars.includes(r.prince));
-  if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';return;}
-  list.innerHTML=ready.map((r,i)=>{
+  if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';}
+  else{ list.innerHTML=ready.map((r,i)=>{
     const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
     const realIdx=S.phoneReady.indexOf(r);
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--p50);border-radius:12px;margin-bottom:6px">
@@ -4186,7 +4186,7 @@ function renderPhone(){
       <div style="flex:1"><div style="font-size:13px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">来电已激活 · ${new Date(r.ts).toLocaleDateString('zh-CN')}</div></div>
       <button onclick="startPhoneCall(${realIdx})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
     </div>`;
-  }).join('');
+  }).join(''); }
   /* 通话记录 */
   const logEl=document.getElementById('phoneLogList');if(!logEl)return;
   const logs=S.phoneLogs||[];
@@ -4210,6 +4210,16 @@ async function startPhoneCall(idx){
 
   /* 检查API配置 */
   if(!s.key){toast('⚠️ 请先在设置里配置AI接口');return;}
+
+  /* ★ 移动端音频解锁：在用户手势上下文中预创建Audio并播放静音 */
+  _phoneAudio=new Audio();
+  try{
+    const silenceB64='SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYlMZijAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYlMZijAAAAAAAAAAAAAAAAAAAA';
+    _phoneAudio.src='data:audio/mp3;base64,'+silenceB64;
+    await _phoneAudio.play().catch(()=>{});
+    _phoneAudio.pause();
+    _phoneAudio.currentTime=0;
+  }catch(e){/* 静默处理 */}
 
   /* 打开电话界面 */
   document.getElementById('phoneAva').textContent=ch.ico;
@@ -4267,7 +4277,7 @@ async function startPhoneCall(idx){
           body:JSON.stringify(ttsBody(jpText,vid))});
         const ttsD=await ttsR.json();
         if(ttsD.data?.audio){
-          _phoneAudio=new Audio('data:audio/mp3;base64,'+ttsD.data.audio);
+          _phoneAudio.src='data:audio/mp3;base64,'+ttsD.data.audio;
           hasVoice=true;
           /* 扣减语音额度（电话算3条） */
           deductVoiceCredit(3);
@@ -4296,7 +4306,9 @@ async function startPhoneCall(idx){
               Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
           },1000);
 
-          _phoneAudio.play();
+          _phoneAudio.load();
+          await new Promise(res=>{_phoneAudio.oncanplaythrough=res;setTimeout(res,3000);});
+          _phoneAudio.play().catch(e=>console.warn('Phone audio play failed:',e));
           _phoneAudio.onended=()=>{
             logEntry.duration=_phoneSeconds;
             document.getElementById('phoneCallStatus').textContent='通话结束';
