@@ -887,6 +887,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="cl-hd">
     <div class="back" onclick="closeChatList()">‹</div>
     <h3>💬 微聊</h3>
+    <span id="voiceCreditsBadge" style="font-size:10px;color:rgba(255,255,255,.7);padding:2px 8px;background:rgba(255,255,255,.15);border-radius:8px"></span>
     <div class="cl-add-btn" onclick="showAddFriend()" title="添加好友">＋</div>
   </div>
   <div class="cl-contacts" id="chatContacts"></div>
@@ -1015,7 +1016,7 @@ const K='yw_v1';
 /* ── 语音ID（不要外泄） ── */
 const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];/* 一次性发放5张测试电话卡 */if(!d._phoneCardGiven){if(!d.bag)d.bag={};if(!d.bag.cards)d.bag.cards={};d.bag.cards.phoneCard=(d.bag.cards.phoneCard||0)+5;d._phoneCardGiven=true;}return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{phoneCard:5}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[],_phoneCardGiven:true}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];if(d.voiceCredits===undefined)d.voiceCredits=0;/* 一次性发放5张测试电话卡 */if(!d._phoneCardGiven){if(!d.bag)d.bag={};if(!d.bag.cards)d.bag.cards={};d.bag.cards.phoneCard=(d.bag.cards.phoneCard||0)+5;d._phoneCardGiven=true;}return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{phoneCard:5}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[],_phoneCardGiven:true,voiceCredits:0}}
 function sv(){
   try{localStorage.setItem(K,JSON.stringify(S))}
   catch(e){
@@ -1544,6 +1545,7 @@ function getChatMsgs(cid){
 /* 打开联系人列表 */
 function openChat(){
   renderChatList();
+  updateVoiceCreditsUI();
   document.getElementById('chatListOverlay').classList.add('open');
 }
 function closeChatList(){
@@ -1643,7 +1645,8 @@ async function submitActCode(){
   /* 格式校验 */
   const isPOT=/^POT-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code);
   const isSPOT=/^SPOT-[A-Z0-9]{4}-[A-Z0-9]{5}$/.test(code);
-  if(!isPOT&&!isSPOT){
+  const isVOX=/^VOX-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code);
+  if(!isPOT&&!isSPOT&&!isVOX){
     errEl.textContent='激活码格式不正确';input.classList.add('err');return;
   }
   
@@ -1666,13 +1669,22 @@ async function submitActCode(){
     }
     
     _actValidatedCode=code;
-    _actCodeType=data.type; /* 'pot' or 'spot' */
+    _actCodeType=data.type;
     
-    if(data.type==='spot'){
-      /* VIP全套码，直接解锁所有角色 */
+    if(data.type==='vox'){
+      /* 语音包充值 */
+      S.voiceCredits=(S.voiceCredits||0)+(data.credits||100);
+      S.actTokens.push({code,type:'vox',credits:data.credits,token:data.token,time:Date.now()});
+      sv();
+      closeActivation();
+      showFriendRequest([]);/* 特殊：语音包动画 */
+      const overlay=document.getElementById('frOverlay');
+      overlay.innerHTML=`<div class="fr-card"><div class="fr-ico">🎧</div><div class="fr-msg">语音包充值成功！</div><div class="fr-sub">+${data.credits}条语音额度<br/>当前剩余：${S.voiceCredits}条</div></div>`;
+      overlay.classList.add('open');
+      setTimeout(()=>overlay.classList.remove('open'),3000);
+    }else if(data.type==='spot'){
       doUnlockAll(data.token);
     }else{
-      /* 单角色码，显示角色选择 */
       showCharSelector(data.token);
     }
   }catch(e){
@@ -1868,7 +1880,7 @@ function openCharChat(cid){
       const chatId=m._chatId||_curChatId;
       const ch=CHAR_PACKS[chatId];
       const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
-      if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请在设置里开启语音并填写MiniMax信息');return;}
+      if(!hasVoiceAccess()){toast('🎧 语音额度已用完，请充值语音包或填写自己的MiniMax Key');return;}
       /* iOS需要在用户点击的瞬间解锁音频播放权限 */
       const actx=new(window.AudioContext||window.webkitAudioContext)();
       const unlock=actx.createBuffer(1,1,22050);
@@ -1888,15 +1900,16 @@ function openCharChat(cid){
         return;
       }
 
-      /* 无缓存：翻译→TTS→播放，和之前能出声的版本一模一样 */
+      /* 无缓存：翻译→TTS→播放 */
+      if(!hasVoiceAccess()){toast('🎧 语音额度已用完');btn.textContent='▶ 语音';actx.close();return;}
       btn.textContent='⏳';
       translateToJP(m.text).then(jp=>{
         return fetch('/.netlify/functions/tts',{method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,
-            voiceId:vid,site:s.mmSite||"cn"})});
+          body:JSON.stringify(ttsBody(jp,vid))});
       }).then(r=>r.json()).then(d=>{
         if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
+        deductVoiceCredit(1);
         m._audioB64=d.data.audio;
         const raw=atob(d.data.audio);
         const arr=new Uint8Array(raw.length);
@@ -2461,21 +2474,43 @@ async function translateToJP(text){
   }catch(e){console.error('[translateToJP] Error:',e.message);return text;}
 }
 
-async function genVoice(text){
+async function genVoice(text,vid){
   const s=S.set;
-  if(!s.voiceOn) return null;
-  if(!s.mmkey||!s.mmgid) return null;
-  const vid=VOICE_ID;
+  const voiceId=vid||VOICE_ID;
+  const hasOwnKey=s.mmkey&&s.mmgid;
+  /* 没有自己的Key就走服务端+扣额度 */
+  if(!hasOwnKey&&(S.voiceCredits||0)<=0) return null;
   try{
+    const body={text,voiceId,site:hasOwnKey?(s.mmSite||'intl'):'intl'};
+    if(hasOwnKey){body.apiKey=s.mmkey;body.groupId=s.mmgid;}
     const r=await fetch('/.netlify/functions/tts',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||"cn"})
+      body:JSON.stringify(body)
     });
     const d=await r.json();
-    if(d.base_resp?.status_code!==0){toast('❌ TTS:'+d.base_resp?.status_msg);return null;}
+    if(d.base_resp?.status_code!==0){
+      if(d.base_resp?.status_msg)toast('❌ '+d.base_resp.status_msg);
+      return null;
+    }
     if(!d.data?.audio) return null;
+    /* 只有走服务端时才扣额度 */
+    if(!hasOwnKey){S.voiceCredits=Math.max(0,(S.voiceCredits||0)-1);sv();updateVoiceCreditsUI();}
     return d.data.audio;
   }catch(e){return null;}
+}
+/* 检查是否有语音能力（自有Key或有额度） */
+function hasVoiceAccess(){return(S.set.mmkey&&S.set.mmgid)||(S.voiceCredits||0)>0;}
+function ttsBody(text,vid){
+  const s=S.set;const b={text,voiceId:vid||VOICE_ID,site:s.mmkey?(s.mmSite||'intl'):'intl'};
+  if(s.mmkey&&s.mmgid){b.apiKey=s.mmkey;b.groupId=s.mmgid;}
+  return b;
+}
+function deductVoiceCredit(n){
+  if(!(S.set.mmkey&&S.set.mmgid)){S.voiceCredits=Math.max(0,(S.voiceCredits||0)-(n||1));sv();updateVoiceCreditsUI();}
+}
+function updateVoiceCreditsUI(){
+  const el=document.getElementById('voiceCreditsBadge');
+  if(el)el.textContent=S.set.mmkey?'🎧 自有Key':'🎧 '+(S.voiceCredits||0);
 }
 
 function makeAudioBubble(b, audioB64, jpText, cnText, mine){
@@ -2502,15 +2537,20 @@ function makeAudioBubble(b, audioB64, jpText, cnText, mine){
 }
 
 async function playMsgVoice(m, btn){
-  const s=S.set;
-  if(!s.voiceOn){toast('⚠️ 请去设置开启语音');return;}
-  if(!s.mmkey||!s.mmgid){toast('⚠️ 请填写MiniMax信息');return;}
+  if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   btn.innerHTML='⏳';
   try{
+    const cid=m._chatId||_curChatId;
+    const ch=CHAR_PACKS[cid];
+    const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
     const jp=await translateToJP(m.text);
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:VOICE_ID,site:s.mmSite||"cn"})});
+    const s=S.set;const hasOwnKey=s.mmkey&&s.mmgid;
+    const body={text:jp,voiceId:vid,site:hasOwnKey?(s.mmSite||'intl'):'intl'};
+    if(hasOwnKey){body.apiKey=s.mmkey;body.groupId=s.mmgid;}
+    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json();
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
+    deductVoiceCredit(1);
     const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
     btn.innerHTML='⏸';
     audio.addEventListener('ended',()=>{btn.innerHTML='▶';});
@@ -2548,7 +2588,7 @@ function bmPlayVoice(){
   const m=window._vm&&window._vm[_curMid];
   if(!m){toast('找不到消息');return;}
   const s=S.set;
-  if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请先在设置里开启语音并填写MiniMax信息');return;}
+  if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   const chatId=m._chatId||_curChatId;
   const ch=CHAR_PACKS[chatId];
   const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
@@ -2570,7 +2610,7 @@ function bmPlayVoice(){
   toast('🎙️ 生成语音中…');
   translateToJP(m.text).then(jp=>{
     return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||"cn"})});
+      body:JSON.stringify(ttsBody(jp,vid))});
   }).then(r=>r.json()).then(d=>{
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));actx.close();return;}
     m._audioB64=d.data.audio;
@@ -2876,7 +2916,7 @@ function triggerAlarm(timeStr){
     Notification.requestPermission();
   }
   /* 语音叫早：优先用预解锁的AudioContext */
-  if(S.set.voiceOn&&S.set.mmkey&&S.set.mmgid){
+  if(hasVoiceAccess()){
     translateToJP(msg).then(jp=>genVoice(jp)).then(b64=>{
       if(!b64)return;
       /* 尝试用预解锁的AudioContext */
@@ -3870,11 +3910,11 @@ function showMineDanmaku(text){
   const el=document.getElementById('mineDanmaku');if(!el)return;
   const ch=CHAR_PACKS[_mineChar];
   el.innerHTML=`<span style="color:${ch.color}">${ch.ico} ${ch.name}：「${text}」</span>`;
-  if(S.set.voiceOn&&S.set.mmkey&&S.set.mmgid&&Math.random()<0.25){
+  if(hasVoiceAccess()&&Math.random()<0.25){
     translateToJP(text).then(jp=>{
       const vid=ch.voiceId||VOICE_ID;
       return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({text:jp,groupId:S.set.mmgid,apiKey:S.set.mmkey,voiceId:vid,site:S.set.mmSite||'cn'})});
+        body:JSON.stringify(ttsBody(jp,vid))});
     }).then(r=>r.json()).then(d=>{
       if(d.data?.audio){const a=new Audio('data:audio/mp3;base64,'+d.data.audio);a.play().catch(()=>{});}
     }).catch(()=>{});
@@ -4194,7 +4234,7 @@ async function startPhoneCall(idx){
     /* Step 2: 翻译成日文 */
     let jpText=cnText;
     let hasVoice=false;
-    if(s.mmkey&&s.mmgid){
+    if(hasVoiceAccess()){
       document.getElementById('phonePtext').textContent='正在翻译为日文…';
       document.getElementById('phonePfill').style.width='55%';
       jpText=await translateToJP(cnText);
@@ -4205,11 +4245,13 @@ async function startPhoneCall(idx){
       const vid=ch.voiceId||VOICE_ID;
       try{
         const ttsR=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:jpText,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||'cn'})});
+          body:JSON.stringify(ttsBody(jpText,vid))});
         const ttsD=await ttsR.json();
         if(ttsD.data?.audio){
           _phoneAudio=new Audio('data:audio/mp3;base64,'+ttsD.data.audio);
           hasVoice=true;
+          /* 扣减语音额度（电话算3条） */
+          deductVoiceCredit(3);
 
           /* 保存通话记录（含音频base64） */
           if(!S.phoneLogs)S.phoneLogs=[];
