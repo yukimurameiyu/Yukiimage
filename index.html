@@ -260,6 +260,28 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .bm-item{padding:10px 14px;color:white;font-size:14px;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px}
 .bm-item:active{background:rgba(255,255,255,.15)}
 
+/* ── 电话通话界面 ── */
+.phone-overlay{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;background:linear-gradient(160deg,#0d1117 0%,#1a2332 40%,#1B5E20 100%)}
+.phone-overlay.open{display:flex}
+.phone-top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center}
+.phone-ava{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;margin-bottom:20px;box-shadow:0 0 40px rgba(76,175,80,.4);animation:phoneGlow 2s ease-in-out infinite}
+@keyframes phoneGlow{0%,100%{box-shadow:0 0 40px rgba(76,175,80,.3)}50%{box-shadow:0 0 60px rgba(76,175,80,.6)}}
+.phone-name{font-size:24px;font-weight:700;color:white;margin-bottom:6px}
+.phone-status{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:24px}
+.phone-progress{width:80%;max-width:280px;margin:0 auto}
+.phone-pbar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.phone-pfill{height:100%;background:linear-gradient(90deg,#4CAF50,#81C784);border-radius:2px;transition:width .3s ease;width:0%}
+.phone-ptext{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+.phone-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:40px;margin:20px 0}
+.phone-wave-bar{width:3px;background:#4CAF50;border-radius:2px;animation:phoneWave 1s ease-in-out infinite}
+@keyframes phoneWave{0%,100%{height:8px;opacity:.4}50%{height:28px;opacity:1}}
+.phone-time{font-size:16px;color:rgba(255,255,255,.8);font-family:monospace;letter-spacing:2px;margin-top:8px}
+.phone-bottom{padding:30px;display:flex;justify-content:center;gap:24px}
+.phone-btn{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:none;cursor:pointer;transition:transform .15s}
+.phone-btn:active{transform:scale(.9)}
+.phone-btn.hangup{background:#E53935;color:white}
+.phone-btn.replay{background:rgba(255,255,255,.15);color:white;font-size:18px}
+
 /* ── 聊天列表 ── */
 .chat-list-overlay{position:fixed;inset:0;z-index:98;display:none;flex-direction:column;background:var(--bg)}
 .chat-list-overlay.open{display:flex}
@@ -648,11 +670,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="page" id="pg-inspect">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p id="inspectSubtitle">幸村精市 · 实时行踪</p></div>
 <!-- 角色选择 -->
-<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar">
-  <div class="insp-char active" data-cid="yukimura" onclick="switchInspect('yukimura')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">👑 幸村精市</div>
-  <div class="insp-char" data-cid="fuji" onclick="switchInspect('fuji')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🌵 不二周助</div>
-  <div class="insp-char" data-cid="ryoma" onclick="switchInspect('ryoma')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🎾 越前龙马</div>
-</div>
+<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar"></div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
 
   <!-- 当前状态卡 -->
@@ -956,6 +974,34 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   </div>
 </div>
 
+<!-- 电话通话界面 -->
+<div class="phone-overlay" id="phoneOverlay">
+  <div class="phone-top">
+    <div class="phone-ava" id="phoneAva">👑</div>
+    <div class="phone-name" id="phoneName">幸村精市</div>
+    <div class="phone-status" id="phoneCallStatus">来电中…</div>
+    <div class="phone-progress" id="phoneProgressWrap">
+      <div class="phone-pbar"><div class="phone-pfill" id="phonePfill"></div></div>
+      <div class="phone-ptext" id="phonePtext"></div>
+    </div>
+    <div class="phone-wave" id="phoneWaveWrap" style="display:none">
+      <div class="phone-wave-bar" style="animation-delay:0s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.1s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.2s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.3s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.15s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.25s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.05s"></div>
+    </div>
+    <div class="phone-time" id="phoneTimer" style="display:none">00:00</div>
+    <div id="phoneText" style="display:none;margin-top:20px;padding:0 20px;font-size:14px;color:rgba(255,255,255,.75);line-height:1.8;text-align:center;max-height:120px;overflow-y:auto"></div>
+  </div>
+  <div class="phone-bottom">
+    <button class="phone-btn replay" id="phoneReplayBtn" onclick="replayPhoneAudio()" style="display:none" title="重听">🔄</button>
+    <button class="phone-btn hangup" onclick="endPhoneCall()" title="挂断">📞</button>
+  </div>
+</div>
+
 <!-- SHEETS -->
 <div class="sho" id="sho" onclick="cs()"></div>
 <div class="sh" id="sh"><div class="shh"></div><div class="sht" id="sht"></div><div class="shb" id="shb"></div></div>
@@ -969,7 +1015,7 @@ const K='yw_v1';
 /* ── 语音ID（不要外泄） ── */
 const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[]}}
 function sv(){
   try{localStorage.setItem(K,JSON.stringify(S))}
   catch(e){
@@ -2804,7 +2850,7 @@ function checkAlarms(){
 function triggerAlarm(timeStr){
   const h=parseInt(timeStr.split(':')[0]);
   /* 随机选一个已激活角色叫早 */
-  const activeChars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&ALARM_MSGS[k]);
+  const activeChars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)&&ALARM_MSGS[k]);
   const [charId,charData]=activeChars.length?activeChars[Math.floor(Math.random()*activeChars.length)]:['yukimura',CHAR_PACKS.yukimura];
   const charMsgs=ALARM_MSGS[charId]||ALARM_MSGS.yukimura;
   let pool=h<9?charMsgs.morning:h<12?charMsgs.late:h<14?charMsgs.noon:charMsgs.default;
@@ -2991,6 +3037,16 @@ function getCurrentStatus(){
 }
 
 function renderInspect(){
+  /* 动态生成角色切换栏（只显示已解锁角色） */
+  const bar=document.getElementById('inspectCharBar');
+  if(bar){
+    const unlocked=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k));
+    bar.innerHTML=unlocked.map(([cid,ch])=>{
+      const active=cid===_inspectChar;
+      return`<div class="insp-char" data-cid="${cid}" onclick="switchInspect('${cid}')" style="padding:6px 14px;border-radius:20px;border:2px solid ${active?ch.color:'var(--border)'};background:${active?ch.color+'18':'white'};color:${active?ch.color:'var(--muted)'};font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">${ch.ico} ${ch.name}</div>`;
+    }).join('');
+    if(unlocked.length&&!unlocked.find(([k])=>k===_inspectChar)){_inspectChar=unlocked[0][0];}
+  }
   const cid=_inspectChar||'yukimura';
   const ch=CHAR_PACKS[cid]||CHAR_PACKS.yukimura;
   const schedule=cid==='fuji'?FUJI_SCHEDULE:cid==='ryoma'?RYOMA_SCHEDULE:WEEKDAY_SCHEDULE;
@@ -3174,7 +3230,10 @@ const CHAR_PACKS={
     bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png'},
 };
 /* 获取已激活角色列表（兼容旧PRINCES引用） */
-function getActivePrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k,v])=>({id:k,...v}));}
+/* getActivePrinces：只返回已解锁的角色（用于所有用户交互） */
+function getActivePrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)).map(([k,v])=>({id:k,...v}));}
+/* getInstalledPrinces：返回所有已安装角色（不管是否解锁，用于激活码选择器等） */
+function getInstalledPrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k,v])=>({id:k,...v}));}
 function getAllPrinces(){return Object.entries(CHAR_PACKS).map(([k,v])=>({id:k,...v}));}
 const PRINCES=getActivePrinces();/* 初始快照，UI函数用getActivePrinces()动态获取 */
 function princeName(id){return CHAR_PACKS[id]?.name||id}
@@ -3758,7 +3817,7 @@ function openMinesweeper(){
     <div id="mineContainer" style="text-align:center">
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6">选择对手，轮流翻格子，谁踩雷谁输！</div>
       <div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;flex-wrap:wrap" id="mineCharBar">
-        ${Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([cid,ch])=>`<div onclick="pickMineChar('${cid}')" data-mc="${cid}" style="padding:5px 10px;border-radius:14px;border:2px solid ${cid==='yukimura'?ch.color:'var(--border)'};background:${cid==='yukimura'?ch.color+'18':'white'};color:${cid==='yukimura'?ch.color:'var(--muted)'};font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">${ch.ico} ${ch.name}</div>`).join('')}
+        ${Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)).map(([cid,ch])=>`<div onclick="pickMineChar('${cid}')" data-mc="${cid}" style="padding:5px 10px;border-radius:14px;border:2px solid ${cid==='yukimura'?ch.color:'var(--border)'};background:${cid==='yukimura'?ch.color+'18':'white'};color:${cid==='yukimura'?ch.color:'var(--muted)'};font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">${ch.ico} ${ch.name}</div>`).join('')}
       </div>
       <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
         <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">简单 8×8</button>
@@ -4025,25 +4084,235 @@ function checkSortWin(){
   }
 }
 
-/* ══ 电话系统 ══ */
+/* ══ 电话系统（完整版） ══ */
+let _phoneAudio=null;
+let _phoneTimer=null;
+let _phoneSeconds=0;
+let _phoneCallIdx=-1;
+
 function renderPhone(){
   const list=document.getElementById('phoneReadyList');if(!list)return;
-  const ready=S.phoneReady||[];
+  const ready=(S.phoneReady||[]).filter(r=>S.unlockedChars.includes(r.prince));
   if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';return;}
   list.innerHTML=ready.map((r,i)=>{
     const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
+    const realIdx=S.phoneReady.indexOf(r);
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--p50);border-radius:12px;margin-bottom:6px">
       <div style="width:40px;height:40px;border-radius:12px;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:20px;color:white">${ch.ico}</div>
       <div style="flex:1"><div style="font-size:13px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">来电已激活 · ${new Date(r.ts).toLocaleDateString('zh-CN')}</div></div>
-      <button onclick="startPhoneCall(${i})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
+      <button onclick="startPhoneCall(${realIdx})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
+    </div>`;
+  }).join('');
+  /* 通话记录 */
+  const logEl=document.getElementById('phoneLogList');if(!logEl)return;
+  const logs=S.phoneLogs||[];
+  if(!logs.length){logEl.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无通话记录</div>';return;}
+  logEl.innerHTML=logs.slice(0,20).map((log,i)=>{
+    const ch=CHAR_PACKS[log.prince]||{name:log.prince,ico:'👤',color:'#666'};
+    const dur=log.duration?Math.floor(log.duration/60)+':'+('0'+log.duration%60).slice(-2):'--';
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:18px">${ch.ico}</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">${new Date(log.ts).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})} · ${dur}</div></div>
+      ${log.audioB64?`<button onclick="replayLog(${i})" style="padding:4px 10px;border-radius:8px;background:var(--p50);border:1px solid var(--border);font-size:10px;cursor:pointer;font-family:inherit;color:var(--p600)">▶ 回听</button>`:''}
     </div>`;
   }).join('');
 }
-function startPhoneCall(idx){
+
+async function startPhoneCall(idx){
   const r=(S.phoneReady||[])[idx];if(!r)return;
-  const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤'};
-  toast('📞 '+ch.name+' 正在拨入… 电话功能完整版即将上线');
-  /* 完整版将接入AI生成文本+MiniMax语音 */
+  const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
+  const s=S.set;
+  _phoneCallIdx=idx;
+
+  /* 检查API配置 */
+  if(!s.key){toast('⚠️ 请先在设置里配置AI接口');return;}
+
+  /* 打开电话界面 */
+  document.getElementById('phoneAva').textContent=ch.ico;
+  document.getElementById('phoneAva').style.background=ch.color;
+  document.getElementById('phoneName').textContent=ch.name;
+  document.getElementById('phoneCallStatus').textContent='来电中…';
+  document.getElementById('phonePfill').style.width='0%';
+  document.getElementById('phonePtext').textContent='';
+  document.getElementById('phoneProgressWrap').style.display='';
+  document.getElementById('phoneWaveWrap').style.display='none';
+  document.getElementById('phoneTimer').style.display='none';
+  document.getElementById('phoneText').style.display='none';
+  document.getElementById('phoneReplayBtn').style.display='none';
+  document.getElementById('phoneOverlay').classList.add('open');
+
+  try{
+    /* Step 1: AI生成通话内容 */
+    await sleep(800);
+    document.getElementById('phoneCallStatus').textContent='正在接通…';
+    document.getElementById('phonePtext').textContent='正在生成通话内容…';
+    document.getElementById('phonePfill').style.width='15%';
+
+    const charSys=ch.sys||`你是${ch.name}，${ch.school}${ch.pos}。`;
+    const userName=s.name||'你';
+    const aff=(r.prince==='yukimura')?(S.aff||0):((S.princeAff&&S.princeAff[r.prince])||0);
+    const affHint=aff>=50?'你们关系非常亲密。':aff>=30?'你们已经很熟悉了。':'你们是朋友关系。';
+
+    const phonePrompt=charSys+'\n\n【场景】你正在给'+userName+'打电话。'+affHint+'请生成一段你在电话里会说的内容，语气自然亲切，像真的在打电话一样。内容可以包括：问候、分享近况、表达关心、聊些日常。字数控制在150-250字，不要写动作描写，只写你说的话（对白），用中文。分2-3段，每段换行。';
+
+    const pc=PC[s.prov];if(!pc)throw new Error('无效的AI provider');
+    const apiR=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
+      body:JSON.stringify(pc.body(phonePrompt,[{role:'user',content:'请打电话给我吧，我想听你说话。'}]))});
+    if(!apiR.ok)throw new Error('AI API错误:'+apiR.status);
+    const apiD=await apiR.json();
+    const cnText=pc.parse(apiD);
+    if(!cnText)throw new Error('AI返回为空');
+
+    document.getElementById('phonePfill').style.width='40%';
+    document.getElementById('phonePtext').textContent='通话内容已生成…';
+
+    /* Step 2: 翻译成日文 */
+    let jpText=cnText;
+    let hasVoice=false;
+    if(s.mmkey&&s.mmgid){
+      document.getElementById('phonePtext').textContent='正在翻译为日文…';
+      document.getElementById('phonePfill').style.width='55%';
+      jpText=await translateToJP(cnText);
+      document.getElementById('phonePfill').style.width='65%';
+
+      /* Step 3: TTS语音生成 */
+      document.getElementById('phonePtext').textContent='正在生成语音…';
+      const vid=ch.voiceId||VOICE_ID;
+      try{
+        const ttsR=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({text:jpText,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||'cn'})});
+        const ttsD=await ttsR.json();
+        if(ttsD.data?.audio){
+          _phoneAudio=new Audio('data:audio/mp3;base64,'+ttsD.data.audio);
+          hasVoice=true;
+
+          /* 保存通话记录（含音频base64） */
+          if(!S.phoneLogs)S.phoneLogs=[];
+          const logEntry={prince:r.prince,ts:Date.now(),cnText,jpText,audioB64:ttsD.data.audio,duration:0};
+
+          document.getElementById('phonePfill').style.width='100%';
+          document.getElementById('phonePtext').textContent='连接成功！';
+          await sleep(500);
+
+          /* 开始播放 */
+          document.getElementById('phoneCallStatus').textContent='通话中';
+          document.getElementById('phoneProgressWrap').style.display='none';
+          document.getElementById('phoneWaveWrap').style.display='flex';
+          document.getElementById('phoneTimer').style.display='';
+          document.getElementById('phoneText').style.display='';
+          document.getElementById('phoneText').textContent=cnText;
+          document.getElementById('phoneReplayBtn').style.display='';
+
+          _phoneSeconds=0;
+          _phoneTimer=setInterval(()=>{
+            _phoneSeconds++;
+            document.getElementById('phoneTimer').textContent=
+              Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+          },1000);
+
+          _phoneAudio.play();
+          _phoneAudio.onended=()=>{
+            logEntry.duration=_phoneSeconds;
+            document.getElementById('phoneCallStatus').textContent='通话结束';
+            document.getElementById('phoneWaveWrap').style.display='none';
+            if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+          };
+
+          /* 移除待接来电，保存记录 */
+          S.phoneReady.splice(idx,1);
+          S.phoneLogs.unshift(logEntry);
+          /* 只保留最近3条的音频，防止localStorage溢出 */
+          S.phoneLogs.forEach((l,i)=>{if(i>=3)delete l.audioB64;});
+          if(S.phoneLogs.length>20)S.phoneLogs=S.phoneLogs.slice(0,20);
+          sv();
+          return;
+        }
+      }catch(e){console.error('TTS error:',e);}
+    }
+
+    /* 无语音时：只显示文字 */
+    document.getElementById('phonePfill').style.width='100%';
+    document.getElementById('phonePtext').textContent='已接通（文字模式）';
+    await sleep(500);
+    document.getElementById('phoneCallStatus').textContent='通话中（文字）';
+    document.getElementById('phoneProgressWrap').style.display='none';
+    document.getElementById('phoneText').style.display='';
+    document.getElementById('phoneText').innerHTML=cnText.replace(/\n/g,'<br/>');
+    if(jpText!==cnText){
+      document.getElementById('phoneText').innerHTML+='<br/><br/><span style="font-size:12px;color:rgba(255,255,255,.4)">'+jpText.replace(/\n/g,'<br/>')+'</span>';
+    }
+    S.phoneReady.splice(idx,1);
+    if(!S.phoneLogs)S.phoneLogs=[];
+    S.phoneLogs.unshift({prince:r.prince,ts:Date.now(),cnText,duration:0});
+    if(S.phoneLogs.length>20)S.phoneLogs=S.phoneLogs.slice(0,20);
+    sv();
+
+  }catch(e){
+    console.error('Phone call error:',e);
+    document.getElementById('phoneCallStatus').textContent='连接失败';
+    document.getElementById('phonePtext').textContent=e.message||'请检查API设置';
+    document.getElementById('phonePfill').style.width='0%';
+  }
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function endPhoneCall(){
+  if(_phoneAudio){_phoneAudio.pause();_phoneAudio=null;}
+  if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+  document.getElementById('phoneOverlay').classList.remove('open');
+  renderPhone();
+}
+
+function replayPhoneAudio(){
+  if(_phoneAudio){
+    _phoneAudio.currentTime=0;
+    _phoneAudio.play();
+    _phoneSeconds=0;
+    document.getElementById('phoneCallStatus').textContent='通话中';
+    document.getElementById('phoneWaveWrap').style.display='flex';
+    if(_phoneTimer)clearInterval(_phoneTimer);
+    _phoneTimer=setInterval(()=>{
+      _phoneSeconds++;
+      document.getElementById('phoneTimer').textContent=
+        Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+    },1000);
+    _phoneAudio.onended=()=>{
+      document.getElementById('phoneCallStatus').textContent='通话结束';
+      document.getElementById('phoneWaveWrap').style.display='none';
+      if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+    };
+  }
+}
+
+function replayLog(idx){
+  const log=(S.phoneLogs||[])[idx];if(!log||!log.audioB64)return;
+  const ch=CHAR_PACKS[log.prince]||{name:log.prince,ico:'👤',color:'#666'};
+  document.getElementById('phoneAva').textContent=ch.ico;
+  document.getElementById('phoneAva').style.background=ch.color;
+  document.getElementById('phoneName').textContent=ch.name;
+  document.getElementById('phoneCallStatus').textContent='回听中';
+  document.getElementById('phoneProgressWrap').style.display='none';
+  document.getElementById('phoneWaveWrap').style.display='flex';
+  document.getElementById('phoneTimer').style.display='';
+  document.getElementById('phoneText').style.display='';
+  document.getElementById('phoneText').textContent=log.cnText;
+  document.getElementById('phoneReplayBtn').style.display='';
+  document.getElementById('phoneOverlay').classList.add('open');
+
+  _phoneAudio=new Audio('data:audio/mp3;base64,'+log.audioB64);
+  _phoneSeconds=0;
+  _phoneTimer=setInterval(()=>{
+    _phoneSeconds++;
+    document.getElementById('phoneTimer').textContent=
+      Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+  },1000);
+  _phoneAudio.play();
+  _phoneAudio.onended=()=>{
+    document.getElementById('phoneCallStatus').textContent='回听结束';
+    document.getElementById('phoneWaveWrap').style.display='none';
+    if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+  };
 }
 
 /* ══ 邮箱系统 ══ */
