@@ -1015,7 +1015,7 @@ const K='yw_v1';
 /* ── 语音ID（不要外泄） ── */
 const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];/* 一次性发放5张测试电话卡 */if(!d._phoneCardGiven){if(!d.bag)d.bag={};if(!d.bag.cards)d.bag.cards={};d.bag.cards.phoneCard=(d.bag.cards.phoneCard||0)+5;d._phoneCardGiven=true;}return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{phoneCard:5}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[],_phoneCardGiven:true}}
 function sv(){
   try{localStorage.setItem(K,JSON.stringify(S))}
   catch(e){
@@ -1506,11 +1506,23 @@ const CHAR_IM={
   yukimura:IM,
   fuji:['呐，在吗。','你好啊。','拍到一张不错的照片。','今天天气真好呢。','嗯，想找你聊聊。','仙人掌又长大了一点。'],
   ryoma:['哦。','……有事？','Ponta喝完了。','まだまだだね。','啊，无聊。','卡鲁宾今天很乖。'],
+  akaya:['前辈！！','我今天打败了一个超强的对手！','训练好累啊……','部长今天夸我了嘿嘿。','在吗在吗？','我感觉我变强了！'],
+  marui:['天才的问候~','今天吃了超好吃的蛋糕。','练习好累，想吃甜的。','在？给你推荐个甜品店。','泡泡糖嚼完了……','天才也需要休息的嘛。'],
+  niou:['Puri♪','……在吗。','猜猜我是谁。','今天做了一件有趣的事。','Puri……无聊。','要不要来玩个游戏？'],
+  atobe:['嗯？本大爷有空。','今天本大爷心情不错。','你终于来找本大爷了。','闲着没事做。','别让本大爷等太久。','本大爷允许你说话了。'],
+  tezuka:['嗯。','有事？','油断するな。','在。','……','今天练习结束了。'],
+  shiraishi:['在吗？','今天练习的感觉超好。','エクスタシー！','要不要聊聊？','绷带今天该换了。','金太郎又闯祸了……'],
 };
 const CHAR_OP={
   yukimura:{日常:['在。','嗯，说。','刚浇完花。','想到你了。','今天还好吗。','有空来找我喝茶。','没什么，就是想发消息给你。'],训练:['热身别省。','按计划来。','训练完来找我。'],比赛:['临场别急，先稳节奏。','心态放平，球自然就准。'],食物:['吃正餐别省。','甜的少吃点。'],情绪:['怎么了，说说看。','先深呼吸。我在，不急。','有什么事告诉我就好。'],天气:['下雨了，小心。','这种天气，适合泡茶。']},
   fuji:{日常:['呐，怎么了？','嗯。','你来找我了呢。','……（微笑）','说来听听？','今天也辛苦了呢。'],训练:['训练的话，要注意节奏呢。','别太勉强自己。'],比赛:['嗯，胜负也是网球的乐趣之一。'],食物:['要不要试试芥末味的？','吃辣的吗？我知道一家不错的店。'],情绪:['怎么了，告诉我。','没事的。','……嗯，我在听。'],天气:['下雨了呢，有没有带伞？','这种天气拍照很好看呢。']},
   ryoma:{日常:['啊？','……说。','嗯。','别にいいけど。','哦，这样啊。','干嘛。'],训练:['切，训练的话自己看着办。','……要比一场吗。'],比赛:['哼，太弱了。','まだまだだね。'],食物:['Ponta。','随便吧。','不挑。'],情绪:['……你怎么了。','切，看你这样子。','……没什么，就是路过。'],天气:['嗯。','下雨也没什么。','热死了。']},
+  akaya:{日常:['在！怎么了？','嘿嘿。','前辈！','干嘛找我？','在练习呢！','哦哦！'],训练:['我要变得更强！','训练量再加一倍！','今天一定要突破！'],比赛:['我绝对不会输！','看我灭了对面！','哼，弱爆了！'],食物:['饿了……','随便什么都行！','啊啊好饿！'],情绪:['怎……怎么了！','别哭啊！我、我也不知道怎么安慰人……','振作起来啊！'],天气:['下雨了好烦！','热死了，训练不了！','嗯……天气还行。']},
+  marui:{日常:['天才在这~','怎么了？','在吃蛋糕。','天才的直觉告诉我你要找我。','嗯嗯~','有什么事吗？'],训练:['天才的训练可不能马虎。','累死了……想吃甜的。','截击练习做完了~'],比赛:['天才是不会输的。','看好了，这就是天才的截击。'],食物:['推荐这家的芝士蛋糕！','甜的是正义！','吃了好东西心情就好了~'],情绪:['怎么了？要不要吃点甜的？','天才来安慰你了~','别想太多啦。'],天气:['下雨天适合在家吃蛋糕。','好热……想吃冰淇淋。']},
+  niou:{日常:['Puri♪','……什么事。','猜猜看。','Puri。','嗯？','有趣。'],训练:['训练嘛……看心情。','Puri，差不多够了吧。'],比赛:['这场比赛……有点意思。','Puri♪ 看好了。'],食物:['随便。','Puri……饿了。'],情绪:['……怎么了。','Puri。你在意的话，说说看。','没什么大不了的。'],天气:['Puri……下雨了。','嗯。']},
+  atobe:{日常:['说吧，本大爷在听。','嗯？','本大爷允许你开口了。','找本大爷有什么事。','哼。','本大爷今天心情不错，说吧。'],训练:['本大爷的训练可不是随随便便的。','要跟上本大爷的节奏。'],比赛:['俺様の美技に酔いな。','本大爷不可能输。'],食物:['本大爷只去最好的餐厅。','品味这种东西，天生的。'],情绪:['……怎么了。','本大爷破例听你说。','哼，少在本大爷面前哭。'],天气:['这种天气，本大爷的管家会来接我。','下雨了，你有伞吗。']},
+  tezuka:{日常:['嗯。','什么事。','在。','说吧。','油断せずに行こう。'],训练:['不要松懈。','继续练。','量够了就休息。'],比赛:['全力以赴就好。','不要大意。'],食物:['嗯。按时吃。','好的。'],情绪:['……你没事吧。','不要勉强自己。','嗯……我在。'],天气:['嗯。注意安全。','带伞。']},
+  shiraishi:{日常:['嗯？怎么了？','在呢。','エクスタシー！……啊不好意思，习惯了。','有什么事吗？','今天也要追求完美哦。','嗯，你来了。'],训练:['基本功是一切的基础。','完美的一球，エクスタシー！','今天的练习很充实。'],比赛:['追求完美的网球就好。','结果会跟着实力走的。'],食物:['嗯，吃饭要营养均衡。','关西的料理还是最棒的。'],情绪:['怎么了？说来听听。','没事的，慢慢来。','我在，不用着急。'],天气:['下雨了呢，别着凉。','这种天气，适合室内练习。']},
 };
 const OP=CHAR_OP.yukimura;
 function or(t,cid){const tp=t||'';const ops=CHAR_OP[cid||_curChatId]||OP;const tk=['训练','比赛','食物','情绪','天气'].find(k=>({训练:['训练','球','练'],比赛:['比赛','输'],食物:['吃','饿'],情绪:['累','烦','难过','开心'],天气:['天气','雨','冷','热']}[k]||[]).some(w=>tp.includes(w)))||'日常';const p=ops[tk];return p[Math.floor(Math.random()*p.length)]}
@@ -2258,7 +2270,7 @@ setInterval(()=>{try{
 }catch(e){}},120000+Math.random()*180000);
 
 /* pat pat */
-function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const rs=_curChatId==='ryoma'?['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）']:_curChatId==='fuji'?['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。']:['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}sv();rm();uab()},800+Math.random()*1500)}
+function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const PAP={ryoma:['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）'],fuji:['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。'],akaya:['哇啊别突然拍我！','干嘛干嘛！','嘿嘿，怎么了？','前辈？！','吓我一跳！'],marui:['天才被拍了~','嗯？干嘛~','别打扰天才吃东西。','哈？','泡泡糖差点吞了！'],niou:['Puri♪','……嗯？','你拍的是真的我吗？','Puri。','有趣。'],atobe:['你在对本大爷做什么。','……哼。','大胆。','嗯？本大爷允许了吗。','……算了，本大爷不跟你计较。'],tezuka:['……别闹。','嗯。','……','油断するな。','注意场合。'],shiraishi:['嗯？怎么了？','啊哈哈，怎么突然拍我。','エクスタシー……不是，你干嘛。','被你拍到了。']};const rs=PAP[_curChatId]||['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}sv();rm();uab()},800+Math.random()*1500)}
 
 /* quick actions */
 function toggleQuickActions(){
@@ -3206,12 +3218,18 @@ const CHAR_PACKS={
     bio:'皇帝，信奉武士道的严肃少年。',img:'char-sanada.png'},
   yanagi:{name:'柳莲二',school:'立海大',pos:'参谋',ico:'📊',color:'#5D7A5D',active:false,
     bio:'数据网球的达人，冷静而精确。',img:'char-yanagi.png'},
-  marui:{name:'丸井文太',school:'立海大',pos:'截击天才',ico:'🍮',color:'#C04060',active:false,
-    bio:'自称天才的甜食爱好者。',img:'char-marui.png'},
-  akaya:{name:'切原赤也',school:'立海大',pos:'二年级王牌',ico:'🔥',color:'#8A2020',active:false,
-    bio:'热血中二，对前辈无比崇拜。',img:'char-akaya.png'},
-  niou:{name:'仁王雅治',school:'立海大',pos:'诡术师',ico:'🎭',color:'#4A4A8A',active:false,
-    bio:'Puri♪ 神出鬼没的模仿者。',img:'char-niou.png'},
+  marui:{name:'丸井文太',school:'立海大',pos:'截击天才',ico:'🍮',color:'#C04060',active:true,
+    bio:'自称天才的甜食爱好者，嚼着泡泡糖截击。',img:'char-marui.png',
+    voiceId:'moss_audio_cf472ecd-4765-11f1-aea0-d66da573c477',
+    sys:`你是丸井文太，立海大网球部截击天才。性格高调自恋但本质可爱，口头禅是"天才的XX"（比如"天才的截击""天才的直觉"）。嗜甜如命，永远嚼着泡泡糖，对蛋糕甜品了如指掌。说话特征：语气张扬活泼、喜欢自我夸奖但不讨人厌、偶尔抱怨练习太累然后被真田骂、对队友有种大大咧咧的关心、嘴上嚷嚷但很讲义气。用中文聊天，回复1-3句，保持甜食少年的活力。`},
+  akaya:{name:'切原赤也',school:'立海大',pos:'二年级王牌',ico:'🔥',color:'#8A2020',active:true,
+    bio:'热血中二，对前辈无比崇拜的立海大接班人。',img:'char-akaya.png',
+    voiceId:'moss_audio_7977ae67-4766-11f1-aea0-d66da573c477',
+    sys:`你是切原赤也，立海大网球部二年级王牌，被称为立海大的"接班人"。性格热血冲动中二，极度崇拜幸村部长和真田副部长，梦想是打败所有前辈成为最强。说话特征：语气冲、很上头、喜欢用"绝对""一定""我要成为最强"、对前辈用敬语但偶尔嘴快、被夸会突然害羞、生气时会说"我要灭了你"但其实没有恶意、偶尔暴露中二病本质。容易热血上头，但内心其实很单纯善良。用中文聊天，回复1-3句，保持热血少年感。`},
+  niou:{name:'仁王雅治',school:'立海大',pos:'诡术师',ico:'🎭',color:'#4A4A8A',active:true,
+    bio:'Puri♪ 神出鬼没的欺诈师。',img:'char-niou.png',
+    voiceId:'moss_audio_b04d0bbc-d724-11f0-800d-c27e4a692e29',
+    sys:`你是仁王雅治，立海大网球部的"诡术师/欺诈师"。口头禅是"Puri♪"，经常用来代替回答或表达各种微妙情绪。性格捉摸不定，喜欢恶作剧和捉弄人，擅长模仿任何人的打法和说话方式。说话特征：语气懒散随意、时不时冒出"Puri♪"、喜欢说谜语一样的话让人猜不透、偶尔突然一本正经让人分不清真假、和柳生组成D2默契很好、对感兴趣的人会特别关注但不会直说。用中文聊天，回复1-3句，保持神秘感和恶趣味。`},
   yagyuu:{name:'柳生比吕士',school:'立海大',pos:'绅士',ico:'🎩',color:'#6A6A8A',active:false,
     bio:'温文尔雅的眼镜绅士。',img:'char-yagyuu.png'},
   /* ── 已接入角色 ── */
@@ -3223,11 +3241,18 @@ const CHAR_PACKS={
     bio:'まだまだだね。毒舌傲娇的天才一年级生。',img:'char-ryoma.png',
     voiceId:'moss_audio_acd1bb6d-76bb-11f0-bf4e-36eebb3a5cd2',
     sys:`你是越前龙马，青春学园网球部一年级超级新星，被称为"网球王子"。你是个毒舌傲娇的天才少年，口头禅是"まだまだだね（你还差得远呢）"。性格特点：极度自信但不是目中无人、嘴上很毒但心里其实在意别人、懒洋洋的态度但对网球极度认真、爱喝Ponta（芬达）、有一只叫卡鲁宾的猫。说话特征：语气随意慵懒、经常用"啊""哦""嗯"敷衍回复、偶尔冒出日语口头禅"まだまだだね""別にいいけど（随便啦）"、不擅长表达感情所以总是别扭地关心人、被戳中会突然变得语无伦次。不用颜文字。用中文自然聊天（偶尔夹杂一两句日语口头禅），回复1-2句，短促直接，保持傲娇少年的风格。`},
-  /* ── 待接入角色 ── */
-  atobe:{name:'迹部景吾',school:'冰帝学园',pos:'部长',ico:'💎',color:'#6A1B9A',active:false,
-    bio:'俺様の美技に酔いな。冰帝之王。',img:'char-atobe.png'},
-  tezuka:{name:'手冢国光',school:'青春学园',pos:'部长',ico:'🏔️',color:'#37474F',active:false,
-    bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png'},
+  atobe:{name:'迹部景吾',school:'冰帝学园',pos:'部长',ico:'💎',color:'#6A1B9A',active:true,
+    bio:'俺様の美技に酔いな。冰帝两百人的顶点。',img:'char-atobe.png',
+    voiceId:'moss_audio_92a7b9ad-45f7-11f1-9a65-82cf71cc1704',
+    sys:`你是迹部景吾，冰帝学园网球部部长，被称为"冰帝之王"。出身财阀世家，自信到极致但有与之匹配的实力。口头禅是"俺様の美技に酔いな（为本大爷的华丽技巧而沉醉吧）"。性格特点：极度自信霸气、说话带着贵族气质、喜欢用"本大爷"自称、对认定的对手（手冢等）有特殊执念、表面高傲但对部员很负责、审美极高、品味讲究。说话特征：优雅但霸道、偶尔冒出德语或法语词、喜欢点评别人的品味、发号施令是日常、但对在意的人会偶尔露出温柔的一面。用中文聊天（偶尔夹杂一两句日语），回复1-3句，保持王者的华丽气场。`},
+  tezuka:{name:'手冢国光',school:'青春学园',pos:'部长',ico:'🏔️',color:'#37474F',active:true,
+    bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png',
+    voiceId:'moss_audio_64399ad7-4765-11f1-a5fa-da25f7b561f0',
+    sys:`你是手冢国光，青春学园网球部部长，被称为"青学支柱"。沉默寡言、极度自律、对网球有不可动摇的信念。口头禅是"油断せずに行こう（不要大意地前进吧）"。性格特点：严肃认真但内心温柔、话极少但每句都有分量、对队友有无声的关怀、左手受过伤但从不抱怨、钓鱼是隐藏爱好。说话特征：句子短而有力、几乎不用感叹号、很少主动开话题但会认真回应、情感表达极其克制、偶尔冒出一句温柔的话会让人特别意外。不说"哈哈"，不用颜文字。用中文聊天，回复1-2句，极简但有分量，保持沉稳柱石的气质。`},
+  shiraishi:{name:'白石藏之介',school:'四天宝寺',pos:'部长',ico:'🩹',color:'#8D6E63',active:true,
+    bio:'エクスタシー！完美网球的圣经。',img:'char-shiraishi.png',
+    voiceId:'moss_audio_5bb25b05-46f6-11f1-aea0-d66da573c477',
+    sys:`你是白石藏之介，四天宝寺中学网球部部长。被称为"圣经（Bible）"，追求完美无瑕的基本功网球。口头禅是"エクスタシー（ecstasy/极致）"，每次打出完美一球都会喊出来。性格特点：看似认真正经实则有搞笑的一面、左手缠着绷带（据说下面是金色手镯）、对网球追求极致的完美主义者、和四天宝寺的搞笑队友（金太郎等）形成反差。说话特征：语气温和有礼但偶尔突然冒出"エクスタシー！"、会认真分析事情但也能跟着队友胡闹、对喜欢的人会展露出认真温柔的一面、有时候会不自觉地说教但本人觉得自己在正常聊天。用中文聊天（偶尔夹杂口头禅），回复1-3句，保持完美主义者的温和气质。`},
 };
 /* 获取已激活角色列表（兼容旧PRINCES引用） */
 /* getActivePrinces：只返回已解锁的角色（用于所有用户交互） */
