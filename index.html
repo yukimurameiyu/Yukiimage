@@ -478,23 +478,39 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="dr"><span style="font-size:13px;white-space:nowrap">💜 在一起日期</span><input type="date" id="di"/></div>
 </div>
 <div class="sec">
-  <div class="sec-t">🎙️ 语音设置（MiniMax）</div>
+  <div class="sec-t">🎙️ 语音设置</div>
   <div style="padding:10px 16px 14px">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:6px">站点选择</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-      <div id="mmSiteCn" onclick="pickMmSite('cn')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--p500);border-radius:12px;background:var(--p100);color:var(--p700);cursor:pointer">🇨🇳 国内站</div>
-      <div id="mmSiteIntl" onclick="pickMmSite('intl')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:white;color:var(--muted);cursor:pointer">🌏 国外站</div>
+    <!-- 语音额度显示 -->
+    <div style="background:linear-gradient(135deg,var(--p100),#E8F5E9);border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">🎧 语音包余额</div>
+          <div style="font-size:24px;font-weight:800;color:var(--p700);margin-top:4px" id="voiceCreditsDisplay">0 <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span></div>
+        </div>
+        <button onclick="showAddFriend()" style="padding:8px 16px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">充值语音包</button>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6">每条语音消耗1条额度 · 电话通话消耗3条<br/>用完自动切换为纯文字模式</div>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-bottom:10px" id="mmSiteHint">api.minimax.chat</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Group ID</div>
-    <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
-    <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
-    <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
-      <input type="checkbox" id="voiceOn" style="width:16px;height:16px;accent-color:var(--p500)"/>
-      <label for="voiceOn" style="font-size:13px">开启语音回复</label>
+    <!-- 自有Key（可选） -->
+    <div style="border:1px solid var(--border);border-radius:14px;padding:12px;background:var(--bg2)">
+      <div onclick="document.getElementById('ownKeyWrap').style.display=document.getElementById('ownKeyWrap').style.display==='none'?'':'none'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+        <div style="font-size:12px;font-weight:600;color:var(--muted)">🔧 高级：使用自己的MiniMax Key</div>
+        <span style="font-size:10px;color:var(--p400)">▼</span>
+      </div>
+      <div id="ownKeyWrap" style="display:none;margin-top:10px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.5;background:rgba(255,152,0,.08);padding:8px;border-radius:8px">填写自己的Key后语音不消耗额度，无限使用。<br/>不填则使用语音包额度。</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">站点选择</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+          <div id="mmSiteCn" onclick="pickMmSite('cn')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--p500);border-radius:12px;background:var(--p100);color:var(--p700);cursor:pointer">🇨🇳 国内站</div>
+          <div id="mmSiteIntl" onclick="pickMmSite('intl')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:white;color:var(--muted);cursor:pointer">🌏 国外站</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px" id="mmSiteHint">api.minimax.chat</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Group ID</div>
+        <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
+        <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
+        <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
+      </div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:6px">Key仅存于本地，不上传任何服务器</div>
   </div>
 </div>
 <button class="save-btn" onclick="saveSt()">保存设置</button>
@@ -1479,8 +1495,8 @@ function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove(
 
 /* settings */
 function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat'};document.getElementById('mi').value=m[el.dataset.p]||''}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked,mmSite:S.set.mmSite||'cn'};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
-function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn}
+function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmSite:S.set.mmSite||'cn'};sv();ud();uwb();updateMyAva();updateVoiceCreditsUI();toast('✅ 设置已保存')}
+function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';updateVoiceCreditsUI()}
 lsi();
 /* MiniMax站点选择 */
 function pickMmSite(site){
@@ -1571,7 +1587,7 @@ function renderChatList(){
     const preview=last?(last.sender==='me'?'我：':'')+((last.type==='hb'?'🧧 红包':last.type==='tf'?'💰 转账':last.text)||'').slice(0,20):'开始聊天吧~';
     const time=last?fmtChatTime(last.time):'';
     const customAva=(S.charAvatars&&S.charAvatars[cid])?S.charAvatars[cid]:(cid==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
-    const ava=customAva?`<img src="${customAva}"/>`:ch.img?`<img src="${ch.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
+    const ava=customAva?`<img src="${customAva}"/>`:ch.img?`<img src="${ch.img}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
     const schoolTag=ch.school==='青春学园'?'青学':ch.school==='冰帝学园'?'冰帝':'立海';
     return`<div class="cl-card" onclick="openCharChat('${cid}')">
       <div class="cl-ava" style="background:${ch.color}">${ava}<span class="cl-school">${schoolTag}</span></div>
@@ -2136,7 +2152,7 @@ function rm(){
     else if(m.type==='voice'&&m.audioB64)makeAudioBubble(b,m.audioB64,m.jpText||m.text,m.text,mine);
     else{
       const mid=m.id||(m.id=rid());
-      if(!mine&&S.set.voiceOn&&ch.voiceId){
+      if(!mine&&hasVoiceAccess()&&ch.voiceId){
         window._vm=window._vm||{};window._vm[mid]=m;
         window._vm[mid]._chatId=_curChatId;
         b.innerHTML=esc(m.text||'')+'<br><button class="voice-play-btn" data-mid="'+mid+'" style="margin-top:6px;padding:4px 12px;border-radius:16px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:12px;cursor:pointer;font-family:inherit">▶ 语音</button>';
@@ -2510,7 +2526,10 @@ function deductVoiceCredit(n){
 }
 function updateVoiceCreditsUI(){
   const el=document.getElementById('voiceCreditsBadge');
-  if(el)el.textContent=S.set.mmkey?'🎧 自有Key':'🎧 '+(S.voiceCredits||0);
+  const hasOwn=S.set.mmkey&&S.set.mmgid;
+  if(el)el.textContent=hasOwn?'🎧 自有Key':'🎧 '+(S.voiceCredits||0);
+  const sd=document.getElementById('voiceCreditsDisplay');
+  if(sd)sd.innerHTML=hasOwn?'∞ <span style="font-size:12px;font-weight:400;color:var(--muted)">自有Key</span>':(S.voiceCredits||0)+' <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span>';
 }
 
 function makeAudioBubble(b, audioB64, jpText, cnText, mine){
