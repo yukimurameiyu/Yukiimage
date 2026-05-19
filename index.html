@@ -265,7 +265,54 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .chat-list-overlay.open{display:flex}
 .cl-hd{height:56px;flex-shrink:0;background:linear-gradient(135deg,var(--p800),var(--p600));display:flex;align-items:center;padding:0 16px;gap:12px}
 .cl-hd .back{color:white}
-.cl-hd h3{color:white;font-size:17px;font-weight:600;letter-spacing:.5px}
+.cl-hd h3{color:white;font-size:17px;font-weight:600;letter-spacing:.5px;flex:1}
+.cl-hd .cl-add-btn{color:rgba(255,255,255,.9);font-size:22px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .2s}
+.cl-hd .cl-add-btn:active{background:rgba(255,255,255,.15)}
+/* 添加好友弹窗 */
+.act-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;animation:actFadeIn .25s ease}
+.act-overlay.open{display:flex}
+@keyframes actFadeIn{from{opacity:0}to{opacity:1}}
+.act-box{width:88%;max-width:360px;background:white;border-radius:24px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:actSlideUp .3s ease}
+@keyframes actSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.act-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--p700)}
+.act-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px}
+.act-input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:14px;font-size:15px;font-family:monospace;text-align:center;letter-spacing:2px;outline:none;transition:border-color .2s;text-transform:uppercase}
+.act-input:focus{border-color:var(--p400)}
+.act-input.err{border-color:#E53935;animation:actShake .4s ease}
+@keyframes actShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.act-err{font-size:11px;color:#E53935;text-align:center;margin-top:8px;min-height:16px}
+.act-btns{display:flex;gap:10px;margin-top:20px}
+.act-btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .1s}
+.act-btn:active{transform:scale(.96)}
+.act-btn.cancel{background:var(--bg2);color:var(--muted)}
+.act-btn.confirm{background:linear-gradient(135deg,var(--p500),var(--p700));color:white}
+.act-btn.confirm:disabled{opacity:.5}
+/* 角色选择器 */
+.act-chars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.act-char{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;border:2px solid var(--border);cursor:pointer;transition:all .2s}
+.act-char:active{transform:scale(.95)}
+.act-char.selected{border-color:var(--p500);background:var(--p50);box-shadow:0 0 0 3px rgba(139,107,192,.2)}
+.act-char.disabled{opacity:.35;pointer-events:none}
+.act-char-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white}
+.act-char-name{font-size:11px;font-weight:600;color:var(--text);text-align:center;line-height:1.2}
+/* 好友请求动画 */
+.fr-overlay{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.fr-overlay.open{display:flex}
+.fr-card{background:white;border-radius:24px;padding:32px 28px;text-align:center;animation:frBounce .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(94,63,168,.25);max-width:300px;width:85%}
+@keyframes frBounce{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.fr-ico{font-size:52px;margin-bottom:12px;animation:frPop .6s ease .2s both}
+@keyframes frPop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0deg)}}
+.fr-msg{font-size:16px;font-weight:700;color:var(--p700);margin-bottom:6px}
+.fr-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.fr-sparkle{position:absolute;font-size:20px;animation:frSparkle 1s ease forwards;pointer-events:none}
+@keyframes frSparkle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+/* 空通讯录状态 */
+.cl-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px;text-align:center}
+.cl-empty-ico{font-size:64px;margin-bottom:16px;opacity:.6}
+.cl-empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.cl-empty-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.cl-empty-btn{padding:12px 28px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(94,63,168,.3);transition:transform .15s}
+.cl-empty-btn:active{transform:scale(.95)}
 .cl-contacts{flex:1;overflow-y:auto;padding:8px 12px 80px}
 .cl-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:white;border-radius:16px;margin-bottom:8px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:transform .15s}
 .cl-card:active{transform:scale(.97)}
@@ -822,9 +869,38 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="cl-hd">
     <div class="back" onclick="closeChatList()">‹</div>
     <h3>💬 微聊</h3>
+    <div class="cl-add-btn" onclick="showAddFriend()" title="添加好友">＋</div>
   </div>
   <div class="cl-contacts" id="chatContacts"></div>
 </div>
+
+<!-- 激活码输入弹窗 -->
+<div class="act-overlay" id="actOverlay" onclick="if(event.target===this)closeActivation()">
+  <div class="act-box" id="actBox">
+    <div id="actStep1">
+      <div class="act-title">✦ 添加好友</div>
+      <div class="act-sub">输入激活码，解锁新的角色好友</div>
+      <input class="act-input" id="actCodeInput" placeholder="POT-XXXX-XXXX" maxlength="20" oninput="fmtActCode(this)" onkeydown="if(event.key==='Enter')submitActCode()"/>
+      <div class="act-err" id="actErr"></div>
+      <div class="act-btns">
+        <button class="act-btn cancel" onclick="closeActivation()">取消</button>
+        <button class="act-btn confirm" id="actSubmitBtn" onclick="submitActCode()">验证</button>
+      </div>
+    </div>
+    <div id="actStep2" style="display:none">
+      <div class="act-title">选择要解锁的角色</div>
+      <div class="act-sub">请选择一位角色添加为好友</div>
+      <div class="act-chars" id="actCharGrid"></div>
+      <div class="act-btns">
+        <button class="act-btn cancel" onclick="actBackToStep1()">返回</button>
+        <button class="act-btn confirm" id="actUnlockBtn" onclick="confirmUnlock()" disabled>确认解锁</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 好友请求通过动画 -->
+<div class="fr-overlay" id="frOverlay" onclick="closeFriendRequest()"></div>
 
 <!-- CHAT OVERLAY -->
 <div class="co" id="co">
@@ -893,7 +969,7 @@ const K='yw_v1';
 /* ── 语音ID（不要外泄） ── */
 const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[]}}
 function sv(){
   try{localStorage.setItem(K,JSON.stringify(S))}
   catch(e){
@@ -1418,8 +1494,17 @@ function closeChatList(){
 
 function renderChatList(){
   const el=document.getElementById('chatContacts');if(!el)return;
-  /* 只显示active的角色 */
-  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active);
+  /* 只显示已解锁且active的角色 */
+  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k));
+  if(chars.length===0){
+    el.innerHTML=`<div class="cl-empty">
+      <div class="cl-empty-ico">📱</div>
+      <div class="cl-empty-title">通讯录空空如也</div>
+      <div class="cl-empty-sub">输入激活码，添加角色好友<br/>开启专属聊天吧~</div>
+      <button class="cl-empty-btn" onclick="showAddFriend()">＋ 添加好友</button>
+    </div>`;
+    return;
+  }
   el.innerHTML=chars.map(([cid,ch])=>{
     const msgs=getChatMsgs(cid);
     const last=msgs.length?msgs[msgs.length-1]:null;
@@ -1447,6 +1532,221 @@ function fmtChatTime(ts){
   if(d<86400000)return Math.floor(d/3600000)+'时前';
   return Math.floor(d/86400000)+'天前';
 }
+
+/* ══════ 激活码系统 ══════ */
+let _actSelectedChar=null;
+let _actValidatedCode=null;
+let _actCodeType=null;
+
+/* 设备指纹生成 */
+function getDeviceFP(){
+  if(S._deviceFP)return S._deviceFP;
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+  ctx.textBaseline='top';ctx.font='14px Arial';ctx.fillText('fp:yw',2,2);
+  const raw=canvas.toDataURL()+navigator.userAgent+(screen.width||0)+'x'+(screen.height||0)+navigator.language+(new Date().getTimezoneOffset());
+  let hash=0;for(let i=0;i<raw.length;i++){hash=((hash<<5)-hash)+raw.charCodeAt(i);hash|=0;}
+  const fp='FP'+Math.abs(hash).toString(36);
+  S._deviceFP=fp;sv();
+  return fp;
+}
+
+/* 打开添加好友弹窗 */
+function showAddFriend(){
+  _actSelectedChar=null;_actValidatedCode=null;_actCodeType=null;
+  document.getElementById('actStep1').style.display='';
+  document.getElementById('actStep2').style.display='none';
+  document.getElementById('actCodeInput').value='';
+  document.getElementById('actErr').textContent='';
+  document.getElementById('actOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('actCodeInput').focus(),300);
+}
+function closeActivation(){
+  document.getElementById('actOverlay').classList.remove('open');
+}
+
+/* 自动格式化激活码输入 */
+function fmtActCode(el){
+  let v=el.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+  el.value=v;
+  el.classList.remove('err');
+  document.getElementById('actErr').textContent='';
+}
+
+/* 提交激活码验证 */
+async function submitActCode(){
+  const input=document.getElementById('actCodeInput');
+  const code=input.value.trim().toUpperCase();
+  const errEl=document.getElementById('actErr');
+  const btn=document.getElementById('actSubmitBtn');
+  
+  if(!code){errEl.textContent='请输入激活码';input.classList.add('err');return;}
+  
+  /* 格式校验 */
+  const isPOT=/^POT-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code);
+  const isSPOT=/^SPOT-[A-Z0-9]{4}-[A-Z0-9]{5}$/.test(code);
+  if(!isPOT&&!isSPOT){
+    errEl.textContent='激活码格式不正确';input.classList.add('err');return;
+  }
+  
+  btn.disabled=true;btn.textContent='验证中…';
+  
+  try{
+    const fp=getDeviceFP();
+    const r=await fetch('/.netlify/functions/activate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code,fingerprint:fp,action:'activate'})
+    });
+    const data=await r.json();
+    
+    if(!data.valid){
+      errEl.textContent=data.msg||'激活码无效或已被使用';
+      input.classList.add('err');
+      btn.disabled=false;btn.textContent='验证';
+      return;
+    }
+    
+    _actValidatedCode=code;
+    _actCodeType=data.type; /* 'pot' or 'spot' */
+    
+    if(data.type==='spot'){
+      /* VIP全套码，直接解锁所有角色 */
+      doUnlockAll(data.token);
+    }else{
+      /* 单角色码，显示角色选择 */
+      showCharSelector(data.token);
+    }
+  }catch(e){
+    console.error('Activation error:',e);
+    errEl.textContent='网络错误，请稍后重试';
+    btn.disabled=false;btn.textContent='验证';
+  }
+}
+
+/* 显示角色选择器 */
+function showCharSelector(token){
+  _actToken=token;
+  document.getElementById('actStep1').style.display='none';
+  document.getElementById('actStep2').style.display='';
+  const grid=document.getElementById('actCharGrid');
+  /* 显示所有active角色，已解锁的灰显 */
+  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active);
+  grid.innerHTML=chars.map(([cid,ch])=>{
+    const already=S.unlockedChars.includes(cid);
+    return`<div class="act-char${already?' disabled':''}" data-cid="${cid}" onclick="selectActChar('${cid}')">
+      <div class="act-char-ico" style="background:${ch.color}">${ch.ico}</div>
+      <div class="act-char-name">${ch.name}${already?'<br><span style="font-size:9px;color:var(--muted)">已添加</span>':''}</div>
+    </div>`;
+  }).join('');
+  _actSelectedChar=null;
+  document.getElementById('actUnlockBtn').disabled=true;
+}
+let _actToken=null;
+
+function selectActChar(cid){
+  if(S.unlockedChars.includes(cid))return;
+  _actSelectedChar=cid;
+  document.querySelectorAll('.act-char').forEach(el=>{
+    el.classList.toggle('selected',el.dataset.cid===cid);
+  });
+  document.getElementById('actUnlockBtn').disabled=false;
+}
+
+function actBackToStep1(){
+  document.getElementById('actStep1').style.display='';
+  document.getElementById('actStep2').style.display='none';
+  document.getElementById('actSubmitBtn').disabled=false;
+  document.getElementById('actSubmitBtn').textContent='验证';
+}
+
+/* 确认解锁单个角色 */
+function confirmUnlock(){
+  if(!_actSelectedChar)return;
+  const cid=_actSelectedChar;
+  if(!S.unlockedChars.includes(cid)){
+    S.unlockedChars.push(cid);
+  }
+  /* 保存激活记录 */
+  S.actTokens.push({code:_actValidatedCode,type:'pot',char:cid,token:_actToken,time:Date.now()});
+  sv();
+  closeActivation();
+  showFriendRequest([cid]);
+}
+
+/* VIP全套解锁 */
+function doUnlockAll(token){
+  const allActive=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k])=>k);
+  const newChars=[];
+  allActive.forEach(cid=>{
+    if(!S.unlockedChars.includes(cid)){
+      S.unlockedChars.push(cid);
+      newChars.push(cid);
+    }
+  });
+  S.actTokens.push({code:_actValidatedCode,type:'spot',chars:allActive,token,time:Date.now()});
+  sv();
+  closeActivation();
+  showFriendRequest(newChars.length?newChars:allActive);
+}
+
+/* 好友请求通过动画 */
+function showFriendRequest(charIds){
+  const overlay=document.getElementById('frOverlay');
+  overlay.innerHTML='';
+  
+  if(charIds.length===1){
+    /* 单角色解锁 */
+    const ch=CHAR_PACKS[charIds[0]];
+    overlay.innerHTML=`<div class="fr-card">
+      <div class="fr-ico">${ch.ico}</div>
+      <div class="fr-msg">${ch.name}</div>
+      <div class="fr-sub">已通过您的好友请求 ✦</div>
+    </div>`;
+  }else{
+    /* 多角色VIP解锁 */
+    const icons=charIds.map(cid=>CHAR_PACKS[cid]?.ico||'👤').join(' ');
+    const names=charIds.map(cid=>CHAR_PACKS[cid]?.name||cid);
+    overlay.innerHTML=`<div class="fr-card" style="max-width:320px">
+      <div style="font-size:36px;margin-bottom:12px;letter-spacing:4px">${icons}</div>
+      <div class="fr-msg">🎉 VIP全员解锁</div>
+      <div class="fr-sub">${names.join('、')}<br/>已全部通过您的好友请求 ✦</div>
+    </div>`;
+  }
+  
+  overlay.classList.add('open');
+  
+  /* 撒花效果 */
+  const emojis=['✨','⭐','💫','🌟','✦','♡'];
+  for(let i=0;i<12;i++){
+    setTimeout(()=>{
+      const sp=document.createElement('div');
+      sp.className='fr-sparkle';
+      sp.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      sp.style.left=50+Math.random()*40-20+'%';
+      sp.style.top=50+Math.random()*30-15+'%';
+      sp.style.setProperty('--tx',(Math.random()*120-60)+'px');
+      sp.style.setProperty('--ty',(Math.random()*120-60)+'px');
+      overlay.appendChild(sp);
+    },i*80);
+  }
+  
+  /* 自动关闭 */
+  setTimeout(()=>closeFriendRequest(),3000);
+}
+
+function closeFriendRequest(){
+  document.getElementById('frOverlay').classList.remove('open');
+  renderChatList();
+  /* 更新图鉴计数 */
+  const ac=document.getElementById('unlockCharCount');
+  if(ac)ac.textContent=S.unlockedChars.length;
+}
+
+/* 检查角色是否已解锁（供其他模块调用） */
+function isCharUnlocked(cid){return S.unlockedChars.includes(cid);}
+
+/* ══════ /激活码系统 ══════ */
 
 /* 打开指定角色的聊天 */
 function openCharChat(cid){
@@ -2025,38 +2325,37 @@ function renderGallery(){
   const uc=document.getElementById('unlockCount');if(uc)uc.textContent=S.unlocked.length;
   /* 角色图鉴 */
   const all=getAllPrinces();
-  const active=getActivePrinces();
   const tc=document.getElementById('totalCharCount');if(tc)tc.textContent=all.length;
-  const ac=document.getElementById('unlockCharCount');if(ac)ac.textContent=active.length;
+  const ac=document.getElementById('unlockCharCount');if(ac)ac.textContent=S.unlockedChars.length;
   const gallery=document.getElementById('charGallery');if(!gallery)return;
   gallery.innerHTML='';
   all.forEach(ch=>{
+    const unlocked=S.unlockedChars.includes(ch.id);
     const aff=ch.id==='yukimura'?(S.aff||0):(S.princeAff?.[ch.id]||0);
     const affLv=aff>=50?'💖 亲密':aff>=30?'❤️ 喜欢':aff>=15?'🧡 熟悉':aff>=5?'💛 友好':'🤍 初识';
     const d=document.createElement('div');
-    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(ch.active?'':'opacity:.6');
+    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(!unlocked?'opacity:.6':'');
     d.innerHTML=`<div style="display:flex;gap:12px;padding:14px;position:relative">
       <div style="width:60px;height:60px;border-radius:16px;overflow:hidden;flex-shrink:0;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 3px 10px ${ch.color}40;position:relative">
         <img src="${ch.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"/>
         <span style="position:relative;z-index:0">${ch.ico}</span>
-        ${!ch.active?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>':''}
+        ${!unlocked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>':''}
       </div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <span style="font-size:15px;font-weight:700">${ch.name}</span>
-          ${ch.active?`<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:${ch.color};color:white;font-weight:700">已解锁</span>`:'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#9E9E9E;color:white;font-weight:700">未解锁</span>'}
+          ${unlocked?`<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:${ch.color};color:white;font-weight:700">已解锁</span>`:ch.active?'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#FF9800;color:white;font-weight:700">待激活</span>':'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#9E9E9E;color:white;font-weight:700">未安装</span>'}
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${ch.school} · ${ch.pos}</div>
         <div style="font-size:11px;color:var(--text);margin-top:3px;line-height:1.5;opacity:.7">${ch.bio}</div>
-        ${ch.active?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        ${unlocked?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
           <span style="font-size:11px">${affLv}</span>
           <div style="flex:1;height:4px;background:var(--p100);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(aff,100)}%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:2px"></div></div>
           <span style="font-size:10px;color:var(--p500);font-weight:700">Lv${aff}</span>
-        </div>`:'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
+        </div>`:ch.active?'<div style="font-size:10px;color:#FF9800;margin-top:6px">🔑 输入激活码解锁</div>':'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
       </div>
     </div>`;
-    if(ch.active) d.style.cursor='pointer';
-    if(ch.active) d.onclick=()=>openCharDetail(ch.id);
+    if(unlocked){d.style.cursor='pointer';d.onclick=()=>openCharDetail(ch.id);}
     gallery.appendChild(d);
   });
 }
