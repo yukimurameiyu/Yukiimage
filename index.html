@@ -599,7 +599,13 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 </div>
 </div>
 <div class="page" id="pg-inspect">
-<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p>幸村精市 · 实时行踪</p></div>
+<div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p id="inspectSubtitle">幸村精市 · 实时行踪</p></div>
+<!-- 角色选择 -->
+<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar">
+  <div class="insp-char active" data-cid="yukimura" onclick="switchInspect('yukimura')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">👑 幸村精市</div>
+  <div class="insp-char" data-cid="fuji" onclick="switchInspect('fuji')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🌵 不二周助</div>
+  <div class="insp-char" data-cid="ryoma" onclick="switchInspect('ryoma')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🎾 越前龙马</div>
+</div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
 
   <!-- 当前状态卡 -->
@@ -2081,13 +2087,21 @@ function vc(i){const c=CARDS[i];os(c.t,`<div style="text-align:center"><img src=
 
 /* ── MiniMax TTS ── */
 async function translateToJP(text){
-  const s=S.set;if(!s.key) return text;
-  const pc=PC[s.prov];if(!pc) return text;
+  const s=S.set;if(!s.key){console.warn('[translateToJP] 无API Key，跳过翻译');return text;}
+  const pc=PC[s.prov];if(!pc){console.warn('[translateToJP] 未知provider:',s.prov);return text;}
   try{
     const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
-      body:JSON.stringify(pc.body('翻译助手，只输出日文翻译，不加任何解释。',[{role:'user',content:'翻译成自然的日语：'+text}]))});
-    const d=await r.json();return pc.parse(d)||text;
-  }catch(e){return text}
+      body:JSON.stringify(pc.body('你是翻译助手。只输出日文翻译结果，不加任何解释、注释、括号或原文。直接输出日语。',[{role:'user',content:'请将下面的中文翻译成自然的日语，只输出日语：\n'+text}]))});
+    if(!r.ok){console.error('[translateToJP] HTTP',r.status);return text;}
+    const d=await r.json();
+    const result=pc.parse(d);
+    if(!result||result===text){console.warn('[translateToJP] 翻译失败或返回原文');return text;}
+    /* 简单验证：结果应包含至少一个日文字符 */
+    const hasJP=/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF]/.test(result);
+    if(!hasJP){console.warn('[translateToJP] 结果不含日文:',result);return text;}
+    console.log('[translateToJP]',text,'→',result);
+    return result.trim();
+  }catch(e){console.error('[translateToJP] Error:',e.message);return text;}
 }
 
 async function genVoice(text){
@@ -2281,10 +2295,24 @@ function bmRecall(){
 
 /* ══ 闹钟系统 ══ */
 const ALARM_MSGS={
-  morning:['该起床了。不要赖床。','早上好。起来了。','嗯……几点了。你还不起？'],
-  late:['都几点了。','起床。','你在睡懒觉？'],
-  noon:['中午了。吃饭了吗。','午饭时间，别省。'],
-  default:['该起了。','嗯，时间到了。'],
+  yukimura:{
+    morning:['该起床了。不要赖床。','早上好。起来了。','嗯……几点了。你还不起？'],
+    late:['都几点了。','起床。','你在睡懒觉？'],
+    noon:['中午了。吃饭了吗。','午饭时间，别省。'],
+    default:['该起了。','嗯，时间到了。'],
+  },
+  fuji:{
+    morning:['早上好呢，该起来了。','太阳都晒到脸上了哦。','呐，再不起来我就拍你睡颜了。'],
+    late:['起床了，都这个点了哦。','嗯，还在睡吗。'],
+    noon:['午饭时间了呢。','别忘了吃饭。'],
+    default:['时间到了哦。','嗯？醒了吗。'],
+  },
+  ryoma:{
+    morning:['……起床了。','喂，要迟到了。','……你比我还能睡啊。'],
+    late:['切，还不起床吗。','都几点了……别学我。'],
+    noon:['……饿了吧。吃饭去。','午饭时间。'],
+    default:['闹钟响了。','……嗯。'],
+  },
 };
 const DAY_NAMES=['日','一','二','三','四','五','六'];
 
@@ -2476,13 +2504,17 @@ function checkAlarms(){
 
 function triggerAlarm(timeStr){
   const h=parseInt(timeStr.split(':')[0]);
-  let pool=h<9?ALARM_MSGS.morning:h<12?ALARM_MSGS.late:h<14?ALARM_MSGS.noon:ALARM_MSGS.default;
+  /* 随机选一个已激活角色叫早 */
+  const activeChars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&ALARM_MSGS[k]);
+  const [charId,charData]=activeChars.length?activeChars[Math.floor(Math.random()*activeChars.length)]:['yukimura',CHAR_PACKS.yukimura];
+  const charMsgs=ALARM_MSGS[charId]||ALARM_MSGS.yukimura;
+  let pool=h<9?charMsgs.morning:h<12?charMsgs.late:h<14?charMsgs.noon:charMsgs.default;
   const msg=pool[Math.floor(Math.random()*pool.length)];
-  document.getElementById('alarmMsg').textContent=msg;
+  document.getElementById('alarmMsg').textContent=charData.ico+' '+charData.name+'：'+msg;
   document.getElementById('alarmTimeDisplay').textContent=timeStr;
   document.getElementById('alarmOverlay').classList.add('ring');
   if('Notification' in window&&Notification.permission==='granted'){
-    new Notification('幸村精市叫早',{body:msg,icon:'chibi-normal.png'});
+    new Notification(charData.name+'叫早',{body:msg,icon:charData.img||'chibi-normal.png'});
   }else if('Notification' in window&&Notification.permission!=='denied'){
     Notification.requestPermission();
   }
@@ -2545,6 +2577,78 @@ const WEEKDAY_SCHEDULE=[
   {s:22,  e:24,  label:'🛌 准备就寝',detail:()=>pick(['已经在床上了','在喝睡前的温水','关灯了','还在刷比赛数据，该睡了'])},
 ];
 
+/* ── 不二周助 查岗数据 ── */
+const FUJI_SCHEDULE=[
+  {s:0,e:6,label:'💤 睡眠中',detail:'安静地睡着了。'},
+  {s:6,e:8,label:'📷 晨间散步',detail:()=>pick(['在河边拍早晨的光线','在学校花坛前拍了几张照','一边散步一边哼歌','给仙人掌浇了水'])},
+  {s:8,e:12,label:'📚 上课中',detail:()=>pick(['在教室靠窗的位置','数学课上微笑着','英语课，听说发音很好','在看窗外的云'])},
+  {s:12,e:13.5,label:'🍱 午休',detail:()=>pick(['和菊丸他们一起在食堂','带了自己做的便当','在天台上吃饭顺便拍照','去了校外的辣味料理店'])},
+  {s:13.5,e:15.5,label:'📚 下午课',detail:()=>pick(['在认真听课……可能吧','在课间逗弄河村','和大石聊了两句','在翻看摄影杂志'])},
+  {s:15.5,e:17,label:'🎾 网球部练习',detail:()=>pick(['和手冢对练中','在指导后辈发球','三重回击特训','和乾讨论战术数据','用熊掌击打练习中'])},
+  {s:17,e:18,label:'🍜 晚餐',detail:()=>pick(['和河村去了寿司店','自己一个人去了辣味拉面店','在食堂，桌上放着芥末'])},
+  {s:18,e:20,label:'📷 个人时间',detail:()=>pick(['在整理今天拍的照片','给仙人掌换了盆','在看摄影网站','给裕太发了消息……没有回复','泡了一杯红茶'])},
+  {s:20,e:22,label:'🌙 自习/放松',detail:()=>pick(['在复习功课','翻了几页小说','在整理相册','和菊丸发消息','在听音乐'])},
+  {s:22,e:24,label:'🛌 准备就寝',detail:()=>pick(['已经躺下了','在看今天拍的最后一张照片','关灯了','想了想明天的练习菜单'])},
+];
+const FUJI_WEEKEND_EVENTS=[
+  {label:'📷 摄影外出',detail:()=>pick(['去了海边拍日出','在公园拍花的微距','去了老街拍建筑'])},
+  {label:'🌵 照顾仙人掌',detail:'今天给所有仙人掌做了日光浴，还拍了照片记录。'},
+  {label:'🎾 自主练习',detail:'去球场练了两个小时三重回击。'},
+  {label:'🍜 美食探索',detail:()=>pick(['找到一家新的芥末料理店','去试了超辣拉面挑战','和河村去了回转寿司'])},
+  {label:'👦 找裕太',detail:()=>pick(['去圣鲁道夫找裕太了，据说裕太很不情愿','给裕太带了零食','裕太的比赛，一大早就去了'])},
+  {label:'📖 图书馆',detail:'在图书馆看了半天摄影集和小说。'},
+];
+const FUJI_SHOPPING=[
+  {date:'2天前',item:'仙人掌（新品种）',price:'¥68',note:'据说是墨西哥进口的'},
+  {date:'4天前',item:'摄影镜头清洁套装',price:'¥45',note:'定期保养'},
+  {date:'1周前',item:'芥末酱（特辣款）× 3',price:'¥36',note:'常备'},
+  {date:'1周前',item:'给裕太的运动饮料一箱',price:'¥58',note:'裕太不让他送到学校'},
+  {date:'2周前',item:'胶片 × 5卷',price:'¥120',note:'最近在玩胶片相机'},
+];
+
+/* ── 越前龙马 查岗数据 ── */
+const RYOMA_SCHEDULE=[
+  {s:0,e:7,label:'💤 睡觉中',detail:'和卡鲁宾一起睡得很沉。'},
+  {s:7,e:8,label:'😪 赖床/起床',detail:()=>pick(['被闹钟吵醒了，翻了个身','卡鲁宾踩脸才起来','差点迟到','慢吞吞地刷牙'])},
+  {s:8,e:12,label:'📚 上课中',detail:()=>pick(['在课上打瞌睡','趴在桌上','在数学课上发呆','被老师点名了……"啊？"','在课间喝Ponta'])},
+  {s:12,e:13.5,label:'🍱 午休',detail:()=>pick(['在天台睡午觉','随便买了个面包','和堀尾他们在食堂','在喝Ponta'])},
+  {s:13.5,e:15.5,label:'📚 下午课',detail:()=>pick(['又在打瞌睡','在画网球战术……不是在画画','偷偷喝了一口Ponta','被桃城拉去聊天'])},
+  {s:15.5,e:17,label:'🎾 网球部练习',detail:()=>pick(['和桃城双打练习','一个人在角落练发球','和前辈们对打','在嘀咕"まだまだだね"','和海堂对练'])},
+  {s:17,e:18,label:'🍜 晚餐',detail:()=>pick(['在汉堡店','和桃城抢薯条','一个人在便利店买了便当','回家吃南次郎做的菜……不情愿地说了一句好吃'])},
+  {s:18,e:20,label:'🐱 个人时间',detail:()=>pick(['在逗卡鲁宾','打了一会儿游戏','在院子里对着墙壁打球','喝Ponta看电视','躺着发呆'])},
+  {s:20,e:22,label:'🌙 自由时间',detail:()=>pick(['被南次郎拉去下棋','在看网球比赛录像','勉强在写作业','和卡鲁宾窝在一起'])},
+  {s:22,e:24,label:'🛌 睡觉',detail:()=>pick(['已经睡着了','卡鲁宾趴在肚子上','在被窝里翻了个身','关灯了，秒睡'])},
+];
+const RYOMA_WEEKEND_EVENTS=[
+  {label:'🎾 和老爸对打',detail:()=>pick(['一大早被南次郎拉去打球','又输给老爸了……"切"','赢了一局！虽然嘴上不说但很高兴'])},
+  {label:'🐱 和卡鲁宾',detail:()=>pick(['抱着卡鲁宾在院子里晒太阳','带卡鲁宾去了附近的公园','卡鲁宾今天很粘人'])},
+  {label:'🍔 出去吃',detail:()=>pick(['和桃城去了汉堡店，吃了三个','一个人去了便利店买Ponta和零食','被菊丸前辈拉去吃冰淇淋'])},
+  {label:'🎮 打游戏',detail:'一整天都在打游戏，南次郎说了三次"出去运动"。'},
+  {label:'🎾 街头网球',detail:()=>pick(['去了街头网球场，遇到了不认识的对手','打了五场，全赢了，没什么意思','遇到了一个还不错的对手……まだまだだけど'])},
+  {label:'😴 发呆',detail:'什么都不想做，在家躺了一天。'},
+];
+const RYOMA_SHOPPING=[
+  {date:'昨天',item:'Ponta（芬达）× 12罐',price:'¥48',note:'一周的量'},
+  {date:'3天前',item:'猫粮（高级款）',price:'¥128',note:'卡鲁宾专用'},
+  {date:'5天前',item:'网球拍握把胶 × 3',price:'¥27',note:'消耗品'},
+  {date:'1周前',item:'游戏卡带',price:'¥350',note:'新出的格斗游戏'},
+  {date:'2周前',item:'帽子（白色）',price:'¥180',note:'旧的有点旧了'},
+];
+
+let _inspectChar='yukimura';
+function switchInspect(cid){
+  _inspectChar=cid;
+  const ch=CHAR_PACKS[cid];if(!ch)return;
+  document.querySelectorAll('.insp-char').forEach(el=>{
+    const active=el.dataset.cid===cid;
+    el.style.borderColor=active?ch.color:'var(--border)';
+    el.style.background=active?ch.color+'18':'white';
+    el.style.color=active?ch.color:'var(--muted)';
+  });
+  document.getElementById('inspectSubtitle').textContent=ch.name+' · 实时行踪';
+  renderInspect();
+}
+
 const WEEKEND_EVENTS=[
   {label:'☕ 茶道馆',detail:'一个人去了常去的茶馆，坐了两个小时。'},
   {label:'🌿 花道课',detail:'今天有花道课，老师夸他今天的作品平衡感很好。'},
@@ -2588,55 +2692,80 @@ function getCurrentStatus(){
 }
 
 function renderInspect(){
-  const st=getCurrentStatus();
+  const cid=_inspectChar||'yukimura';
+  const ch=CHAR_PACKS[cid]||CHAR_PACKS.yukimura;
+  const schedule=cid==='fuji'?FUJI_SCHEDULE:cid==='ryoma'?RYOMA_SCHEDULE:WEEKDAY_SCHEDULE;
+  const weekendEvts=cid==='fuji'?FUJI_WEEKEND_EVENTS:cid==='ryoma'?RYOMA_WEEKEND_EVENTS:WEEKEND_EVENTS;
+  const shopRecords=cid==='fuji'?FUJI_SHOPPING:cid==='ryoma'?RYOMA_SHOPPING:SHOPPING_RECORDS;
+
+  /* 当前状态 */
+  const h=getHour();
+  let st;
+  if(isWeekend()){
+    if(h<6) st={label:'💤 睡眠中',detail:'请勿打扰。',img:'chibi-down.png'};
+    else if(h<9) st={label:'🌅 起床中',detail:cid==='ryoma'?pick(['被卡鲁宾踩醒了','还想再睡……']):cid==='fuji'?pick(['在阳台拍朝霞','给仙人掌浇水']):pick(['难得睡到8点多','今天7点多就起了']),img:'chibi-normal.png'};
+    else{const ev=pick(weekendEvts);st={label:ev.label,detail:typeof ev.detail==='function'?ev.detail():ev.detail,img:'chibi-normal.png'};}
+  }else{
+    const slot=schedule.find(s=>h>=s.s&&h<s.e)||schedule[0];
+    st={label:slot.label,detail:typeof slot.detail==='function'?slot.detail():slot.detail,img:slot.img||'chibi-normal.png'};
+  }
   const now=new Date();
   document.getElementById('inspectStatus').textContent=st.label;
   document.getElementById('inspectDetail').textContent=st.detail;
   document.getElementById('inspectTime').textContent=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0')+' · '+(isWeekend()?'周末':'工作日');
   const chi=document.getElementById('inspectChibi');
-  if(chi){chi.src=st.img;chi.onerror=()=>chi.style.display='none';}
+  if(chi){chi.src=ch.img||st.img;chi.onerror=()=>chi.style.display='none';}
 
   /* 今日行程 */
   const list=document.getElementById('scheduleList');
   if(list){
-    const h=getHour();
     const slots=isWeekend()?[
-      {s:0,e:6,label:'💤 灭五感中'},{s:6,e:9,label:'🌅 起床/早晨时光'},
-      {s:9,e:12,label:'🌸 上午自由活动'},{s:12,e:13.5,label:'🍱 午餐'},
+      {s:0,e:6,label:'💤 睡眠中'},{s:6,e:9,label:'🌅 起床/早晨时光'},
+      {s:9,e:12,label:'☀️ 上午自由活动'},{s:12,e:13.5,label:'🍱 午餐'},
       {s:13.5,e:18,label:'☀️ 下午自由活动'},{s:18,e:20,label:'🍜 晚餐/休息'},
       {s:20,e:24,label:'🌙 晚间时光'},
-    ]:WEEKDAY_SCHEDULE;
+    ]:schedule;
     list.innerHTML=slots.map(s=>{
       const isPast=h>s.e;const isCurr=h>=s.s&&h<s.e;
       const sh=Math.floor(s.s).toString().padStart(2,'0')+':'+(s.s%1===0.5?'30':'00');
-      return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:${isCurr?'var(--p100)':'white'};border:1px solid ${isCurr?'var(--p300)':'var(--border)'}">
-        <div style="font-size:10px;color:var(--muted);white-space:nowrap;margin-top:2px;font-weight:${isCurr?'700':'400'};color:${isCurr?'var(--p500)':'var(--muted)'}">${sh}</div>
-        <div style="font-size:13px;color:${isPast?'var(--muted)':isCurr?'var(--p700)':'var(--text)'};${isPast?'text-decoration:line-through;opacity:.6':''};font-weight:${isCurr?'600':'400'}">${s.label}</div>
-        ${isCurr?'<div style="margin-left:auto;font-size:10px;color:var(--p500);font-weight:700;white-space:nowrap">← 现在</div>':''}
+      return `<div style="display:flex;gap:10px;align-items:flex-start;padding:8px 12px;border-radius:12px;background:${isCurr?ch.color+'18':'white'};border:1px solid ${isCurr?ch.color+'40':'var(--border)'}">
+        <div style="font-size:10px;white-space:nowrap;margin-top:2px;font-weight:${isCurr?'700':'400'};color:${isCurr?ch.color:'var(--muted)'}">${sh}</div>
+        <div style="font-size:13px;color:${isPast?'var(--muted)':isCurr?ch.color:'var(--text)'};${isPast?'text-decoration:line-through;opacity:.6':''};font-weight:${isCurr?'600':'400'}">${s.label}</div>
+        ${isCurr?`<div style="margin-left:auto;font-size:10px;color:${ch.color};font-weight:700;white-space:nowrap">← 现在</div>`:''}
       </div>`;
     }).join('');
   }
 
-  /* 购物记录 */
-  /* 论坛足迹 */
+  /* 论坛足迹 - 按角色 */
   const fl=document.getElementById('forumList');
   if(fl){
-    const FORUM=[
-      {type:'发布',time:'2小时前',title:'请问哪里有好的白茶推荐？',tag:'生活',likes:12,content:'最近在找一款清淡的白毫银针，有了解的吗。'},
-      {type:'点赞',time:'昨天',title:'立海大网球部本周训练记录整理',tag:'网球',likes:87,content:'部长今天的发球速度又提升了，数据惊人。'},
-      {type:'浏览',time:'昨天',title:'花道入门：剑山的正确使用方法',tag:'花道',likes:34,content:''},
-      {type:'点赞',time:'2天前',title:'全国中学生网球联赛战术分析',tag:'网球',likes:256,content:''},
-      {type:'发布',time:'3天前',title:'推荐一首适合练习时听的纯音乐',tag:'音乐',likes:45,content:'安静的曲子更能让人专注。不需要歌词。'},
-      {type:'浏览',time:'4天前',title:'茶道与网球——静与动的平衡',tag:'生活',likes:120,content:''},
-      {type:'点赞',time:'5天前',title:'立海大周边推荐：隐藏的茶馆',tag:'美食',likes:67,content:''},
-    ];
+    const FORUM_DATA={
+      yukimura:[
+        {type:'发布',time:'2小时前',title:'请问哪里有好的白茶推荐？',tag:'生活',likes:12,content:'最近在找一款清淡的白毫银针，有了解的吗。'},
+        {type:'点赞',time:'昨天',title:'立海大网球部本周训练记录整理',tag:'网球',likes:87},
+        {type:'浏览',time:'昨天',title:'花道入门：剑山的正确使用方法',tag:'花道',likes:34},
+        {type:'发布',time:'3天前',title:'推荐一首适合练习时听的纯音乐',tag:'音乐',likes:45,content:'安静的曲子更能让人专注。不需要歌词。'},
+      ],
+      fuji:[
+        {type:'发布',time:'3小时前',title:'今天拍到的光影很好看',tag:'摄影',likes:23,content:'阳光穿过树叶的缝隙洒在球场上。'},
+        {type:'点赞',time:'昨天',title:'世界各地的仙人掌品种图鉴',tag:'植物',likes:156},
+        {type:'发布',time:'2天前',title:'有人推荐超辣的料理店吗？',tag:'美食',likes:8,content:'最近觉得普通的辣已经不够了。'},
+        {type:'浏览',time:'3天前',title:'胶片摄影入门指南',tag:'摄影',likes:89},
+      ],
+      ryoma:[
+        {type:'浏览',time:'4小时前',title:'Ponta新出了草莓味',tag:'饮料',likes:342},
+        {type:'浏览',time:'昨天',title:'猫粮评测：哪款最适合挑食的猫',tag:'宠物',likes:67},
+        {type:'浏览',time:'3天前',title:'最新款游戏测评',tag:'游戏',likes:230},
+      ],
+    };
+    const FORUM=FORUM_DATA[cid]||FORUM_DATA.yukimura;
     const typeColor={'发布':'var(--p500)','点赞':'#E05080','浏览':'var(--muted)'};
     fl.innerHTML=FORUM.map(f=>`
       <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
           <span style="font-size:10px;font-weight:700;color:${typeColor[f.type]||'var(--muted)'};background:${f.type==='发布'?'var(--p100)':f.type==='点赞'?'#FEE0EA':'var(--bg)'};padding:2px 8px;border-radius:10px">${f.type}</span>
           <span style="font-size:10px;color:var(--muted)">${f.time}</span>
-          <span style="font-size:10px;color:var(--p500);background:var(--p50);padding:2px 8px;border-radius:10px;margin-left:auto">${f.tag}</span>
+          <span style="font-size:10px;color:${ch.color};background:${ch.color}15;padding:2px 8px;border-radius:10px;margin-left:auto">${f.tag}</span>
         </div>
         <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px">${f.title}</div>
         ${f.content?`<div style="font-size:12px;color:var(--muted);line-height:1.6">${f.content}</div>`:''}
@@ -2644,13 +2773,14 @@ function renderInspect(){
       </div>`).join('');
   }
 
+  /* 购物记录 */
   const sl=document.getElementById('shoppingList');
   if(sl){
-    sl.innerHTML=SHOPPING_RECORDS.map(r=>`
+    sl.innerHTML=shopRecords.map(r=>`
       <div style="background:white;border-radius:var(--r);padding:14px 16px;box-shadow:var(--shadow);border:1px solid var(--border)">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
           <div style="font-size:14px;font-weight:600">${r.item}</div>
-          <div style="font-size:14px;color:var(--p600);font-weight:700">${r.price}</div>
+          <div style="font-size:14px;color:${ch.color};font-weight:700">${r.price}</div>
         </div>
         <div style="font-size:11px;color:var(--muted)">${r.date} · ${r.note}</div>
       </div>`).join('');
@@ -3316,26 +3446,56 @@ function gameAffUp(amt){
 const YUKI_WIN=['干得不错。','……嗯，这局你赢了。','果然，你也很有实力呢。','漂亮的一局。','……看来我不能小看你了。','你认真起来的样子，我很喜欢。'];
 const YUKI_LOSE=['再来一次？我等你。','别灰心，下次一定。','……你的表情，有点可爱。','没关系，有我在。','下次我教你。'];
 
-/* ══ 扫雷 ══ */
+/* ══ 扫雷（对战模式） ══ */
 let _mine={};
+let _mineChar='yukimura';
+const MINE_COMMENTS={
+  yukimura:{safe:['嗯，稳。','安全。','不错。'],danger:['小心这里。','别急。'],aiSafe:['我这边也安全。','轮到你了。'],aiBoom:['……失误了。你赢了。','看来我大意了。'],playerBoom:['……踩雷了。','没关系，再来。'],taunt:['这局我不会让你的。','你的判断力，让我看看。']},
+  fuji:{safe:['呐，安全呢。','有意思。'],danger:['嗯，你觉得呢。','小心一点。'],aiSafe:['我也没踩到呢。','轮到你了。'],aiBoom:['呐……我输了。','有意思。'],playerBoom:['嗯……运气不好呢。','再来一局？'],taunt:['要认真了哦。','我不会手下留情的。']},
+  ryoma:{safe:['切，安全。','哦。'],danger:['……随便吧。'],aiSafe:['轮到你了。','まだまだだね。'],aiBoom:['切……运气差。','下次不会输。'],playerBoom:['まだまだだね。','太弱了。'],taunt:['你行不行啊。','切，无聊。']},
+};
 function openMinesweeper(){
-  os('💣 网球扫雷',`
+  os('💣 网球扫雷 · 对战',`
     <div id="mineContainer" style="text-align:center">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:10px">找出隐藏在球场里的炸弹，长按标记</div>
-      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:12px">
-        <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">初级 8×8</button>
-        <button onclick="initMine(10,10,18,'med')" class="mine-diff" id="md-med" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">中级 10×10</button>
-        <button onclick="initMine(12,10,28,'hard')" class="mine-diff" id="md-hard" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">高级 12×10</button>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6">选择对手，轮流翻格子，谁踩雷谁输！</div>
+      <div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;flex-wrap:wrap" id="mineCharBar">
+        ${Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([cid,ch])=>`<div onclick="pickMineChar('${cid}')" data-mc="${cid}" style="padding:5px 10px;border-radius:14px;border:2px solid ${cid==='yukimura'?ch.color:'var(--border)'};background:${cid==='yukimura'?ch.color+'18':'white'};color:${cid==='yukimura'?ch.color:'var(--muted)'};font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">${ch.ico} ${ch.name}</div>`).join('')}
       </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;padding:0 4px">
-        <span style="font-size:13px;font-weight:700;color:#E53935" id="mineCount">🎾 10</span>
-        <span style="font-size:13px;font-weight:700;color:var(--p600)" id="mineTimer">⏱ 0s</span>
+      <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
+        <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">简单 8×8</button>
+        <button onclick="initMine(10,10,15,'med')" class="mine-diff" id="md-med" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">中等 10×10</button>
+        <button onclick="initMine(12,10,25,'hard')" class="mine-diff" id="md-hard" style="padding:6px 14px;border-radius:10px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">困难 12×10</button>
       </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;padding:0 4px">
+        <span id="mineCount" style="font-size:13px;font-weight:700;color:#E53935">🎾 10</span>
+        <span id="mineTurn" style="font-size:12px;font-weight:600;color:var(--p500)">你的回合</span>
+        <span id="mineTimer" style="font-size:13px;font-weight:700;color:var(--p600)">⏱ 0s</span>
+      </div>
+      <div id="mineDanmaku" style="min-height:24px;margin-bottom:6px;font-size:12px;font-weight:600;line-height:1.5"></div>
       <div id="mineGrid" style="display:inline-grid;gap:2px;background:var(--p100);padding:4px;border-radius:12px;border:2px solid var(--border);touch-action:manipulation"></div>
       <div id="mineResult" style="margin-top:12px;display:none"></div>
     </div>
   `);
   setTimeout(()=>initMine(8,8,10,'easy'),100);
+}
+function pickMineChar(cid){
+  _mineChar=cid;const ch=CHAR_PACKS[cid];
+  document.querySelectorAll('#mineCharBar [data-mc]').forEach(el=>{const a=el.dataset.mc===cid;el.style.borderColor=a?ch.color:'var(--border)';el.style.background=a?ch.color+'18':'white';el.style.color=a?ch.color:'var(--muted)';});
+  showMineDanmaku(pick(MINE_COMMENTS[cid]?.taunt||['来吧。']));
+}
+function showMineDanmaku(text){
+  const el=document.getElementById('mineDanmaku');if(!el)return;
+  const ch=CHAR_PACKS[_mineChar];
+  el.innerHTML=`<span style="color:${ch.color}">${ch.ico} ${ch.name}：「${text}」</span>`;
+  if(S.set.voiceOn&&S.set.mmkey&&S.set.mmgid&&Math.random()<0.25){
+    translateToJP(text).then(jp=>{
+      const vid=ch.voiceId||VOICE_ID;
+      return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({text:jp,groupId:S.set.mmgid,apiKey:S.set.mmkey,voiceId:vid,site:S.set.mmSite||'cn'})});
+    }).then(r=>r.json()).then(d=>{
+      if(d.data?.audio){const a=new Audio('data:audio/mp3;base64,'+d.data.audio);a.play().catch(()=>{});}
+    }).catch(()=>{});
+  }
 }
 function initMine(rows,cols,mines,diff){
   document.querySelectorAll('.mine-diff').forEach(b=>{b.style.borderColor='var(--border)';b.style.background='white';b.style.color='var(--muted)'});
@@ -3347,91 +3507,91 @@ function initMine(rows,cols,mines,diff){
   let placed=0;
   while(placed<mines){const r=Math.floor(Math.random()*rows),c=Math.floor(Math.random()*cols);if(!grid[r][c].mine){grid[r][c].mine=true;placed++;}}
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){if(grid[r][c].mine)continue;let cnt=0;for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].mine)cnt++;}grid[r][c].adj=cnt;}
-  _mine={grid,rows,cols,mines,flagged:0,revealed:0,over:false,won:false,time:0,timer:null,diff};
+  _mine={grid,rows,cols,mines,flagged:0,revealed:0,over:false,won:false,time:0,timer:null,diff,playerTurn:true};
   _mine.timer=setInterval(()=>{if(!_mine.over){_mine.time++;const el=document.getElementById('mineTimer');if(el)el.textContent='⏱ '+_mine.time+'s';}},1000);
   document.getElementById('mineResult').style.display='none';
-  renderMineGrid();
+  showMineDanmaku(pick(MINE_COMMENTS[_mineChar]?.taunt||['来吧。']));
+  updateMineTurn();renderMineGrid();
+}
+function updateMineTurn(){
+  const el=document.getElementById('mineTurn');if(!el)return;
+  const ch=CHAR_PACKS[_mineChar];
+  el.textContent=_mine.playerTurn?'🫵 你的回合':ch.ico+' '+ch.name+'思考中…';
+  el.style.color=_mine.playerTurn?'var(--p500)':ch.color;
 }
 function renderMineGrid(){
-  const{grid,rows,cols}=_mine;
-  const el=document.getElementById('mineGrid');if(!el)return;
+  const{grid,rows,cols}=_mine;const el=document.getElementById('mineGrid');if(!el)return;
   const sz=Math.min(Math.floor((window.innerWidth-80)/cols),32);
-  el.style.gridTemplateColumns=`repeat(${cols},${sz}px)`;
-  el.innerHTML='';
-  const NUM_COLORS=['','#1976D2','#388E3C','#D32F2F','#7B1FA2','#FF8F00','#0097A7','#424242','#78909C'];
+  el.style.gridTemplateColumns=`repeat(${cols},${sz}px)`;el.innerHTML='';
+  const NC=['','#1976D2','#388E3C','#D32F2F','#7B1FA2','#FF8F00','#0097A7','#424242','#78909C'];
   for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
-    const cell=grid[r][c];
-    const d=document.createElement('div');
+    const cell=grid[r][c];const d=document.createElement('div');
     d.style.cssText=`width:${sz}px;height:${sz}px;border-radius:${sz>24?6:4}px;display:flex;align-items:center;justify-content:center;font-size:${sz>24?13:11}px;font-weight:700;cursor:pointer;user-select:none;-webkit-user-select:none;transition:all .12s`;
     if(cell.revealed){
-      d.style.background='rgba(255,255,255,.9)';
+      d.style.background=cell.revBy==='ai'?'rgba(200,230,255,.9)':'rgba(255,255,255,.9)';
       d.style.boxShadow='inset 0 1px 3px rgba(0,0,0,.08)';
       if(cell.mine){d.textContent='💣';d.style.background='#FFCDD2';}
-      else if(cell.adj>0){d.textContent=cell.adj;d.style.color=NUM_COLORS[cell.adj];}
+      else if(cell.adj>0){d.textContent=cell.adj;d.style.color=NC[cell.adj];}
     }else{
       d.style.background='linear-gradient(135deg,#A5D6A7,#66BB6A)';
       d.style.boxShadow='0 2px 4px rgba(0,0,0,.12),inset 0 1px 0 rgba(255,255,255,.3)';
       if(cell.flagged){d.textContent='🚩';d.style.background='linear-gradient(135deg,#FFE082,#FFB74D)';}
     }
-    d.addEventListener('click',(e)=>{e.preventDefault();mineClick(r,c);});
+    d.addEventListener('click',()=>mineClick(r,c));
     let lt;
     d.addEventListener('touchstart',(e)=>{lt=setTimeout(()=>{e.preventDefault();mineFlag(r,c);},400);},{passive:false});
-    d.addEventListener('touchend',()=>clearTimeout(lt));
-    d.addEventListener('touchmove',()=>clearTimeout(lt));
+    d.addEventListener('touchend',()=>clearTimeout(lt));d.addEventListener('touchmove',()=>clearTimeout(lt));
     d.addEventListener('contextmenu',(e)=>{e.preventDefault();mineFlag(r,c);});
     el.appendChild(d);
   }
   document.getElementById('mineCount').textContent='🎾 '+(_mine.mines-_mine.flagged);
 }
 function mineClick(r,c){
-  if(_mine.over)return;
-  const cell=_mine.grid[r][c];
-  if(cell.flagged||cell.revealed)return;
-  if(cell.mine){cell.revealed=true;_mine.over=true;revealAll();showMineResult(false);return;}
-  floodReveal(r,c);
-  checkMineWin();
-  renderMineGrid();
+  if(_mine.over||!_mine.playerTurn)return;
+  const cell=_mine.grid[r][c];if(cell.flagged||cell.revealed)return;
+  if(cell.mine){cell.revealed=true;cell.revBy='player';_mine.over=true;revealAll();showMineResult(false);return;}
+  floodReveal(r,c,'player');
+  if(Math.random()<0.35)showMineDanmaku(pick(MINE_COMMENTS[_mineChar]?.safe||['嗯。']));
+  if(checkMineWin(true))return;
+  _mine.playerTurn=false;updateMineTurn();renderMineGrid();
+  setTimeout(()=>aiMineTurn(),600+Math.random()*800);
 }
-function mineFlag(r,c){
-  if(_mine.over)return;
-  const cell=_mine.grid[r][c];
-  if(cell.revealed)return;
-  cell.flagged=!cell.flagged;
-  _mine.flagged+=cell.flagged?1:-1;
-  renderMineGrid();
+function aiMineTurn(){
+  if(_mine.over)return;const{grid,rows,cols}=_mine;
+  const unrevealed=[];
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){if(!grid[r][c].revealed&&!grid[r][c].flagged)unrevealed.push({r,c});}
+  if(!unrevealed.length)return;
+  /* AI策略按角色风格 */
+  const safeCand=unrevealed.filter(({r,c})=>{for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){const nr=r+dr,nc=c+dc;if(nr>=0&&nr<rows&&nc>=0&&nc<cols&&grid[nr][nc].revealed&&grid[nr][nc].adj>0)return true;}return false;});
+  const sw=_mineChar==='yukimura'?0.85:_mineChar==='fuji'?0.65:0.4;
+  const choice=safeCand.length&&Math.random()<sw?safeCand[Math.floor(Math.random()*safeCand.length)]:unrevealed[Math.floor(Math.random()*unrevealed.length)];
+  const cell=grid[choice.r][choice.c];
+  if(cell.mine){cell.revealed=true;cell.revBy='ai';_mine.over=true;revealAll();showMineDanmaku(pick(MINE_COMMENTS[_mineChar]?.aiBoom||['失误了。']));showMineResult(true);return;}
+  floodReveal(choice.r,choice.c,'ai');
+  if(Math.random()<0.3)showMineDanmaku(pick(MINE_COMMENTS[_mineChar]?.aiSafe||['轮到你了。']));
+  if(checkMineWin(false))return;
+  _mine.playerTurn=true;updateMineTurn();renderMineGrid();
 }
-function floodReveal(r,c){
-  const{grid,rows,cols}=_mine;
-  if(r<0||r>=rows||c<0||c>=cols)return;
-  const cell=grid[r][c];
-  if(cell.revealed||cell.flagged||cell.mine)return;
-  cell.revealed=true;_mine.revealed++;
-  if(cell.adj===0){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)floodReveal(r+dr,c+dc);}
-}
-function checkMineWin(){
-  const total=_mine.rows*_mine.cols;
-  if(_mine.revealed>=total-_mine.mines){_mine.over=true;_mine.won=true;revealAll();showMineResult(true);}
-}
+function mineFlag(r,c){if(_mine.over||!_mine.playerTurn)return;const cell=_mine.grid[r][c];if(cell.revealed)return;cell.flagged=!cell.flagged;_mine.flagged+=cell.flagged?1:-1;renderMineGrid();}
+function floodReveal(r,c,by){const{grid,rows,cols}=_mine;if(r<0||r>=rows||c<0||c>=cols)return;const cell=grid[r][c];if(cell.revealed||cell.flagged||cell.mine)return;cell.revealed=true;cell.revBy=by;_mine.revealed++;if(cell.adj===0){for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++)if(dr||dc)floodReveal(r+dr,c+dc,by);}}
+function checkMineWin(playerWon){const total=_mine.rows*_mine.cols;if(_mine.revealed>=total-_mine.mines){_mine.over=true;_mine.won=true;revealAll();showMineResult(playerWon);return true;}return false;}
 function revealAll(){_mine.grid.forEach(row=>row.forEach(c=>{c.revealed=true}));renderMineGrid();}
-function showMineResult(won){
-  clearInterval(_mine.timer);
-  ensureGameStats();
-  const affAmt=won?(_mine.diff==='hard'?5:_mine.diff==='med'?3:2):0;
-  if(won){S.gameStats.mineWins++;gameAffUp(affAmt);}
-  sv();
-  const msg=won?YUKI_WIN[Math.floor(Math.random()*YUKI_WIN.length)]:YUKI_LOSE[Math.floor(Math.random()*YUKI_LOSE.length)];
+function showMineResult(playerWon){
+  clearInterval(_mine.timer);ensureGameStats();
+  const affAmt=playerWon?(_mine.diff==='hard'?5:_mine.diff==='med'?3:2):0;
+  if(playerWon){S.gameStats.mineWins++;gameAffUp(affAmt);}sv();
+  const ch=CHAR_PACKS[_mineChar];
+  const comments=MINE_COMMENTS[_mineChar]||MINE_COMMENTS.yukimura;
+  const msg=playerWon?pick(comments.aiBoom||['你赢了。']):pick(comments.playerBoom||['再来。']);
   const el=document.getElementById('mineResult');
-  if(el){
-    el.style.display='block';
-    el.innerHTML=`
-      <div style="background:${won?'linear-gradient(135deg,#E8F5E9,#C8E6C9)':'linear-gradient(135deg,#FFEBEE,#FFCDD2)'};border-radius:14px;padding:16px;text-align:center">
-        <div style="font-size:32px;margin-bottom:6px">${won?'🎉':'💥'}</div>
-        <div style="font-size:16px;font-weight:700;color:${won?'#2E7D32':'#C62828'};margin-bottom:4px">${won?'胜利！':'踩雷了…'}</div>
-        <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">幸村：「${msg}」</div>
-        ${won?`<div style="font-size:12px;color:var(--p500);font-weight:700">好感 +${affAmt} · 用时 ${_mine.time}s</div>`:''}
-        <button onclick="initMine(${_mine.rows},${_mine.cols},${_mine.mines},'${_mine.diff}')" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
-      </div>`;
-  }
+  if(el){el.style.display='block';
+    el.innerHTML=`<div style="background:${playerWon?'linear-gradient(135deg,#E8F5E9,#C8E6C9)':'linear-gradient(135deg,#FFEBEE,#FFCDD2)'};border-radius:14px;padding:16px;text-align:center">
+      <div style="font-size:32px;margin-bottom:6px">${playerWon?'🎉':'💥'}</div>
+      <div style="font-size:16px;font-weight:700;color:${playerWon?'#2E7D32':'#C62828'};margin-bottom:4px">${playerWon?'你赢了！':ch.name+'赢了'}</div>
+      <div style="font-size:13px;color:var(--text);margin-bottom:4px;line-height:1.6">${ch.ico} ${ch.name}：「${msg}」</div>
+      ${playerWon?`<div style="font-size:12px;color:${ch.color};font-weight:700">好感 +${affAmt} · 用时 ${_mine.time}s</div>`:''}
+      <button onclick="initMine(${_mine.rows},${_mine.cols},${_mine.mines},'${_mine.diff}')" style="margin-top:10px;padding:8px 24px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">再来一局</button>
+    </div>`;}
 }
 
 /* ══ 色彩整理（Color Sort） ══ */
