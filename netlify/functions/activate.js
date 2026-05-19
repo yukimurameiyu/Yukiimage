@@ -24,6 +24,14 @@ const CORS_HEADERS = {
 const SECRET = process.env.ACTIVATE_SECRET || 'default-dev-secret-change-me';
 const MAX_POT = 500;   // 最多500个单角色码
 const MAX_SPOT = 100;  // 最多100个VIP码
+const MAX_VOX = 900;   // 最多900个语音包码
+
+/* VOX码额度分段：1-500=100条，501-800=300条，801-900=500条 */
+function getVoxCredits(index) {
+  if (index <= 500) return 100;
+  if (index <= 800) return 300;
+  return 500;
+}
 
 /* 生成HMAC哈希 */
 function hmac(data) {
@@ -48,9 +56,12 @@ function generateCode(type, index) {
   if (type === 'POT') {
     const raw = hashToCode(h, 8);
     return `POT-${raw.slice(0,4)}-${raw.slice(4,8)}`;
-  } else {
+  } else if (type === 'SPOT') {
     const raw = hashToCode(h, 9);
     return `SPOT-${raw.slice(0,4)}-${raw.slice(4,9)}`;
+  } else {
+    const raw = hashToCode(h, 8);
+    return `VOX-${raw.slice(0,4)}-${raw.slice(4,8)}`;
   }
 }
 
@@ -58,7 +69,6 @@ function generateCode(type, index) {
 function validateCode(code) {
   const upperCode = code.toUpperCase().trim();
   
-  // 尝试匹配POT码
   if (upperCode.startsWith('POT-')) {
     for (let i = 1; i <= MAX_POT; i++) {
       if (generateCode('POT', i) === upperCode) {
@@ -67,11 +77,18 @@ function validateCode(code) {
     }
   }
   
-  // 尝试匹配SPOT码
   if (upperCode.startsWith('SPOT-')) {
     for (let i = 1; i <= MAX_SPOT; i++) {
       if (generateCode('SPOT', i) === upperCode) {
         return { valid: true, type: 'spot', index: i };
+      }
+    }
+  }
+
+  if (upperCode.startsWith('VOX-')) {
+    for (let i = 1; i <= MAX_VOX; i++) {
+      if (generateCode('VOX', i) === upperCode) {
+        return { valid: true, type: 'vox', index: i, credits: getVoxCredits(i) };
       }
     }
   }
@@ -110,11 +127,13 @@ exports.handler = async (event) => {
       }
       const codes = [];
       const t = (type || 'POT').toUpperCase();
-      const max = t === 'SPOT' ? MAX_SPOT : MAX_POT;
+      const max = t === 'SPOT' ? MAX_SPOT : t === 'VOX' ? MAX_VOX : MAX_POT;
       const start = Math.max(1, startIndex || 1);
       const end = Math.min(start + (count || 10) - 1, max);
       for (let i = start; i <= end; i++) {
-        codes.push({ index: i, code: generateCode(t, i) });
+        const entry = { index: i, code: generateCode(t, i) };
+        if (t === 'VOX') entry.credits = getVoxCredits(i);
+        codes.push(entry);
       }
       return {
         statusCode: 200,
@@ -143,14 +162,17 @@ exports.handler = async (event) => {
 
       const token = generateToken(code, fingerprint || 'unknown');
 
+      const response = {
+        valid: true,
+        type: result.type,
+        token: token
+      };
+      if (result.type === 'vox') response.credits = result.credits;
+
       return {
         statusCode: 200,
         headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          valid: true,
-          type: result.type,
-          token: token
-        })
+        body: JSON.stringify(response)
       };
     }
 
