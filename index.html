@@ -260,12 +260,81 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 .bm-item{padding:10px 14px;color:white;font-size:14px;cursor:pointer;border-radius:10px;display:flex;align-items:center;gap:8px}
 .bm-item:active{background:rgba(255,255,255,.15)}
 
+/* ── 电话通话界面 ── */
+.phone-overlay{position:fixed;inset:0;z-index:300;display:none;flex-direction:column;background:linear-gradient(160deg,#0d1117 0%,#1a2332 40%,#1B5E20 100%)}
+.phone-overlay.open{display:flex}
+.phone-top{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center}
+.phone-ava{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;color:white;margin-bottom:20px;box-shadow:0 0 40px rgba(76,175,80,.4);animation:phoneGlow 2s ease-in-out infinite}
+@keyframes phoneGlow{0%,100%{box-shadow:0 0 40px rgba(76,175,80,.3)}50%{box-shadow:0 0 60px rgba(76,175,80,.6)}}
+.phone-name{font-size:24px;font-weight:700;color:white;margin-bottom:6px}
+.phone-status{font-size:13px;color:rgba(255,255,255,.6);margin-bottom:24px}
+.phone-progress{width:80%;max-width:280px;margin:0 auto}
+.phone-pbar{height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden;margin-bottom:8px}
+.phone-pfill{height:100%;background:linear-gradient(90deg,#4CAF50,#81C784);border-radius:2px;transition:width .3s ease;width:0%}
+.phone-ptext{font-size:11px;color:rgba(255,255,255,.5);text-align:center}
+.phone-wave{display:flex;align-items:center;justify-content:center;gap:3px;height:40px;margin:20px 0}
+.phone-wave-bar{width:3px;background:#4CAF50;border-radius:2px;animation:phoneWave 1s ease-in-out infinite}
+@keyframes phoneWave{0%,100%{height:8px;opacity:.4}50%{height:28px;opacity:1}}
+.phone-time{font-size:16px;color:rgba(255,255,255,.8);font-family:monospace;letter-spacing:2px;margin-top:8px}
+.phone-bottom{padding:30px;display:flex;justify-content:center;gap:24px}
+.phone-btn{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;border:none;cursor:pointer;transition:transform .15s}
+.phone-btn:active{transform:scale(.9)}
+.phone-btn.hangup{background:#E53935;color:white}
+.phone-btn.replay{background:rgba(255,255,255,.15);color:white;font-size:18px}
+
 /* ── 聊天列表 ── */
 .chat-list-overlay{position:fixed;inset:0;z-index:98;display:none;flex-direction:column;background:var(--bg)}
 .chat-list-overlay.open{display:flex}
 .cl-hd{height:56px;flex-shrink:0;background:linear-gradient(135deg,var(--p800),var(--p600));display:flex;align-items:center;padding:0 16px;gap:12px}
 .cl-hd .back{color:white}
-.cl-hd h3{color:white;font-size:17px;font-weight:600;letter-spacing:.5px}
+.cl-hd h3{color:white;font-size:17px;font-weight:600;letter-spacing:.5px;flex:1}
+.cl-hd .cl-add-btn{color:rgba(255,255,255,.9);font-size:22px;cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:10px;transition:background .2s}
+.cl-hd .cl-add-btn:active{background:rgba(255,255,255,.15)}
+/* 添加好友弹窗 */
+.act-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.5);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;animation:actFadeIn .25s ease}
+.act-overlay.open{display:flex}
+@keyframes actFadeIn{from{opacity:0}to{opacity:1}}
+.act-box{width:88%;max-width:360px;background:white;border-radius:24px;padding:28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.2);animation:actSlideUp .3s ease}
+@keyframes actSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.act-title{font-size:18px;font-weight:700;text-align:center;margin-bottom:4px;color:var(--p700)}
+.act-sub{font-size:12px;color:var(--muted);text-align:center;margin-bottom:20px}
+.act-input{width:100%;padding:14px 16px;border:2px solid var(--border);border-radius:14px;font-size:15px;font-family:monospace;text-align:center;letter-spacing:2px;outline:none;transition:border-color .2s;text-transform:uppercase}
+.act-input:focus{border-color:var(--p400)}
+.act-input.err{border-color:#E53935;animation:actShake .4s ease}
+@keyframes actShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.act-err{font-size:11px;color:#E53935;text-align:center;margin-top:8px;min-height:16px}
+.act-btns{display:flex;gap:10px;margin-top:20px}
+.act-btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:transform .1s}
+.act-btn:active{transform:scale(.96)}
+.act-btn.cancel{background:var(--bg2);color:var(--muted)}
+.act-btn.confirm{background:linear-gradient(135deg,var(--p500),var(--p700));color:white}
+.act-btn.confirm:disabled{opacity:.5}
+/* 角色选择器 */
+.act-chars{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.act-char{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;border:2px solid var(--border);cursor:pointer;transition:all .2s}
+.act-char:active{transform:scale(.95)}
+.act-char.selected{border-color:var(--p500);background:var(--p50);box-shadow:0 0 0 3px rgba(139,107,192,.2)}
+.act-char.disabled{opacity:.35;pointer-events:none}
+.act-char-ico{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:white}
+.act-char-name{font-size:11px;font-weight:600;color:var(--text);text-align:center;line-height:1.2}
+/* 好友请求动画 */
+.fr-overlay{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.fr-overlay.open{display:flex}
+.fr-card{background:white;border-radius:24px;padding:32px 28px;text-align:center;animation:frBounce .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 20px 60px rgba(94,63,168,.25);max-width:300px;width:85%}
+@keyframes frBounce{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
+.fr-ico{font-size:52px;margin-bottom:12px;animation:frPop .6s ease .2s both}
+@keyframes frPop{from{transform:scale(0) rotate(-30deg)}to{transform:scale(1) rotate(0deg)}}
+.fr-msg{font-size:16px;font-weight:700;color:var(--p700);margin-bottom:6px}
+.fr-sub{font-size:13px;color:var(--muted);line-height:1.5}
+.fr-sparkle{position:absolute;font-size:20px;animation:frSparkle 1s ease forwards;pointer-events:none}
+@keyframes frSparkle{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}}
+/* 空通讯录状态 */
+.cl-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 30px;text-align:center}
+.cl-empty-ico{font-size:64px;margin-bottom:16px;opacity:.6}
+.cl-empty-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
+.cl-empty-sub{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+.cl-empty-btn{padding:12px 28px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(94,63,168,.3);transition:transform .15s}
+.cl-empty-btn:active{transform:scale(.95)}
 .cl-contacts{flex:1;overflow-y:auto;padding:8px 12px 80px}
 .cl-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:white;border-radius:16px;margin-bottom:8px;box-shadow:var(--shadow);border:1px solid var(--border);cursor:pointer;transition:transform .15s}
 .cl-card:active{transform:scale(.97)}
@@ -409,23 +478,39 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="dr"><span style="font-size:13px;white-space:nowrap">💜 在一起日期</span><input type="date" id="di"/></div>
 </div>
 <div class="sec">
-  <div class="sec-t">🎙️ 语音设置（MiniMax）</div>
+  <div class="sec-t">🎙️ 语音设置</div>
   <div style="padding:10px 16px 14px">
-    <div style="font-size:12px;color:var(--muted);margin-bottom:6px">站点选择</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
-      <div id="mmSiteCn" onclick="pickMmSite('cn')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--p500);border-radius:12px;background:var(--p100);color:var(--p700);cursor:pointer">🇨🇳 国内站</div>
-      <div id="mmSiteIntl" onclick="pickMmSite('intl')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:white;color:var(--muted);cursor:pointer">🌏 国外站</div>
+    <!-- 语音额度显示 -->
+    <div style="background:linear-gradient(135deg,var(--p100),#E8F5E9);border-radius:14px;padding:14px;margin-bottom:14px;border:1px solid var(--border)">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">🎧 语音包余额</div>
+          <div style="font-size:24px;font-weight:800;color:var(--p700);margin-top:4px" id="voiceCreditsDisplay">0 <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span></div>
+        </div>
+        <button onclick="showAddFriend()" style="padding:8px 16px;border-radius:12px;background:linear-gradient(135deg,var(--p500),var(--p700));color:white;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">充值语音包</button>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:8px;line-height:1.6">每条语音消耗1条额度 · 电话通话消耗3条<br/>用完自动切换为纯文字模式</div>
     </div>
-    <div style="font-size:10px;color:var(--muted);margin-bottom:10px" id="mmSiteHint">api.minimax.chat</div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Group ID</div>
-    <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
-    <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
-    <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
-    <div style="margin-top:10px;display:flex;align-items:center;gap:8px">
-      <input type="checkbox" id="voiceOn" style="width:16px;height:16px;accent-color:var(--p500)"/>
-      <label for="voiceOn" style="font-size:13px">开启语音回复</label>
+    <!-- 自有Key（可选） -->
+    <div style="border:1px solid var(--border);border-radius:14px;padding:12px;background:var(--bg2)">
+      <div onclick="document.getElementById('ownKeyWrap').style.display=document.getElementById('ownKeyWrap').style.display==='none'?'':'none'" style="display:flex;justify-content:space-between;align-items:center;cursor:pointer">
+        <div style="font-size:12px;font-weight:600;color:var(--muted)">🔧 高级：使用自己的MiniMax Key</div>
+        <span style="font-size:10px;color:var(--p400)">▼</span>
+      </div>
+      <div id="ownKeyWrap" style="display:none;margin-top:10px">
+        <div style="font-size:10px;color:var(--muted);margin-bottom:8px;line-height:1.5;background:rgba(255,152,0,.08);padding:8px;border-radius:8px">填写自己的Key后语音不消耗额度，无限使用。<br/>不填则使用语音包额度。</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:6px">站点选择</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px">
+          <div id="mmSiteCn" onclick="pickMmSite('cn')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--p500);border-radius:12px;background:var(--p100);color:var(--p700);cursor:pointer">🇨🇳 国内站</div>
+          <div id="mmSiteIntl" onclick="pickMmSite('intl')" style="padding:8px;text-align:center;font-size:12px;font-weight:700;border:2px solid var(--border);border-radius:12px;background:white;color:var(--muted);cursor:pointer">🌏 国外站</div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-bottom:10px" id="mmSiteHint">api.minimax.chat</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Group ID</div>
+        <input class="si" id="mmgid" placeholder="例：504468950201126912"/>
+        <div style="font-size:12px;color:var(--muted);margin:10px 0 4px">MiniMax API Key</div>
+        <input class="si" id="mmkey" type="password" placeholder="sk-api-…"/>
+      </div>
     </div>
-    <div style="font-size:11px;color:var(--muted);margin-top:6px">Key仅存于本地，不上传任何服务器</div>
   </div>
 </div>
 <button class="save-btn" onclick="saveSt()">保存设置</button>
@@ -601,11 +686,7 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
 <div class="page" id="pg-inspect">
 <div class="ph" style="padding-top:14px"><div onclick="sp('pg-home');st(document.getElementById('t-home'))" style="display:inline-flex;align-items:center;gap:4px;color:rgba(255,255,255,.7);font-size:13px;cursor:pointer;margin-bottom:10px">‹ 返回</div><h2>查岗</h2><p id="inspectSubtitle">幸村精市 · 实时行踪</p></div>
 <!-- 角色选择 -->
-<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar">
-  <div class="insp-char active" data-cid="yukimura" onclick="switchInspect('yukimura')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--p500);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">👑 幸村精市</div>
-  <div class="insp-char" data-cid="fuji" onclick="switchInspect('fuji')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🌵 不二周助</div>
-  <div class="insp-char" data-cid="ryoma" onclick="switchInspect('ryoma')" style="padding:6px 14px;border-radius:20px;border:2px solid var(--border);background:white;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">🎾 越前龙马</div>
-</div>
+<div style="padding:8px 14px 0;display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch" id="inspectCharBar"></div>
 <div style="padding:14px;display:flex;flex-direction:column;gap:12px">
 
   <!-- 当前状态卡 -->
@@ -822,9 +903,39 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   <div class="cl-hd">
     <div class="back" onclick="closeChatList()">‹</div>
     <h3>💬 微聊</h3>
+    <span id="voiceCreditsBadge" style="font-size:10px;color:rgba(255,255,255,.7);padding:2px 8px;background:rgba(255,255,255,.15);border-radius:8px"></span>
+    <div class="cl-add-btn" onclick="showAddFriend()" title="添加好友">＋</div>
   </div>
   <div class="cl-contacts" id="chatContacts"></div>
 </div>
+
+<!-- 激活码输入弹窗 -->
+<div class="act-overlay" id="actOverlay" onclick="if(event.target===this)closeActivation()">
+  <div class="act-box" id="actBox">
+    <div id="actStep1">
+      <div class="act-title">✦ 添加好友</div>
+      <div class="act-sub">输入激活码，解锁新的角色好友</div>
+      <input class="act-input" id="actCodeInput" placeholder="POT-XXXX-XXXX" maxlength="20" oninput="fmtActCode(this)" onkeydown="if(event.key==='Enter')submitActCode()"/>
+      <div class="act-err" id="actErr"></div>
+      <div class="act-btns">
+        <button class="act-btn cancel" onclick="closeActivation()">取消</button>
+        <button class="act-btn confirm" id="actSubmitBtn" onclick="submitActCode()">验证</button>
+      </div>
+    </div>
+    <div id="actStep2" style="display:none">
+      <div class="act-title">选择要解锁的角色</div>
+      <div class="act-sub">请选择一位角色添加为好友</div>
+      <div class="act-chars" id="actCharGrid"></div>
+      <div class="act-btns">
+        <button class="act-btn cancel" onclick="actBackToStep1()">返回</button>
+        <button class="act-btn confirm" id="actUnlockBtn" onclick="confirmUnlock()" disabled>确认解锁</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 好友请求通过动画 -->
+<div class="fr-overlay" id="frOverlay" onclick="closeFriendRequest()"></div>
 
 <!-- CHAT OVERLAY -->
 <div class="co" id="co">
@@ -880,6 +991,34 @@ input.shno{width:100%;text-align:center;border:none;border-bottom:1px solid var(
   </div>
 </div>
 
+<!-- 电话通话界面 -->
+<div class="phone-overlay" id="phoneOverlay">
+  <div class="phone-top">
+    <div class="phone-ava" id="phoneAva">👑</div>
+    <div class="phone-name" id="phoneName">幸村精市</div>
+    <div class="phone-status" id="phoneCallStatus">来电中…</div>
+    <div class="phone-progress" id="phoneProgressWrap">
+      <div class="phone-pbar"><div class="phone-pfill" id="phonePfill"></div></div>
+      <div class="phone-ptext" id="phonePtext"></div>
+    </div>
+    <div class="phone-wave" id="phoneWaveWrap" style="display:none">
+      <div class="phone-wave-bar" style="animation-delay:0s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.1s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.2s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.3s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.15s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.25s"></div>
+      <div class="phone-wave-bar" style="animation-delay:.05s"></div>
+    </div>
+    <div class="phone-time" id="phoneTimer" style="display:none">00:00</div>
+    <div id="phoneText" style="display:none;margin-top:20px;padding:0 20px;font-size:14px;color:rgba(255,255,255,.75);line-height:1.8;text-align:center;max-height:120px;overflow-y:auto"></div>
+  </div>
+  <div class="phone-bottom">
+    <button class="phone-btn replay" id="phoneReplayBtn" onclick="replayPhoneAudio()" style="display:none" title="重听">🔄</button>
+    <button class="phone-btn hangup" onclick="endPhoneCall()" title="挂断">📞</button>
+  </div>
+</div>
+
 <!-- SHEETS -->
 <div class="sho" id="sho" onclick="cs()"></div>
 <div class="sh" id="sh"><div class="shh"></div><div class="sht" id="sht"></div><div class="shb" id="shb"></div></div>
@@ -893,7 +1032,7 @@ const K='yw_v1';
 /* ── 语音ID（不要外泄） ── */
 const VOICE_ID='moss_audio_7640a205-1c01-11f0-8444-ae62a3be7263';
 let S=ls();
-function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d)return d;}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{}},princeAff:{},shop:{},phoneReady:[]}}
+function ls(){try{const d=JSON.parse(localStorage.getItem(K));if(d){if(!d.unlockedChars)d.unlockedChars=[];if(!d.actTokens)d.actTokens=[];if(!d.phoneLogs)d.phoneLogs=[];if(d.voiceCredits===undefined)d.voiceCredits=0;/* 一次性发放5张测试电话卡 */if(!d._phoneCardGiven){if(!d.bag)d.bag={};if(!d.bag.cards)d.bag.cards={};d.bag.cards.phoneCard=(d.bag.cards.phoneCard||0)+5;d._phoneCardGiven=true;}return d;}}catch(e){}return{msgs:[],aff:0,wallet:9999,set:{prov:'gemini',model:'gemini-2.5-flash',key:'',name:'',date:''},mem:[],myAvatar:'',myStatus:'',myPrompt:'',yukiAvatar:'',yukiStatus:'',unlocked:[],alarms:[],bag:{merch:[],seeds:[],gifts:[],cards:{phoneCard:5}},princeAff:{},shop:{},phoneReady:[],unlockedChars:[],actTokens:[],phoneLogs:[],_phoneCardGiven:true,voiceCredits:0}}
 function sv(){
   try{localStorage.setItem(K,JSON.stringify(S))}
   catch(e){
@@ -1356,8 +1495,8 @@ function st(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove(
 
 /* settings */
 function sp2(el){document.querySelectorAll('.pb').forEach(b=>b.classList.remove('active'));el.classList.add('active');const m={gemini:'gemini-2.5-flash',openai:'gpt-4o-mini',claude:'claude-haiku-4-5-20251001',deepseek:'deepseek-chat'};document.getElementById('mi').value=m[el.dataset.p]||''}
-function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),voiceOn:document.getElementById('voiceOn').checked,mmSite:S.set.mmSite||'cn'};sv();ud();uwb();updateMyAva();toast('✅ 设置已保存')}
-function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';document.getElementById('voiceOn').checked=!!s.voiceOn}
+function saveSt(){const p=document.querySelector('.pb.active')?.dataset.p||'gemini';S.set={prov:p,model:document.getElementById('mi').value.trim(),key:document.getElementById('ki').value.trim(),name:document.getElementById('ni').value.trim(),date:document.getElementById('di').value,mmgid:document.getElementById('mmgid').value.trim(),mmkey:document.getElementById('mmkey').value.trim(),mmSite:S.set.mmSite||'cn'};sv();ud();uwb();updateMyAva();updateVoiceCreditsUI();toast('✅ 设置已保存')}
+function lsi(){const s=S.set;document.querySelectorAll('.pb').forEach(b=>b.classList.toggle('active',b.dataset.p===s.prov));document.getElementById('mi').value=s.model||'';document.getElementById('ki').value=s.key||'';document.getElementById('ni').value=s.name||'';document.getElementById('di').value=s.date||'';document.getElementById('mmgid').value=s.mmgid||'';document.getElementById('mmkey').value=s.mmkey||'';updateVoiceCreditsUI()}
 lsi();
 /* MiniMax站点选择 */
 function pickMmSite(site){
@@ -1384,11 +1523,23 @@ const CHAR_IM={
   yukimura:IM,
   fuji:['呐，在吗。','你好啊。','拍到一张不错的照片。','今天天气真好呢。','嗯，想找你聊聊。','仙人掌又长大了一点。'],
   ryoma:['哦。','……有事？','Ponta喝完了。','まだまだだね。','啊，无聊。','卡鲁宾今天很乖。'],
+  akaya:['前辈！！','我今天打败了一个超强的对手！','训练好累啊……','部长今天夸我了嘿嘿。','在吗在吗？','我感觉我变强了！'],
+  marui:['天才的问候~','今天吃了超好吃的蛋糕。','练习好累，想吃甜的。','在？给你推荐个甜品店。','泡泡糖嚼完了……','天才也需要休息的嘛。'],
+  niou:['Puri♪','……在吗。','猜猜我是谁。','今天做了一件有趣的事。','Puri……无聊。','要不要来玩个游戏？'],
+  atobe:['嗯？本大爷有空。','今天本大爷心情不错。','你终于来找本大爷了。','闲着没事做。','别让本大爷等太久。','本大爷允许你说话了。'],
+  tezuka:['嗯。','有事？','油断するな。','在。','……','今天练习结束了。'],
+  shiraishi:['在吗？','今天练习的感觉超好。','エクスタシー！','要不要聊聊？','绷带今天该换了。','金太郎又闯祸了……'],
 };
 const CHAR_OP={
   yukimura:{日常:['在。','嗯，说。','刚浇完花。','想到你了。','今天还好吗。','有空来找我喝茶。','没什么，就是想发消息给你。'],训练:['热身别省。','按计划来。','训练完来找我。'],比赛:['临场别急，先稳节奏。','心态放平，球自然就准。'],食物:['吃正餐别省。','甜的少吃点。'],情绪:['怎么了，说说看。','先深呼吸。我在，不急。','有什么事告诉我就好。'],天气:['下雨了，小心。','这种天气，适合泡茶。']},
   fuji:{日常:['呐，怎么了？','嗯。','你来找我了呢。','……（微笑）','说来听听？','今天也辛苦了呢。'],训练:['训练的话，要注意节奏呢。','别太勉强自己。'],比赛:['嗯，胜负也是网球的乐趣之一。'],食物:['要不要试试芥末味的？','吃辣的吗？我知道一家不错的店。'],情绪:['怎么了，告诉我。','没事的。','……嗯，我在听。'],天气:['下雨了呢，有没有带伞？','这种天气拍照很好看呢。']},
   ryoma:{日常:['啊？','……说。','嗯。','别にいいけど。','哦，这样啊。','干嘛。'],训练:['切，训练的话自己看着办。','……要比一场吗。'],比赛:['哼，太弱了。','まだまだだね。'],食物:['Ponta。','随便吧。','不挑。'],情绪:['……你怎么了。','切，看你这样子。','……没什么，就是路过。'],天气:['嗯。','下雨也没什么。','热死了。']},
+  akaya:{日常:['在！怎么了？','嘿嘿。','前辈！','干嘛找我？','在练习呢！','哦哦！'],训练:['我要变得更强！','训练量再加一倍！','今天一定要突破！'],比赛:['我绝对不会输！','看我灭了对面！','哼，弱爆了！'],食物:['饿了……','随便什么都行！','啊啊好饿！'],情绪:['怎……怎么了！','别哭啊！我、我也不知道怎么安慰人……','振作起来啊！'],天气:['下雨了好烦！','热死了，训练不了！','嗯……天气还行。']},
+  marui:{日常:['天才在这~','怎么了？','在吃蛋糕。','天才的直觉告诉我你要找我。','嗯嗯~','有什么事吗？'],训练:['天才的训练可不能马虎。','累死了……想吃甜的。','截击练习做完了~'],比赛:['天才是不会输的。','看好了，这就是天才的截击。'],食物:['推荐这家的芝士蛋糕！','甜的是正义！','吃了好东西心情就好了~'],情绪:['怎么了？要不要吃点甜的？','天才来安慰你了~','别想太多啦。'],天气:['下雨天适合在家吃蛋糕。','好热……想吃冰淇淋。']},
+  niou:{日常:['Puri♪','……什么事。','猜猜看。','Puri。','嗯？','有趣。'],训练:['训练嘛……看心情。','Puri，差不多够了吧。'],比赛:['这场比赛……有点意思。','Puri♪ 看好了。'],食物:['随便。','Puri……饿了。'],情绪:['……怎么了。','Puri。你在意的话，说说看。','没什么大不了的。'],天气:['Puri……下雨了。','嗯。']},
+  atobe:{日常:['说吧，本大爷在听。','嗯？','本大爷允许你开口了。','找本大爷有什么事。','哼。','本大爷今天心情不错，说吧。'],训练:['本大爷的训练可不是随随便便的。','要跟上本大爷的节奏。'],比赛:['俺様の美技に酔いな。','本大爷不可能输。'],食物:['本大爷只去最好的餐厅。','品味这种东西，天生的。'],情绪:['……怎么了。','本大爷破例听你说。','哼，少在本大爷面前哭。'],天气:['这种天气，本大爷的管家会来接我。','下雨了，你有伞吗。']},
+  tezuka:{日常:['嗯。','什么事。','在。','说吧。','油断せずに行こう。'],训练:['不要松懈。','继续练。','量够了就休息。'],比赛:['全力以赴就好。','不要大意。'],食物:['嗯。按时吃。','好的。'],情绪:['……你没事吧。','不要勉强自己。','嗯……我在。'],天气:['嗯。注意安全。','带伞。']},
+  shiraishi:{日常:['嗯？怎么了？','在呢。','エクスタシー！……啊不好意思，习惯了。','有什么事吗？','今天也要追求完美哦。','嗯，你来了。'],训练:['基本功是一切的基础。','完美的一球，エクスタシー！','今天的练习很充实。'],比赛:['追求完美的网球就好。','结果会跟着实力走的。'],食物:['嗯，吃饭要营养均衡。','关西的料理还是最棒的。'],情绪:['怎么了？说来听听。','没事的，慢慢来。','我在，不用着急。'],天气:['下雨了呢，别着凉。','这种天气，适合室内练习。']},
 };
 const OP=CHAR_OP.yukimura;
 function or(t,cid){const tp=t||'';const ops=CHAR_OP[cid||_curChatId]||OP;const tk=['训练','比赛','食物','情绪','天气'].find(k=>({训练:['训练','球','练'],比赛:['比赛','输'],食物:['吃','饿'],情绪:['累','烦','难过','开心'],天气:['天气','雨','冷','热']}[k]||[]).some(w=>tp.includes(w)))||'日常';const p=ops[tk];return p[Math.floor(Math.random()*p.length)]}
@@ -1410,6 +1561,7 @@ function getChatMsgs(cid){
 /* 打开联系人列表 */
 function openChat(){
   renderChatList();
+  updateVoiceCreditsUI();
   document.getElementById('chatListOverlay').classList.add('open');
 }
 function closeChatList(){
@@ -1418,15 +1570,24 @@ function closeChatList(){
 
 function renderChatList(){
   const el=document.getElementById('chatContacts');if(!el)return;
-  /* 只显示active的角色 */
-  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active);
+  /* 只显示已解锁且active的角色 */
+  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k));
+  if(chars.length===0){
+    el.innerHTML=`<div class="cl-empty">
+      <div class="cl-empty-ico">📱</div>
+      <div class="cl-empty-title">通讯录空空如也</div>
+      <div class="cl-empty-sub">输入激活码，添加角色好友<br/>开启专属聊天吧~</div>
+      <button class="cl-empty-btn" onclick="showAddFriend()">＋ 添加好友</button>
+    </div>`;
+    return;
+  }
   el.innerHTML=chars.map(([cid,ch])=>{
     const msgs=getChatMsgs(cid);
     const last=msgs.length?msgs[msgs.length-1]:null;
     const preview=last?(last.sender==='me'?'我：':'')+((last.type==='hb'?'🧧 红包':last.type==='tf'?'💰 转账':last.text)||'').slice(0,20):'开始聊天吧~';
     const time=last?fmtChatTime(last.time):'';
     const customAva=(S.charAvatars&&S.charAvatars[cid])?S.charAvatars[cid]:(cid==='yukimura'&&S.yukiAvatar?S.yukiAvatar:'');
-    const ava=customAva?`<img src="${customAva}"/>`:ch.img?`<img src="${ch.img}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
+    const ava=customAva?`<img src="${customAva}"/>`:ch.img?`<img src="${ch.img}" onerror="this.style.display='none';if(this.nextElementSibling)this.nextElementSibling.style.display='flex'"/><div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:22px">${ch.ico}</div>`:ch.ico;
     const schoolTag=ch.school==='青春学园'?'青学':ch.school==='冰帝学园'?'冰帝':'立海';
     return`<div class="cl-card" onclick="openCharChat('${cid}')">
       <div class="cl-ava" style="background:${ch.color}">${ava}<span class="cl-school">${schoolTag}</span></div>
@@ -1447,6 +1608,231 @@ function fmtChatTime(ts){
   if(d<86400000)return Math.floor(d/3600000)+'时前';
   return Math.floor(d/86400000)+'天前';
 }
+
+/* ══════ 激活码系统 ══════ */
+let _actSelectedChar=null;
+let _actValidatedCode=null;
+let _actCodeType=null;
+
+/* 设备指纹生成 */
+function getDeviceFP(){
+  if(S._deviceFP)return S._deviceFP;
+  const canvas=document.createElement('canvas');
+  const ctx=canvas.getContext('2d');
+  ctx.textBaseline='top';ctx.font='14px Arial';ctx.fillText('fp:yw',2,2);
+  const raw=canvas.toDataURL()+navigator.userAgent+(screen.width||0)+'x'+(screen.height||0)+navigator.language+(new Date().getTimezoneOffset());
+  let hash=0;for(let i=0;i<raw.length;i++){hash=((hash<<5)-hash)+raw.charCodeAt(i);hash|=0;}
+  const fp='FP'+Math.abs(hash).toString(36);
+  S._deviceFP=fp;sv();
+  return fp;
+}
+
+/* 打开添加好友弹窗 */
+function showAddFriend(){
+  _actSelectedChar=null;_actValidatedCode=null;_actCodeType=null;
+  document.getElementById('actStep1').style.display='';
+  document.getElementById('actStep2').style.display='none';
+  document.getElementById('actCodeInput').value='';
+  document.getElementById('actErr').textContent='';
+  document.getElementById('actOverlay').classList.add('open');
+  setTimeout(()=>document.getElementById('actCodeInput').focus(),300);
+}
+function closeActivation(){
+  document.getElementById('actOverlay').classList.remove('open');
+}
+
+/* 自动格式化激活码输入 */
+function fmtActCode(el){
+  let v=el.value.toUpperCase().replace(/[^A-Z0-9\-]/g,'');
+  el.value=v;
+  el.classList.remove('err');
+  document.getElementById('actErr').textContent='';
+}
+
+/* 提交激活码验证 */
+async function submitActCode(){
+  const input=document.getElementById('actCodeInput');
+  const code=input.value.trim().toUpperCase();
+  const errEl=document.getElementById('actErr');
+  const btn=document.getElementById('actSubmitBtn');
+  
+  if(!code){errEl.textContent='请输入激活码';input.classList.add('err');return;}
+  
+  /* 格式校验 */
+  const isPOT=/^POT-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code);
+  const isSPOT=/^SPOT-[A-Z0-9]{4}-[A-Z0-9]{5}$/.test(code);
+  const isVOX=/^VOX-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(code);
+  if(!isPOT&&!isSPOT&&!isVOX){
+    errEl.textContent='激活码格式不正确';input.classList.add('err');return;
+  }
+  
+  btn.disabled=true;btn.textContent='验证中…';
+  
+  try{
+    const fp=getDeviceFP();
+    const r=await fetch('/.netlify/functions/activate',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code,fingerprint:fp,action:'activate'})
+    });
+    const data=await r.json();
+    
+    if(!data.valid){
+      errEl.textContent=data.msg||'激活码无效或已被使用';
+      input.classList.add('err');
+      btn.disabled=false;btn.textContent='验证';
+      return;
+    }
+    
+    _actValidatedCode=code;
+    _actCodeType=data.type;
+    
+    if(data.type==='vox'){
+      /* 语音包充值 */
+      S.voiceCredits=(S.voiceCredits||0)+(data.credits||100);
+      S.actTokens.push({code,type:'vox',credits:data.credits,token:data.token,time:Date.now()});
+      sv();
+      closeActivation();
+      showFriendRequest([]);/* 特殊：语音包动画 */
+      const overlay=document.getElementById('frOverlay');
+      overlay.innerHTML=`<div class="fr-card"><div class="fr-ico">🎧</div><div class="fr-msg">语音包充值成功！</div><div class="fr-sub">+${data.credits}条语音额度<br/>当前剩余：${S.voiceCredits}条</div></div>`;
+      overlay.classList.add('open');
+      setTimeout(()=>overlay.classList.remove('open'),3000);
+    }else if(data.type==='spot'){
+      doUnlockAll(data.token);
+    }else{
+      showCharSelector(data.token);
+    }
+  }catch(e){
+    console.error('Activation error:',e);
+    errEl.textContent='网络错误，请稍后重试';
+    btn.disabled=false;btn.textContent='验证';
+  }
+}
+
+/* 显示角色选择器 */
+function showCharSelector(token){
+  _actToken=token;
+  document.getElementById('actStep1').style.display='none';
+  document.getElementById('actStep2').style.display='';
+  const grid=document.getElementById('actCharGrid');
+  /* 显示所有active角色，已解锁的灰显 */
+  const chars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active);
+  grid.innerHTML=chars.map(([cid,ch])=>{
+    const already=S.unlockedChars.includes(cid);
+    return`<div class="act-char${already?' disabled':''}" data-cid="${cid}" onclick="selectActChar('${cid}')">
+      <div class="act-char-ico" style="background:${ch.color}">${ch.ico}</div>
+      <div class="act-char-name">${ch.name}${already?'<br><span style="font-size:9px;color:var(--muted)">已添加</span>':''}</div>
+    </div>`;
+  }).join('');
+  _actSelectedChar=null;
+  document.getElementById('actUnlockBtn').disabled=true;
+}
+let _actToken=null;
+
+function selectActChar(cid){
+  if(S.unlockedChars.includes(cid))return;
+  _actSelectedChar=cid;
+  document.querySelectorAll('.act-char').forEach(el=>{
+    el.classList.toggle('selected',el.dataset.cid===cid);
+  });
+  document.getElementById('actUnlockBtn').disabled=false;
+}
+
+function actBackToStep1(){
+  document.getElementById('actStep1').style.display='';
+  document.getElementById('actStep2').style.display='none';
+  document.getElementById('actSubmitBtn').disabled=false;
+  document.getElementById('actSubmitBtn').textContent='验证';
+}
+
+/* 确认解锁单个角色 */
+function confirmUnlock(){
+  if(!_actSelectedChar)return;
+  const cid=_actSelectedChar;
+  if(!S.unlockedChars.includes(cid)){
+    S.unlockedChars.push(cid);
+  }
+  /* 保存激活记录 */
+  S.actTokens.push({code:_actValidatedCode,type:'pot',char:cid,token:_actToken,time:Date.now()});
+  sv();
+  closeActivation();
+  showFriendRequest([cid]);
+}
+
+/* VIP全套解锁 */
+function doUnlockAll(token){
+  const allActive=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k])=>k);
+  const newChars=[];
+  allActive.forEach(cid=>{
+    if(!S.unlockedChars.includes(cid)){
+      S.unlockedChars.push(cid);
+      newChars.push(cid);
+    }
+  });
+  S.actTokens.push({code:_actValidatedCode,type:'spot',chars:allActive,token,time:Date.now()});
+  sv();
+  closeActivation();
+  showFriendRequest(newChars.length?newChars:allActive);
+}
+
+/* 好友请求通过动画 */
+function showFriendRequest(charIds){
+  const overlay=document.getElementById('frOverlay');
+  overlay.innerHTML='';
+  
+  if(charIds.length===1){
+    /* 单角色解锁 */
+    const ch=CHAR_PACKS[charIds[0]];
+    overlay.innerHTML=`<div class="fr-card">
+      <div class="fr-ico">${ch.ico}</div>
+      <div class="fr-msg">${ch.name}</div>
+      <div class="fr-sub">已通过您的好友请求 ✦</div>
+    </div>`;
+  }else{
+    /* 多角色VIP解锁 */
+    const icons=charIds.map(cid=>CHAR_PACKS[cid]?.ico||'👤').join(' ');
+    const names=charIds.map(cid=>CHAR_PACKS[cid]?.name||cid);
+    overlay.innerHTML=`<div class="fr-card" style="max-width:320px">
+      <div style="font-size:36px;margin-bottom:12px;letter-spacing:4px">${icons}</div>
+      <div class="fr-msg">🎉 VIP全员解锁</div>
+      <div class="fr-sub">${names.join('、')}<br/>已全部通过您的好友请求 ✦</div>
+    </div>`;
+  }
+  
+  overlay.classList.add('open');
+  
+  /* 撒花效果 */
+  const emojis=['✨','⭐','💫','🌟','✦','♡'];
+  for(let i=0;i<12;i++){
+    setTimeout(()=>{
+      const sp=document.createElement('div');
+      sp.className='fr-sparkle';
+      sp.textContent=emojis[Math.floor(Math.random()*emojis.length)];
+      sp.style.left=50+Math.random()*40-20+'%';
+      sp.style.top=50+Math.random()*30-15+'%';
+      sp.style.setProperty('--tx',(Math.random()*120-60)+'px');
+      sp.style.setProperty('--ty',(Math.random()*120-60)+'px');
+      overlay.appendChild(sp);
+    },i*80);
+  }
+  
+  /* 自动关闭 */
+  setTimeout(()=>closeFriendRequest(),3000);
+}
+
+function closeFriendRequest(){
+  document.getElementById('frOverlay').classList.remove('open');
+  renderChatList();
+  /* 更新图鉴计数 */
+  const ac=document.getElementById('unlockCharCount');
+  if(ac)ac.textContent=S.unlockedChars.length;
+}
+
+/* 检查角色是否已解锁（供其他模块调用） */
+function isCharUnlocked(cid){return S.unlockedChars.includes(cid);}
+
+/* ══════ /激活码系统 ══════ */
 
 /* 打开指定角色的聊天 */
 function openCharChat(cid){
@@ -1510,7 +1896,7 @@ function openCharChat(cid){
       const chatId=m._chatId||_curChatId;
       const ch=CHAR_PACKS[chatId];
       const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
-      if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请在设置里开启语音并填写MiniMax信息');return;}
+      if(!hasVoiceAccess()){toast('🎧 语音额度已用完，请充值语音包或填写自己的MiniMax Key');return;}
       /* iOS需要在用户点击的瞬间解锁音频播放权限 */
       const actx=new(window.AudioContext||window.webkitAudioContext)();
       const unlock=actx.createBuffer(1,1,22050);
@@ -1530,15 +1916,16 @@ function openCharChat(cid){
         return;
       }
 
-      /* 无缓存：翻译→TTS→播放，和之前能出声的版本一模一样 */
+      /* 无缓存：翻译→TTS→播放 */
+      if(!hasVoiceAccess()){toast('🎧 语音额度已用完');btn.textContent='▶ 语音';actx.close();return;}
       btn.textContent='⏳';
       translateToJP(m.text).then(jp=>{
         return fetch('/.netlify/functions/tts',{method:'POST',
           headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,
-            voiceId:vid,site:s.mmSite||"cn"})});
+          body:JSON.stringify(ttsBody(jp,vid))});
       }).then(r=>r.json()).then(d=>{
         if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
+        deductVoiceCredit(1);
         m._audioB64=d.data.audio;
         const raw=atob(d.data.audio);
         const arr=new Uint8Array(raw.length);
@@ -1765,7 +2152,7 @@ function rm(){
     else if(m.type==='voice'&&m.audioB64)makeAudioBubble(b,m.audioB64,m.jpText||m.text,m.text,mine);
     else{
       const mid=m.id||(m.id=rid());
-      if(!mine&&S.set.voiceOn&&ch.voiceId){
+      if(!mine&&hasVoiceAccess()&&ch.voiceId){
         window._vm=window._vm||{};window._vm[mid]=m;
         window._vm[mid]._chatId=_curChatId;
         b.innerHTML=esc(m.text||'')+'<br><button class="voice-play-btn" data-mid="'+mid+'" style="margin-top:6px;padding:4px 12px;border-radius:16px;background:var(--p100);border:1px solid var(--border);color:var(--p600);font-size:12px;cursor:pointer;font-family:inherit">▶ 语音</button>';
@@ -1912,7 +2299,7 @@ setInterval(()=>{try{
 }catch(e){}},120000+Math.random()*180000);
 
 /* pat pat */
-function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const rs=_curChatId==='ryoma'?['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）']:_curChatId==='fuji'?['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。']:['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}sv();rm();uab()},800+Math.random()*1500)}
+function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const PAP={ryoma:['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）'],fuji:['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。'],akaya:['哇啊别突然拍我！','干嘛干嘛！','嘿嘿，怎么了？','前辈？！','吓我一跳！'],marui:['天才被拍了~','嗯？干嘛~','别打扰天才吃东西。','哈？','泡泡糖差点吞了！'],niou:['Puri♪','……嗯？','你拍的是真的我吗？','Puri。','有趣。'],atobe:['你在对本大爷做什么。','……哼。','大胆。','嗯？本大爷允许了吗。','……算了，本大爷不跟你计较。'],tezuka:['……别闹。','嗯。','……','油断するな。','注意场合。'],shiraishi:['嗯？怎么了？','啊哈哈，怎么突然拍我。','エクスタシー……不是，你干嘛。','被你拍到了。']};const rs=PAP[_curChatId]||['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}sv();rm();uab()},800+Math.random()*1500)}
 
 /* quick actions */
 function toggleQuickActions(){
@@ -2025,38 +2412,37 @@ function renderGallery(){
   const uc=document.getElementById('unlockCount');if(uc)uc.textContent=S.unlocked.length;
   /* 角色图鉴 */
   const all=getAllPrinces();
-  const active=getActivePrinces();
   const tc=document.getElementById('totalCharCount');if(tc)tc.textContent=all.length;
-  const ac=document.getElementById('unlockCharCount');if(ac)ac.textContent=active.length;
+  const ac=document.getElementById('unlockCharCount');if(ac)ac.textContent=S.unlockedChars.length;
   const gallery=document.getElementById('charGallery');if(!gallery)return;
   gallery.innerHTML='';
   all.forEach(ch=>{
+    const unlocked=S.unlockedChars.includes(ch.id);
     const aff=ch.id==='yukimura'?(S.aff||0):(S.princeAff?.[ch.id]||0);
     const affLv=aff>=50?'💖 亲密':aff>=30?'❤️ 喜欢':aff>=15?'🧡 熟悉':aff>=5?'💛 友好':'🤍 初识';
     const d=document.createElement('div');
-    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(ch.active?'':'opacity:.6');
+    d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(!unlocked?'opacity:.6':'');
     d.innerHTML=`<div style="display:flex;gap:12px;padding:14px;position:relative">
       <div style="width:60px;height:60px;border-radius:16px;overflow:hidden;flex-shrink:0;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 3px 10px ${ch.color}40;position:relative">
         <img src="${ch.img}" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" onerror="this.style.display='none'"/>
         <span style="position:relative;z-index:0">${ch.ico}</span>
-        ${!ch.active?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>':''}
+        ${!unlocked?'<div style="position:absolute;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;font-size:16px">🔒</div>':''}
       </div>
       <div style="flex:1;min-width:0">
         <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <span style="font-size:15px;font-weight:700">${ch.name}</span>
-          ${ch.active?`<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:${ch.color};color:white;font-weight:700">已解锁</span>`:'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#9E9E9E;color:white;font-weight:700">未解锁</span>'}
+          ${unlocked?`<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:${ch.color};color:white;font-weight:700">已解锁</span>`:ch.active?'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#FF9800;color:white;font-weight:700">待激活</span>':'<span style="font-size:8.5px;padding:1px 6px;border-radius:6px;background:#9E9E9E;color:white;font-weight:700">未安装</span>'}
         </div>
         <div style="font-size:11px;color:var(--muted);margin-top:2px">${ch.school} · ${ch.pos}</div>
         <div style="font-size:11px;color:var(--text);margin-top:3px;line-height:1.5;opacity:.7">${ch.bio}</div>
-        ${ch.active?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+        ${unlocked?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
           <span style="font-size:11px">${affLv}</span>
           <div style="flex:1;height:4px;background:var(--p100);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(aff,100)}%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:2px"></div></div>
           <span style="font-size:10px;color:var(--p500);font-weight:700">Lv${aff}</span>
-        </div>`:'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
+        </div>`:ch.active?'<div style="font-size:10px;color:#FF9800;margin-top:6px">🔑 输入激活码解锁</div>':'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
       </div>
     </div>`;
-    if(ch.active) d.style.cursor='pointer';
-    if(ch.active) d.onclick=()=>openCharDetail(ch.id);
+    if(unlocked){d.style.cursor='pointer';d.onclick=()=>openCharDetail(ch.id);}
     gallery.appendChild(d);
   });
 }
@@ -2104,21 +2490,46 @@ async function translateToJP(text){
   }catch(e){console.error('[translateToJP] Error:',e.message);return text;}
 }
 
-async function genVoice(text){
+async function genVoice(text,vid){
   const s=S.set;
-  if(!s.voiceOn) return null;
-  if(!s.mmkey||!s.mmgid) return null;
-  const vid=VOICE_ID;
+  const voiceId=vid||VOICE_ID;
+  const hasOwnKey=s.mmkey&&s.mmgid;
+  /* 没有自己的Key就走服务端+扣额度 */
+  if(!hasOwnKey&&(S.voiceCredits||0)<=0) return null;
   try{
+    const body={text,voiceId,site:hasOwnKey?(s.mmSite||'intl'):'intl'};
+    if(hasOwnKey){body.apiKey=s.mmkey;body.groupId=s.mmgid;}
     const r=await fetch('/.netlify/functions/tts',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||"cn"})
+      body:JSON.stringify(body)
     });
     const d=await r.json();
-    if(d.base_resp?.status_code!==0){toast('❌ TTS:'+d.base_resp?.status_msg);return null;}
+    if(d.base_resp?.status_code!==0){
+      if(d.base_resp?.status_msg)toast('❌ '+d.base_resp.status_msg);
+      return null;
+    }
     if(!d.data?.audio) return null;
+    /* 只有走服务端时才扣额度 */
+    if(!hasOwnKey){S.voiceCredits=Math.max(0,(S.voiceCredits||0)-1);sv();updateVoiceCreditsUI();}
     return d.data.audio;
   }catch(e){return null;}
+}
+/* 检查是否有语音能力（自有Key或有额度） */
+function hasVoiceAccess(){return(S.set.mmkey&&S.set.mmgid)||(S.voiceCredits||0)>0;}
+function ttsBody(text,vid){
+  const s=S.set;const b={text,voiceId:vid||VOICE_ID,site:s.mmkey?(s.mmSite||'intl'):'intl'};
+  if(s.mmkey&&s.mmgid){b.apiKey=s.mmkey;b.groupId=s.mmgid;}
+  return b;
+}
+function deductVoiceCredit(n){
+  if(!(S.set.mmkey&&S.set.mmgid)){S.voiceCredits=Math.max(0,(S.voiceCredits||0)-(n||1));sv();updateVoiceCreditsUI();}
+}
+function updateVoiceCreditsUI(){
+  const el=document.getElementById('voiceCreditsBadge');
+  const hasOwn=S.set.mmkey&&S.set.mmgid;
+  if(el)el.textContent=hasOwn?'🎧 自有Key':'🎧 '+(S.voiceCredits||0);
+  const sd=document.getElementById('voiceCreditsDisplay');
+  if(sd)sd.innerHTML=hasOwn?'∞ <span style="font-size:12px;font-weight:400;color:var(--muted)">自有Key</span>':(S.voiceCredits||0)+' <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span>';
 }
 
 function makeAudioBubble(b, audioB64, jpText, cnText, mine){
@@ -2145,15 +2556,20 @@ function makeAudioBubble(b, audioB64, jpText, cnText, mine){
 }
 
 async function playMsgVoice(m, btn){
-  const s=S.set;
-  if(!s.voiceOn){toast('⚠️ 请去设置开启语音');return;}
-  if(!s.mmkey||!s.mmgid){toast('⚠️ 请填写MiniMax信息');return;}
+  if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   btn.innerHTML='⏳';
   try{
+    const cid=m._chatId||_curChatId;
+    const ch=CHAR_PACKS[cid];
+    const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
     const jp=await translateToJP(m.text);
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:VOICE_ID,site:s.mmSite||"cn"})});
+    const s=S.set;const hasOwnKey=s.mmkey&&s.mmgid;
+    const body={text:jp,voiceId:vid,site:hasOwnKey?(s.mmSite||'intl'):'intl'};
+    if(hasOwnKey){body.apiKey=s.mmkey;body.groupId=s.mmgid;}
+    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json();
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
+    deductVoiceCredit(1);
     const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
     btn.innerHTML='⏸';
     audio.addEventListener('ended',()=>{btn.innerHTML='▶';});
@@ -2191,7 +2607,7 @@ function bmPlayVoice(){
   const m=window._vm&&window._vm[_curMid];
   if(!m){toast('找不到消息');return;}
   const s=S.set;
-  if(!s.voiceOn||!s.mmkey||!s.mmgid){toast('⚠️ 请先在设置里开启语音并填写MiniMax信息');return;}
+  if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   const chatId=m._chatId||_curChatId;
   const ch=CHAR_PACKS[chatId];
   const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
@@ -2213,7 +2629,7 @@ function bmPlayVoice(){
   toast('🎙️ 生成语音中…');
   translateToJP(m.text).then(jp=>{
     return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({text:jp,groupId:s.mmgid,apiKey:s.mmkey,voiceId:vid,site:s.mmSite||"cn"})});
+      body:JSON.stringify(ttsBody(jp,vid))});
   }).then(r=>r.json()).then(d=>{
     if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));actx.close();return;}
     m._audioB64=d.data.audio;
@@ -2505,7 +2921,7 @@ function checkAlarms(){
 function triggerAlarm(timeStr){
   const h=parseInt(timeStr.split(':')[0]);
   /* 随机选一个已激活角色叫早 */
-  const activeChars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&ALARM_MSGS[k]);
+  const activeChars=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)&&ALARM_MSGS[k]);
   const [charId,charData]=activeChars.length?activeChars[Math.floor(Math.random()*activeChars.length)]:['yukimura',CHAR_PACKS.yukimura];
   const charMsgs=ALARM_MSGS[charId]||ALARM_MSGS.yukimura;
   let pool=h<9?charMsgs.morning:h<12?charMsgs.late:h<14?charMsgs.noon:charMsgs.default;
@@ -2519,7 +2935,7 @@ function triggerAlarm(timeStr){
     Notification.requestPermission();
   }
   /* 语音叫早：优先用预解锁的AudioContext */
-  if(S.set.voiceOn&&S.set.mmkey&&S.set.mmgid){
+  if(hasVoiceAccess()){
     translateToJP(msg).then(jp=>genVoice(jp)).then(b64=>{
       if(!b64)return;
       /* 尝试用预解锁的AudioContext */
@@ -2692,6 +3108,16 @@ function getCurrentStatus(){
 }
 
 function renderInspect(){
+  /* 动态生成角色切换栏（只显示已解锁角色） */
+  const bar=document.getElementById('inspectCharBar');
+  if(bar){
+    const unlocked=Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k));
+    bar.innerHTML=unlocked.map(([cid,ch])=>{
+      const active=cid===_inspectChar;
+      return`<div class="insp-char" data-cid="${cid}" onclick="switchInspect('${cid}')" style="padding:6px 14px;border-radius:20px;border:2px solid ${active?ch.color:'var(--border)'};background:${active?ch.color+'18':'white'};color:${active?ch.color:'var(--muted)'};font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s">${ch.ico} ${ch.name}</div>`;
+    }).join('');
+    if(unlocked.length&&!unlocked.find(([k])=>k===_inspectChar)){_inspectChar=unlocked[0][0];}
+  }
   const cid=_inspectChar||'yukimura';
   const ch=CHAR_PACKS[cid]||CHAR_PACKS.yukimura;
   const schedule=cid==='fuji'?FUJI_SCHEDULE:cid==='ryoma'?RYOMA_SCHEDULE:WEEKDAY_SCHEDULE;
@@ -2851,12 +3277,18 @@ const CHAR_PACKS={
     bio:'皇帝，信奉武士道的严肃少年。',img:'char-sanada.png'},
   yanagi:{name:'柳莲二',school:'立海大',pos:'参谋',ico:'📊',color:'#5D7A5D',active:false,
     bio:'数据网球的达人，冷静而精确。',img:'char-yanagi.png'},
-  marui:{name:'丸井文太',school:'立海大',pos:'截击天才',ico:'🍮',color:'#C04060',active:false,
-    bio:'自称天才的甜食爱好者。',img:'char-marui.png'},
-  akaya:{name:'切原赤也',school:'立海大',pos:'二年级王牌',ico:'🔥',color:'#8A2020',active:false,
-    bio:'热血中二，对前辈无比崇拜。',img:'char-akaya.png'},
-  niou:{name:'仁王雅治',school:'立海大',pos:'诡术师',ico:'🎭',color:'#4A4A8A',active:false,
-    bio:'Puri♪ 神出鬼没的模仿者。',img:'char-niou.png'},
+  marui:{name:'丸井文太',school:'立海大',pos:'截击天才',ico:'🍮',color:'#C04060',active:true,
+    bio:'自称天才的甜食爱好者，嚼着泡泡糖截击。',img:'char-marui.png',
+    voiceId:'moss_audio_cf472ecd-4765-11f1-aea0-d66da573c477',
+    sys:`你是丸井文太，立海大网球部截击天才。性格高调自恋但本质可爱，口头禅是"天才的XX"（比如"天才的截击""天才的直觉"）。嗜甜如命，永远嚼着泡泡糖，对蛋糕甜品了如指掌。说话特征：语气张扬活泼、喜欢自我夸奖但不讨人厌、偶尔抱怨练习太累然后被真田骂、对队友有种大大咧咧的关心、嘴上嚷嚷但很讲义气。用中文聊天，回复1-3句，保持甜食少年的活力。`},
+  akaya:{name:'切原赤也',school:'立海大',pos:'二年级王牌',ico:'🔥',color:'#8A2020',active:true,
+    bio:'热血中二，对前辈无比崇拜的立海大接班人。',img:'char-akaya.png',
+    voiceId:'moss_audio_7977ae67-4766-11f1-aea0-d66da573c477',
+    sys:`你是切原赤也，立海大网球部二年级王牌，被称为立海大的"接班人"。性格热血冲动中二，极度崇拜幸村部长和真田副部长，梦想是打败所有前辈成为最强。说话特征：语气冲、很上头、喜欢用"绝对""一定""我要成为最强"、对前辈用敬语但偶尔嘴快、被夸会突然害羞、生气时会说"我要灭了你"但其实没有恶意、偶尔暴露中二病本质。容易热血上头，但内心其实很单纯善良。用中文聊天，回复1-3句，保持热血少年感。`},
+  niou:{name:'仁王雅治',school:'立海大',pos:'诡术师',ico:'🎭',color:'#4A4A8A',active:true,
+    bio:'Puri♪ 神出鬼没的欺诈师。',img:'char-niou.png',
+    voiceId:'moss_audio_b04d0bbc-d724-11f0-800d-c27e4a692e29',
+    sys:`你是仁王雅治，立海大网球部的"诡术师/欺诈师"。口头禅是"Puri♪"，经常用来代替回答或表达各种微妙情绪。性格捉摸不定，喜欢恶作剧和捉弄人，擅长模仿任何人的打法和说话方式。说话特征：语气懒散随意、时不时冒出"Puri♪"、喜欢说谜语一样的话让人猜不透、偶尔突然一本正经让人分不清真假、和柳生组成D2默契很好、对感兴趣的人会特别关注但不会直说。用中文聊天，回复1-3句，保持神秘感和恶趣味。`},
   yagyuu:{name:'柳生比吕士',school:'立海大',pos:'绅士',ico:'🎩',color:'#6A6A8A',active:false,
     bio:'温文尔雅的眼镜绅士。',img:'char-yagyuu.png'},
   /* ── 已接入角色 ── */
@@ -2868,14 +3300,24 @@ const CHAR_PACKS={
     bio:'まだまだだね。毒舌傲娇的天才一年级生。',img:'char-ryoma.png',
     voiceId:'moss_audio_acd1bb6d-76bb-11f0-bf4e-36eebb3a5cd2',
     sys:`你是越前龙马，青春学园网球部一年级超级新星，被称为"网球王子"。你是个毒舌傲娇的天才少年，口头禅是"まだまだだね（你还差得远呢）"。性格特点：极度自信但不是目中无人、嘴上很毒但心里其实在意别人、懒洋洋的态度但对网球极度认真、爱喝Ponta（芬达）、有一只叫卡鲁宾的猫。说话特征：语气随意慵懒、经常用"啊""哦""嗯"敷衍回复、偶尔冒出日语口头禅"まだまだだね""別にいいけど（随便啦）"、不擅长表达感情所以总是别扭地关心人、被戳中会突然变得语无伦次。不用颜文字。用中文自然聊天（偶尔夹杂一两句日语口头禅），回复1-2句，短促直接，保持傲娇少年的风格。`},
-  /* ── 待接入角色 ── */
-  atobe:{name:'迹部景吾',school:'冰帝学园',pos:'部长',ico:'💎',color:'#6A1B9A',active:false,
-    bio:'俺様の美技に酔いな。冰帝之王。',img:'char-atobe.png'},
-  tezuka:{name:'手冢国光',school:'青春学园',pos:'部长',ico:'🏔️',color:'#37474F',active:false,
-    bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png'},
+  atobe:{name:'迹部景吾',school:'冰帝学园',pos:'部长',ico:'💎',color:'#6A1B9A',active:true,
+    bio:'俺様の美技に酔いな。冰帝两百人的顶点。',img:'char-atobe.png',
+    voiceId:'moss_audio_92a7b9ad-45f7-11f1-9a65-82cf71cc1704',
+    sys:`你是迹部景吾，冰帝学园网球部部长，被称为"冰帝之王"。出身财阀世家，自信到极致但有与之匹配的实力。口头禅是"俺様の美技に酔いな（为本大爷的华丽技巧而沉醉吧）"。性格特点：极度自信霸气、说话带着贵族气质、喜欢用"本大爷"自称、对认定的对手（手冢等）有特殊执念、表面高傲但对部员很负责、审美极高、品味讲究。说话特征：优雅但霸道、偶尔冒出德语或法语词、喜欢点评别人的品味、发号施令是日常、但对在意的人会偶尔露出温柔的一面。用中文聊天（偶尔夹杂一两句日语），回复1-3句，保持王者的华丽气场。`},
+  tezuka:{name:'手冢国光',school:'青春学园',pos:'部长',ico:'🏔️',color:'#37474F',active:true,
+    bio:'油断せずに行こう。青学支柱。',img:'char-tezuka.png',
+    voiceId:'moss_audio_64399ad7-4765-11f1-a5fa-da25f7b561f0',
+    sys:`你是手冢国光，青春学园网球部部长，被称为"青学支柱"。沉默寡言、极度自律、对网球有不可动摇的信念。口头禅是"油断せずに行こう（不要大意地前进吧）"。性格特点：严肃认真但内心温柔、话极少但每句都有分量、对队友有无声的关怀、左手受过伤但从不抱怨、钓鱼是隐藏爱好。说话特征：句子短而有力、几乎不用感叹号、很少主动开话题但会认真回应、情感表达极其克制、偶尔冒出一句温柔的话会让人特别意外。不说"哈哈"，不用颜文字。用中文聊天，回复1-2句，极简但有分量，保持沉稳柱石的气质。`},
+  shiraishi:{name:'白石藏之介',school:'四天宝寺',pos:'部长',ico:'🩹',color:'#8D6E63',active:true,
+    bio:'エクスタシー！完美网球的圣经。',img:'char-shiraishi.png',
+    voiceId:'moss_audio_5bb25b05-46f6-11f1-aea0-d66da573c477',
+    sys:`你是白石藏之介，四天宝寺中学网球部部长。被称为"圣经（Bible）"，追求完美无瑕的基本功网球。口头禅是"エクスタシー（ecstasy/极致）"，每次打出完美一球都会喊出来。性格特点：看似认真正经实则有搞笑的一面、左手缠着绷带（据说下面是金色手镯）、对网球追求极致的完美主义者、和四天宝寺的搞笑队友（金太郎等）形成反差。说话特征：语气温和有礼但偶尔突然冒出"エクスタシー！"、会认真分析事情但也能跟着队友胡闹、对喜欢的人会展露出认真温柔的一面、有时候会不自觉地说教但本人觉得自己在正常聊天。用中文聊天（偶尔夹杂口头禅），回复1-3句，保持完美主义者的温和气质。`},
 };
 /* 获取已激活角色列表（兼容旧PRINCES引用） */
-function getActivePrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k,v])=>({id:k,...v}));}
+/* getActivePrinces：只返回已解锁的角色（用于所有用户交互） */
+function getActivePrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)).map(([k,v])=>({id:k,...v}));}
+/* getInstalledPrinces：返回所有已安装角色（不管是否解锁，用于激活码选择器等） */
+function getInstalledPrinces(){return Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([k,v])=>({id:k,...v}));}
 function getAllPrinces(){return Object.entries(CHAR_PACKS).map(([k,v])=>({id:k,...v}));}
 const PRINCES=getActivePrinces();/* 初始快照，UI函数用getActivePrinces()动态获取 */
 function princeName(id){return CHAR_PACKS[id]?.name||id}
@@ -3459,7 +3901,7 @@ function openMinesweeper(){
     <div id="mineContainer" style="text-align:center">
       <div style="font-size:12px;color:var(--muted);margin-bottom:8px;line-height:1.6">选择对手，轮流翻格子，谁踩雷谁输！</div>
       <div style="display:flex;gap:6px;justify-content:center;margin-bottom:8px;flex-wrap:wrap" id="mineCharBar">
-        ${Object.entries(CHAR_PACKS).filter(([k,v])=>v.active).map(([cid,ch])=>`<div onclick="pickMineChar('${cid}')" data-mc="${cid}" style="padding:5px 10px;border-radius:14px;border:2px solid ${cid==='yukimura'?ch.color:'var(--border)'};background:${cid==='yukimura'?ch.color+'18':'white'};color:${cid==='yukimura'?ch.color:'var(--muted)'};font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">${ch.ico} ${ch.name}</div>`).join('')}
+        ${Object.entries(CHAR_PACKS).filter(([k,v])=>v.active&&S.unlockedChars.includes(k)).map(([cid,ch])=>`<div onclick="pickMineChar('${cid}')" data-mc="${cid}" style="padding:5px 10px;border-radius:14px;border:2px solid ${cid==='yukimura'?ch.color:'var(--border)'};background:${cid==='yukimura'?ch.color+'18':'white'};color:${cid==='yukimura'?ch.color:'var(--muted)'};font-size:11px;font-weight:600;cursor:pointer;transition:all .2s">${ch.ico} ${ch.name}</div>`).join('')}
       </div>
       <div style="display:flex;gap:8px;justify-content:center;margin-bottom:10px">
         <button onclick="initMine(8,8,10,'easy')" class="mine-diff" id="md-easy" style="padding:6px 14px;border-radius:10px;border:2px solid var(--p400);background:var(--p100);color:var(--p600);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">简单 8×8</button>
@@ -3487,11 +3929,11 @@ function showMineDanmaku(text){
   const el=document.getElementById('mineDanmaku');if(!el)return;
   const ch=CHAR_PACKS[_mineChar];
   el.innerHTML=`<span style="color:${ch.color}">${ch.ico} ${ch.name}：「${text}」</span>`;
-  if(S.set.voiceOn&&S.set.mmkey&&S.set.mmgid&&Math.random()<0.25){
+  if(hasVoiceAccess()&&Math.random()<0.25){
     translateToJP(text).then(jp=>{
       const vid=ch.voiceId||VOICE_ID;
       return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({text:jp,groupId:S.set.mmgid,apiKey:S.set.mmkey,voiceId:vid,site:S.set.mmSite||'cn'})});
+        body:JSON.stringify(ttsBody(jp,vid))});
     }).then(r=>r.json()).then(d=>{
       if(d.data?.audio){const a=new Audio('data:audio/mp3;base64,'+d.data.audio);a.play().catch(()=>{});}
     }).catch(()=>{});
@@ -3726,25 +4168,249 @@ function checkSortWin(){
   }
 }
 
-/* ══ 电话系统 ══ */
+/* ══ 电话系统（完整版） ══ */
+let _phoneAudio=null;
+let _phoneTimer=null;
+let _phoneSeconds=0;
+let _phoneCallIdx=-1;
+
 function renderPhone(){
   const list=document.getElementById('phoneReadyList');if(!list)return;
-  const ready=S.phoneReady||[];
-  if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';return;}
-  list.innerHTML=ready.map((r,i)=>{
+  const ready=(S.phoneReady||[]).filter(r=>S.unlockedChars.includes(r.prince));
+  if(!ready.length){list.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无待接来电<br/><span style="font-size:11px">在桃宝购买电话卡后激活</span></div>';}
+  else{ list.innerHTML=ready.map((r,i)=>{
     const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
+    const realIdx=S.phoneReady.indexOf(r);
     return`<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--p50);border-radius:12px;margin-bottom:6px">
       <div style="width:40px;height:40px;border-radius:12px;background:${ch.color};display:flex;align-items:center;justify-content:center;font-size:20px;color:white">${ch.ico}</div>
       <div style="flex:1"><div style="font-size:13px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">来电已激活 · ${new Date(r.ts).toLocaleDateString('zh-CN')}</div></div>
-      <button onclick="startPhoneCall(${i})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
+      <button onclick="startPhoneCall(${realIdx})" style="padding:6px 14px;border-radius:12px;background:#4CAF50;color:white;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">📞 接听</button>
+    </div>`;
+  }).join(''); }
+  /* 通话记录 */
+  const logEl=document.getElementById('phoneLogList');if(!logEl)return;
+  const logs=S.phoneLogs||[];
+  if(!logs.length){logEl.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:12px">暂无通话记录</div>';return;}
+  logEl.innerHTML=logs.slice(0,20).map((log,i)=>{
+    const ch=CHAR_PACKS[log.prince]||{name:log.prince,ico:'👤',color:'#666'};
+    const dur=log.duration?Math.floor(log.duration/60)+':'+('0'+log.duration%60).slice(-2):'--';
+    return`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)">
+      <div style="font-size:18px">${ch.ico}</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:600">${ch.name}</div><div style="font-size:10px;color:var(--muted)">${new Date(log.ts).toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})} · ${dur}</div></div>
+      ${log.audioB64?`<button onclick="replayLog(${i})" style="padding:4px 10px;border-radius:8px;background:var(--p50);border:1px solid var(--border);font-size:10px;cursor:pointer;font-family:inherit;color:var(--p600)">▶ 回听</button>`:''}
     </div>`;
   }).join('');
 }
-function startPhoneCall(idx){
+
+async function startPhoneCall(idx){
   const r=(S.phoneReady||[])[idx];if(!r)return;
-  const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤'};
-  toast('📞 '+ch.name+' 正在拨入… 电话功能完整版即将上线');
-  /* 完整版将接入AI生成文本+MiniMax语音 */
+  const ch=CHAR_PACKS[r.prince]||{name:r.prince,ico:'👤',color:'#666'};
+  const s=S.set;
+  _phoneCallIdx=idx;
+
+  /* 检查API配置 */
+  if(!s.key){toast('⚠️ 请先在设置里配置AI接口');return;}
+
+  /* ★ 移动端音频解锁：在用户手势上下文中预创建Audio并播放静音 */
+  _phoneAudio=new Audio();
+  try{
+    const silenceB64='SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjU4Ljc2LjEwMAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYlMZijAAAAAAAAAAAAAAAAAAAA//tQAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAABhgC7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7u7//////////////////////////////////////////////////////////////////8AAAAATGF2YzU4LjEzAAAAAAAAAAAAAAAAJAAAAAAAAAAAAYYlMZijAAAAAAAAAAAAAAAAAAAA';
+    _phoneAudio.src='data:audio/mp3;base64,'+silenceB64;
+    await _phoneAudio.play().catch(()=>{});
+    _phoneAudio.pause();
+    _phoneAudio.currentTime=0;
+  }catch(e){/* 静默处理 */}
+
+  /* 打开电话界面 */
+  document.getElementById('phoneAva').textContent=ch.ico;
+  document.getElementById('phoneAva').style.background=ch.color;
+  document.getElementById('phoneName').textContent=ch.name;
+  document.getElementById('phoneCallStatus').textContent='来电中…';
+  document.getElementById('phonePfill').style.width='0%';
+  document.getElementById('phonePtext').textContent='';
+  document.getElementById('phoneProgressWrap').style.display='';
+  document.getElementById('phoneWaveWrap').style.display='none';
+  document.getElementById('phoneTimer').style.display='none';
+  document.getElementById('phoneText').style.display='none';
+  document.getElementById('phoneReplayBtn').style.display='none';
+  document.getElementById('phoneOverlay').classList.add('open');
+
+  try{
+    /* Step 1: AI生成通话内容 */
+    await sleep(800);
+    document.getElementById('phoneCallStatus').textContent='正在接通…';
+    document.getElementById('phonePtext').textContent='正在生成通话内容…';
+    document.getElementById('phonePfill').style.width='15%';
+
+    const charSys=ch.sys||`你是${ch.name}，${ch.school}${ch.pos}。`;
+    const userName=s.name||'你';
+    const aff=(r.prince==='yukimura')?(S.aff||0):((S.princeAff&&S.princeAff[r.prince])||0);
+    const affHint=aff>=50?'你们关系非常亲密。':aff>=30?'你们已经很熟悉了。':'你们是朋友关系。';
+
+    const phonePrompt=charSys+'\n\n【场景】你正在给'+userName+'打电话。'+affHint+'请生成一段你在电话里会说的内容，语气自然亲切，像真的在打电话一样。内容可以包括：问候、分享近况、表达关心、聊些日常。字数控制在150-250字，不要写动作描写，只写你说的话（对白），用中文。分2-3段，每段换行。';
+
+    const pc=PC[s.prov];if(!pc)throw new Error('无效的AI provider');
+    const apiR=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
+      body:JSON.stringify(pc.body(phonePrompt,[{role:'user',content:'请打电话给我吧，我想听你说话。'}]))});
+    if(!apiR.ok)throw new Error('AI API错误:'+apiR.status);
+    const apiD=await apiR.json();
+    const cnText=pc.parse(apiD);
+    if(!cnText)throw new Error('AI返回为空');
+
+    document.getElementById('phonePfill').style.width='40%';
+    document.getElementById('phonePtext').textContent='通话内容已生成…';
+
+    /* Step 2: 翻译成日文 */
+    let jpText=cnText;
+    let hasVoice=false;
+    if(hasVoiceAccess()){
+      document.getElementById('phonePtext').textContent='正在翻译为日文…';
+      document.getElementById('phonePfill').style.width='55%';
+      jpText=await translateToJP(cnText);
+      document.getElementById('phonePfill').style.width='65%';
+
+      /* Step 3: TTS语音生成 */
+      document.getElementById('phonePtext').textContent='正在生成语音…';
+      const vid=ch.voiceId||VOICE_ID;
+      try{
+        const ttsR=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(ttsBody(jpText,vid))});
+        const ttsD=await ttsR.json();
+        if(ttsD.data?.audio){
+          _phoneAudio.src='data:audio/mp3;base64,'+ttsD.data.audio;
+          hasVoice=true;
+          /* 扣减语音额度（电话算3条） */
+          deductVoiceCredit(3);
+
+          /* 保存通话记录（含音频base64） */
+          if(!S.phoneLogs)S.phoneLogs=[];
+          const logEntry={prince:r.prince,ts:Date.now(),cnText,jpText,audioB64:ttsD.data.audio,duration:0};
+
+          document.getElementById('phonePfill').style.width='100%';
+          document.getElementById('phonePtext').textContent='连接成功！';
+          await sleep(500);
+
+          /* 开始播放 */
+          document.getElementById('phoneCallStatus').textContent='通话中';
+          document.getElementById('phoneProgressWrap').style.display='none';
+          document.getElementById('phoneWaveWrap').style.display='flex';
+          document.getElementById('phoneTimer').style.display='';
+          document.getElementById('phoneText').style.display='';
+          document.getElementById('phoneText').textContent=cnText;
+          document.getElementById('phoneReplayBtn').style.display='';
+
+          _phoneSeconds=0;
+          _phoneTimer=setInterval(()=>{
+            _phoneSeconds++;
+            document.getElementById('phoneTimer').textContent=
+              Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+          },1000);
+
+          _phoneAudio.load();
+          await new Promise(res=>{_phoneAudio.oncanplaythrough=res;setTimeout(res,3000);});
+          _phoneAudio.play().catch(e=>console.warn('Phone audio play failed:',e));
+          _phoneAudio.onended=()=>{
+            logEntry.duration=_phoneSeconds;
+            document.getElementById('phoneCallStatus').textContent='通话结束';
+            document.getElementById('phoneWaveWrap').style.display='none';
+            if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+          };
+
+          /* 移除待接来电，保存记录 */
+          S.phoneReady.splice(idx,1);
+          S.phoneLogs.unshift(logEntry);
+          /* 只保留最近3条的音频，防止localStorage溢出 */
+          S.phoneLogs.forEach((l,i)=>{if(i>=3)delete l.audioB64;});
+          if(S.phoneLogs.length>20)S.phoneLogs=S.phoneLogs.slice(0,20);
+          sv();
+          return;
+        }
+      }catch(e){console.error('TTS error:',e);}
+    }
+
+    /* 无语音时：只显示文字 */
+    document.getElementById('phonePfill').style.width='100%';
+    document.getElementById('phonePtext').textContent='已接通（文字模式）';
+    await sleep(500);
+    document.getElementById('phoneCallStatus').textContent='通话中（文字）';
+    document.getElementById('phoneProgressWrap').style.display='none';
+    document.getElementById('phoneText').style.display='';
+    document.getElementById('phoneText').innerHTML=cnText.replace(/\n/g,'<br/>');
+    if(jpText!==cnText){
+      document.getElementById('phoneText').innerHTML+='<br/><br/><span style="font-size:12px;color:rgba(255,255,255,.4)">'+jpText.replace(/\n/g,'<br/>')+'</span>';
+    }
+    S.phoneReady.splice(idx,1);
+    if(!S.phoneLogs)S.phoneLogs=[];
+    S.phoneLogs.unshift({prince:r.prince,ts:Date.now(),cnText,duration:0});
+    if(S.phoneLogs.length>20)S.phoneLogs=S.phoneLogs.slice(0,20);
+    sv();
+
+  }catch(e){
+    console.error('Phone call error:',e);
+    document.getElementById('phoneCallStatus').textContent='连接失败';
+    document.getElementById('phonePtext').textContent=e.message||'请检查API设置';
+    document.getElementById('phonePfill').style.width='0%';
+  }
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+function endPhoneCall(){
+  if(_phoneAudio){_phoneAudio.pause();_phoneAudio=null;}
+  if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+  document.getElementById('phoneOverlay').classList.remove('open');
+  renderPhone();
+}
+
+function replayPhoneAudio(){
+  if(_phoneAudio){
+    _phoneAudio.currentTime=0;
+    _phoneAudio.play();
+    _phoneSeconds=0;
+    document.getElementById('phoneCallStatus').textContent='通话中';
+    document.getElementById('phoneWaveWrap').style.display='flex';
+    if(_phoneTimer)clearInterval(_phoneTimer);
+    _phoneTimer=setInterval(()=>{
+      _phoneSeconds++;
+      document.getElementById('phoneTimer').textContent=
+        Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+    },1000);
+    _phoneAudio.onended=()=>{
+      document.getElementById('phoneCallStatus').textContent='通话结束';
+      document.getElementById('phoneWaveWrap').style.display='none';
+      if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+    };
+  }
+}
+
+function replayLog(idx){
+  const log=(S.phoneLogs||[])[idx];if(!log||!log.audioB64)return;
+  const ch=CHAR_PACKS[log.prince]||{name:log.prince,ico:'👤',color:'#666'};
+  document.getElementById('phoneAva').textContent=ch.ico;
+  document.getElementById('phoneAva').style.background=ch.color;
+  document.getElementById('phoneName').textContent=ch.name;
+  document.getElementById('phoneCallStatus').textContent='回听中';
+  document.getElementById('phoneProgressWrap').style.display='none';
+  document.getElementById('phoneWaveWrap').style.display='flex';
+  document.getElementById('phoneTimer').style.display='';
+  document.getElementById('phoneText').style.display='';
+  document.getElementById('phoneText').textContent=log.cnText;
+  document.getElementById('phoneReplayBtn').style.display='';
+  document.getElementById('phoneOverlay').classList.add('open');
+
+  _phoneAudio=new Audio('data:audio/mp3;base64,'+log.audioB64);
+  _phoneSeconds=0;
+  _phoneTimer=setInterval(()=>{
+    _phoneSeconds++;
+    document.getElementById('phoneTimer').textContent=
+      Math.floor(_phoneSeconds/60)+':'+('0'+_phoneSeconds%60).slice(-2);
+  },1000);
+  _phoneAudio.play();
+  _phoneAudio.onended=()=>{
+    document.getElementById('phoneCallStatus').textContent='回听结束';
+    document.getElementById('phoneWaveWrap').style.display='none';
+    if(_phoneTimer){clearInterval(_phoneTimer);_phoneTimer=null;}
+  };
 }
 
 /* ══ 邮箱系统 ══ */
