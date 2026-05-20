@@ -85,7 +85,8 @@ const DEFAULT_STATE = {
   princeAff: {}, shop: {},
   phoneReady: [], unlockedChars: [], actTokens: [],
   phoneLogs: [], _phoneCardGiven: true, voiceCredits: 0,
-  signIn: { day: 0, lastDate: '', claimed: [] }
+  signIn: { day: 0, lastDate: '', claimed: [] },
+  work: { done: [], lastDate: '', cooldownEnd: 0, todayJobs: null }
 };
 
 function ls() {
@@ -96,6 +97,7 @@ function ls() {
       if (!d.actTokens) d.actTokens = [];
       if (!d.phoneLogs) d.phoneLogs = [];
       if (d.voiceCredits === undefined) d.voiceCredits = 0;
+      if (!d.work) d.work = { done: [], lastDate: '', cooldownEnd: 0, todayJobs: null };
       /* 一次性发放5张测试电话卡 */
       if (!d._phoneCardGiven) {
         if (!d.bag) d.bag = {};
