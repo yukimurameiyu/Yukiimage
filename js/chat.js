@@ -134,7 +134,7 @@ function openCharChat(cid){
       const chatId=m._chatId||_curChatId;
       const ch=CHAR_PACKS[chatId];
       const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
-      if(!hasVoiceAccess()){toast('🎧 语音额度已用完，请充值语音包或填写自己的MiniMax Key');return;}
+      if(!hasVoiceAccess()){toast('🎧 语音额度已用完，请充值语音包');return;}
       /* iOS需要在用户点击的瞬间解锁音频播放权限 */
       const actx=new(window.AudioContext||window.webkitAudioContext)();
       const unlock=actx.createBuffer(1,1,22050);
@@ -747,10 +747,10 @@ function deductVoiceCredit(n){
 }
 function updateVoiceCreditsUI(){
   const el=document.getElementById('voiceCreditsBadge');
-  const hasOwn=S.set.mmkey&&S.set.mmgid;
-  if(el)el.textContent=hasOwn?'🎧 自有Key':'🎧 '+(S.voiceCredits||0);
+  const credits=S.voiceCredits||0;
+  if(el)el.textContent='🎧 '+credits;
   const sd=document.getElementById('voiceCreditsDisplay');
-  if(sd)sd.innerHTML=hasOwn?'∞ <span style="font-size:12px;font-weight:400;color:var(--muted)">自有Key</span>':(S.voiceCredits||0)+' <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span>';
+  if(sd)sd.innerHTML=credits+' <span style="font-size:12px;font-weight:400;color:var(--muted)">条</span>';
 }
 
 function makeAudioBubble(b, audioB64, jpText, cnText, mine){

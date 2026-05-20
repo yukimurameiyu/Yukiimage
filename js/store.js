@@ -190,8 +190,16 @@ function updateStorageInfo() {
   var bytes = getStorageSize();
   var kb = Math.round(bytes / 1024);
   var pct = Math.round(bytes / 5242880 * 100);
-  el.textContent = '存储使用：' + kb + 'KB / 5120KB (' + pct + '%)';
-  el.style.color = pct > 80 ? '#C62828' : pct > 50 ? '#F57F17' : 'var(--muted)';
+  /* 同时显示IndexedDB音频条数 */
+  listAudioKeys().then(function(keys){
+    var audioCount = keys.length;
+    el.innerHTML = '文字存储：' + kb + 'KB / 5120KB (' + pct + '%)<br/>' +
+      '<span style="font-size:11px">语音存储（IndexedDB）：' + audioCount + ' 条录音</span>';
+    el.style.color = pct > 80 ? '#C62828' : pct > 50 ? '#F57F17' : 'var(--muted)';
+  }).catch(function(){
+    el.textContent = '存储使用：' + kb + 'KB / 5120KB (' + pct + '%)';
+    el.style.color = pct > 80 ? '#C62828' : pct > 50 ? '#F57F17' : 'var(--muted)';
+  });
 }
 function cleanStorage() {
   var cleaned = 0;
