@@ -25,7 +25,7 @@ function ud(){
   document.getElementById('dc').textContent=diff;
   document.getElementById('dd').textContent=d.replace(/-/g,'/');
 }
-uc();setInterval(()=>{uc();checkAlarms();},1000);
+uc();
 
 /* sparkles */
 (function(){
