@@ -76,7 +76,7 @@ async function listAudioKeys() {
 
 /* ── localStorage 存取 ── */
 const DEFAULT_STATE = {
-  msgs: [], aff: 0, wallet: 9999,
+  msgs: [], aff: 0, wallet: 100,
   set: { prov: 'gemini', model: 'gemini-2.5-flash', key: '', name: '', date: '' },
   mem: [], myAvatar: '', myStatus: '', myPrompt: '',
   yukiAvatar: '', yukiStatus: '',
@@ -84,7 +84,8 @@ const DEFAULT_STATE = {
   bag: { merch: [], seeds: [], gifts: [], cards: { phoneCard: 5 } },
   princeAff: {}, shop: {},
   phoneReady: [], unlockedChars: [], actTokens: [],
-  phoneLogs: [], _phoneCardGiven: true, voiceCredits: 0
+  phoneLogs: [], _phoneCardGiven: true, voiceCredits: 0,
+  signIn: { day: 0, lastDate: '', claimed: [] }
 };
 
 function ls() {

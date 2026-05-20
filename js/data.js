@@ -283,48 +283,48 @@ const CHAR_PACKS={
 };
 
 const MERCH_POOL=[
-  {name:'吧唧·幸村精市',prince:'yukimura',type:'badge',price:800,rarity:'normal',img:'🔮'},
-  {name:'吧唧·真田弦一郎',prince:'sanada',type:'badge',price:800,rarity:'normal',img:'⚔️'},
-  {name:'吧唧·切原赤也',prince:'akaya',type:'badge',price:800,rarity:'normal',img:'🔥'},
-  {name:'吧唧·丸井文太',prince:'marui',type:'badge',price:800,rarity:'normal',img:'🍬'},
-  {name:'吧唧·仁王雅治',prince:'niou',type:'badge',price:800,rarity:'normal',img:'🎭'},
-  {name:'吧唧·柳莲二',prince:'yanagi',type:'badge',price:800,rarity:'normal',img:'📊'},
-  {name:'吧唧·柳生比吕士',prince:'yagyuu',type:'badge',price:800,rarity:'normal',img:'🎩'},
-  {name:'卡片·幸村精市',prince:'yukimura',type:'card',price:500,rarity:'normal',img:'🃏'},
-  {name:'卡片·真田弦一郎',prince:'sanada',type:'card',price:500,rarity:'normal',img:'🃏'},
-  {name:'卡片·切原赤也',prince:'akaya',type:'card',price:500,rarity:'normal',img:'🃏'},
-  {name:'卡片·丸井文太',prince:'marui',type:'card',price:500,rarity:'normal',img:'🃏'},
-  {name:'限定·幸村精市 花道ver.',prince:'yukimura',type:'limited',price:1000,rarity:'rare',img:'🌸'},
-  {name:'限定·真田弦一郎 武士ver.',prince:'sanada',type:'limited',price:1000,rarity:'rare',img:'⚡'},
-  {name:'限定·仁王雅治 夜曲ver.',prince:'niou',type:'limited',price:1000,rarity:'rare',img:'🌙'},
-  {name:'限定·切原赤也 觉醒ver.',prince:'akaya',type:'limited',price:1000,rarity:'rare',img:'👹'},
+  {name:'吧唧·幸村精市',prince:'yukimura',type:'badge',price:15,rarity:'normal',img:'🔮'},
+  {name:'吧唧·真田弦一郎',prince:'sanada',type:'badge',price:15,rarity:'normal',img:'⚔️'},
+  {name:'吧唧·切原赤也',prince:'akaya',type:'badge',price:15,rarity:'normal',img:'🔥'},
+  {name:'吧唧·丸井文太',prince:'marui',type:'badge',price:15,rarity:'normal',img:'🍬'},
+  {name:'吧唧·仁王雅治',prince:'niou',type:'badge',price:15,rarity:'normal',img:'🎭'},
+  {name:'吧唧·柳莲二',prince:'yanagi',type:'badge',price:15,rarity:'normal',img:'📊'},
+  {name:'吧唧·柳生比吕士',prince:'yagyuu',type:'badge',price:15,rarity:'normal',img:'🎩'},
+  {name:'卡片·幸村精市',prince:'yukimura',type:'card',price:8,rarity:'normal',img:'🃏'},
+  {name:'卡片·真田弦一郎',prince:'sanada',type:'card',price:8,rarity:'normal',img:'🃏'},
+  {name:'卡片·切原赤也',prince:'akaya',type:'card',price:8,rarity:'normal',img:'🃏'},
+  {name:'卡片·丸井文太',prince:'marui',type:'card',price:8,rarity:'normal',img:'🃏'},
+  {name:'限定·幸村精市 花道ver.',prince:'yukimura',type:'limited',price:35,rarity:'rare',img:'🌸'},
+  {name:'限定·真田弦一郎 武士ver.',prince:'sanada',type:'limited',price:35,rarity:'rare',img:'⚡'},
+  {name:'限定·仁王雅治 夜曲ver.',prince:'niou',type:'limited',price:35,rarity:'rare',img:'🌙'},
+  {name:'限定·切原赤也 觉醒ver.',prince:'akaya',type:'limited',price:35,rarity:'rare',img:'👹'},
 ];
 
 const SEED_POOL_SHOP=[
-  {name:'雏菊种子',flower:'雏菊',price:30,img:'🌼'},
-  {name:'向日葵种子',flower:'向日葵',price:40,img:'🌻'},
-  {name:'仙人掌种子',flower:'仙人掌',price:35,img:'🌵'},
-  {name:'薰衣草种子',flower:'薰衣草',price:45,img:'💜'},
-  {name:'玫瑰种子',flower:'玫瑰',price:50,img:'🌹'},
-  {name:'百合种子',flower:'百合',price:45,img:'🤍'},
-  {name:'郁金香种子',flower:'郁金香',price:40,img:'🌷'},
+  {name:'雏菊种子',flower:'雏菊',price:3,img:'🌼'},
+  {name:'向日葵种子',flower:'向日葵',price:4,img:'🌻'},
+  {name:'仙人掌种子',flower:'仙人掌',price:3,img:'🌵'},
+  {name:'薰衣草种子',flower:'薰衣草',price:5,img:'💜'},
+  {name:'玫瑰种子',flower:'玫瑰',price:5,img:'🌹'},
+  {name:'百合种子',flower:'百合',price:5,img:'🤍'},
+  {name:'郁金香种子',flower:'郁金香',price:4,img:'🌷'},
 ];
 
 const GIFT_POOL=[
-  {name:'网球',price:150,affUp:2,img:'🎾'},
-  {name:'护腕',price:120,affUp:1,img:'💪'},
-  {name:'球鞋',price:280,affUp:3,img:'👟'},
-  {name:'球衫',price:250,affUp:3,img:'👕'},
-  {name:'吸汗带',price:100,affUp:1,img:'🏋️'},
-  {name:'运动水壶',price:130,affUp:2,img:'🧴'},
-  {name:'护膝',price:200,affUp:2,img:'🦵'},
+  {name:'网球',price:8,affUp:2,img:'🎾'},
+  {name:'护腕',price:5,affUp:1,img:'💪'},
+  {name:'球鞋',price:18,affUp:3,img:'👟'},
+  {name:'球衫',price:15,affUp:3,img:'👕'},
+  {name:'吸汗带',price:3,affUp:1,img:'🏋️'},
+  {name:'运动水壶',price:6,affUp:2,img:'🧴'},
+  {name:'护膝',price:10,affUp:2,img:'🦵'},
 ];
 
 const CARD_SHOP_POOL=[
-  {id:'likeCard',name:'好感卡',desc:'随机两名角色 好感+3',price:200,limit:1,img:'💗'},
-  {id:'phoneCard',name:'电话卡',desc:'激活指定角色来电（好感≥50）',price:500,limit:1,img:'📞'},
-  {id:'advLikeCard',name:'高级好感卡',desc:'指定角色 好感+3',price:350,limit:2,img:'💖'},
-  {id:'fertCard',name:'施肥卡',desc:'植物加速生长2小时',price:50,limit:3,img:'🌿'},
+  {id:'likeCard',name:'好感卡',desc:'随机两名角色 好感+3',price:8,limit:1,img:'💗'},
+  {id:'phoneCard',name:'电话卡',desc:'激活指定角色来电（好感≥50）',price:5,limit:1,img:'📞'},
+  {id:'advLikeCard',name:'高级好感卡',desc:'指定角色 好感+3',price:15,limit:2,img:'💖'},
+  {id:'fertCard',name:'施肥卡',desc:'植物加速生长2小时',price:2,limit:3,img:'🌿'},
 ];
 
 const FLOWER_ICO={雏菊:'🌼',向日葵:'🌻',仙人掌:'🌵',薰衣草:'💜',玫瑰:'🌹',百合:'🤍',郁金香:'🌷'};
@@ -357,3 +357,13 @@ const MAIL_THRESHOLDS=[
   {lv:50,subject:'只给你看',body:'有些话我不太会说出口。\n但你应该已经知道了吧。\n和你在一起的时候，赢或者输，好像都不那么重要了。\n……只是好像而已。'},
 ];
 
+
+const SIGN_IN_REWARDS=[
+  {day:1,desc:'¥50 + 语音包×3',coins:50,voice:3},
+  {day:2,desc:'随机零食礼包',coins:0,gift:true},
+  {day:3,desc:'¥80',coins:80},
+  {day:4,desc:'电话卡×2',coins:0,phoneCard:2},
+  {day:5,desc:'¥100 + 语音包×5',coins:100,voice:5},
+  {day:6,desc:'限定卡面',coins:0,limitedCard:true},
+  {day:7,desc:'¥200 + 扭蛋券×3',coins:200,gachaTicket:3},
+];

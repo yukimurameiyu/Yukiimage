@@ -201,6 +201,12 @@ setInterval(()=>{if(document.getElementById('garden-balcony')?.style.display!=='
 /* ── 厨房 ── */
 function renderKitchen(){
   ensureGarden();
+  /* 显示今日剩余次数 */
+  const today=new Date().toLocaleDateString('zh-CN');
+  if(S.garden.kitchenDate!==today){S.garden.kitchenUsed=0;S.garden.kitchenDate=today;}
+  const left=3-(S.garden.kitchenUsed||0);
+  const staminaEl=document.getElementById('kitchenStamina');
+  if(staminaEl) staminaEl.textContent='今日剩余：'+left+'/3';
   const bag=document.getElementById('dessertBag');if(!bag)return;
   const ds=S.garden.desserts||[];
   if(!ds.length){bag.innerHTML='<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px">还没有做过甜点</div>';return;}
@@ -217,6 +223,12 @@ function renderKitchen(){
 
 
 function startKitchenGame(){
+  ensureGarden();
+  /* 每日体力检查：每天最多做3次 */
+  const today=new Date().toLocaleDateString('zh-CN');
+  if(S.garden.kitchenDate!==today){S.garden.kitchenUsed=0;S.garden.kitchenDate=today;}
+  if((S.garden.kitchenUsed||0)>=3){toast('🍰 今天已经做了3次点心啦，明天再来~');return;}
+  S.garden.kitchenUsed=(S.garden.kitchenUsed||0)+1;sv();
   /* 叠叠乐小游戏 - 在sheet里展示 */
   os('🍰 叠叠乐',`
     <div style="text-align:center">

@@ -16,7 +16,7 @@ function doPull(n){
   if(!S.gachaPulls)S.gachaPulls=0;
   if(!S.gachaTotal)S.gachaTotal=0;
   /* wallet check */
-  const cost=n===1?10:88;
+  const cost=n===1?5:45;
   if((S.wallet||0)<cost){toast('余额不足！当前¥'+(S.wallet||0).toFixed(2));return;}
   S.wallet=+((S.wallet||0)-cost).toFixed(2);
   uwb();

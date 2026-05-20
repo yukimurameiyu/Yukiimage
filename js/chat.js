@@ -8,6 +8,35 @@ function or(t,cid){const tp=t||'';const ops=CHAR_OP[cid||_curChatId]||OP;const t
 function rid(){return Math.random().toString(36).slice(2,10)}
 function esc(s){return String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 
+/* 获取角色当前好感度等级 */
+function getAff(cid){
+  if(cid==='yukimura') return S.aff||0;
+  return (S.princeAff&&S.princeAff[cid])||0;
+}
+/* 当前等级升级所需经验 */
+function affXpNeeded(lv){
+  if(lv<10) return 3;   /* 1-9级：3次互动升1级 */
+  if(lv<30) return 5;   /* 10-29级：5次 */
+  if(lv<50) return 8;   /* 30-49级：8次（到50级解锁电话约需290次互动≈6-7天） */
+  if(lv<80) return 15;  /* 50-79级 */
+  if(lv<100) return 25; /* 80-99级 */
+  return 40;            /* 100+级 */
+}
+/* 等级制好感度：每次互动攒经验，够了就升级 */
+function addAff(cid,amount){
+  amount=amount||1;
+  if(!S.affXp) S.affXp={};
+  S.affXp[cid]=(S.affXp[cid]||0)+amount;
+  const curLv=getAff(cid);
+  const needed=affXpNeeded(curLv);
+  /* 可能一次攒够多级（比如好感卡+3） */
+  while(S.affXp[cid]>=affXpNeeded(getAff(cid))){
+    S.affXp[cid]-=affXpNeeded(getAff(cid));
+    if(cid==='yukimura') S.aff=(S.aff||0)+1;
+    else{ if(!S.princeAff)S.princeAff={}; S.princeAff[cid]=(S.princeAff[cid]||0)+1; }
+  }
+}
+
 /* 获取当前角色的消息数组 */
 function getChatMsgs(cid){
   if(!S.chatMsgs)S.chatMsgs={};
@@ -222,7 +251,7 @@ function openCharProfile(){
     <div style="background:var(--p50);border-radius:14px;padding:12px 16px;margin-bottom:12px">
       <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:1px;margin-bottom:6px">💜 好感度</div>
       <div style="display:flex;align-items:center;gap:10px">
-        <div style="flex:1;height:8px;background:var(--p100);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.min(aff,100)}%;background:linear-gradient(90deg,${ch.color},${ch.color}CC);border-radius:4px;transition:width .5s"></div></div>
+        <div style="flex:1;height:8px;background:var(--p100);border-radius:4px;overflow:hidden"><div style="height:100%;width:${Math.min(aff/5,100)}%;background:linear-gradient(90deg,${ch.color},${ch.color}CC);border-radius:4px;transition:width .5s"></div></div>
         <span style="font-size:14px;font-weight:700;color:${ch.color}">${aff}</span>
       </div>
     </div>
@@ -458,7 +487,7 @@ async function callApi(charId){
   const pc=PC[s.prov];if(!pc)return null;
   const ch=CHAR_PACKS[cid];
   const a=(cid==='yukimura')?(S.aff||0):((S.princeAff&&S.princeAff[cid])||0);
-  const ih=a>=50?'【关系非常亲密，情感浓烈，言语间透着默契与在乎。】':a>=30?'【关系亲密，温柔体贴，称呼更亲昵。】':a>=15?'【比较熟悉，说话自然随意。】':a>=5?'【有点熟悉，语气轻松些。】':'【普通朋友，保持礼貌距离。】';
+  const ih=a>=500?'【灵魂伴侣级别，默契十足，有最亲密的宠溺感、独占欲和深情。】':a>=300?'【热恋状态，极度亲密，言语甜蜜又自然，偶尔吃醋。】':a>=200?'【恋人关系，温柔体贴，称呼亲昵，关心日常。】':a>=100?'【关系亲密，说话放松自然，会主动关心对方。】':a>=50?'【有好感，语气温和友好，愿意多聊。】':a>=20?'【比较熟悉，说话自然随意。】':a>=5?'【有点熟悉，语气轻松些。】':'【普通朋友，保持礼貌距离。】';
   const mem=S.mem?.length&&cid==='yukimura'?'【对话记忆】'+S.mem.map(m=>m.t).join('；'):'';
   const customPrompt=(S.charPrompts&&S.charPrompts[cid])?S.charPrompts[cid]:((cid==='yukimura'&&S.myPrompt)?S.myPrompt:'');
   const charSys=customPrompt||(ch&&ch.sys?ch.sys:SYS);
@@ -493,8 +522,8 @@ async function send(){
     hty();
     const msgs2=getChatMsgs(_curChatId);
     msgs2.push({id:rid(),sender:'c',text:rep,time:Date.now(),type:'txt'});
-    if(_curChatId==='yukimura'){S.msgs=msgs2;S.aff=(S.aff||0)+1;}
-    else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}
+    if(_curChatId==='yukimura') S.msgs=msgs2;
+    addAff(_curChatId,1);
     sv();rm();uab();
     if(_curChatId==='yukimura'&&Math.random()<.1&&msgs2.length>4)setTimeout(yhb,2000+Math.random()*3000);
     if(_curChatId==='yukimura'&&msgs2.length%10===0)umem();
@@ -526,7 +555,7 @@ setInterval(()=>{try{
 }catch(e){}},120000+Math.random()*180000);
 
 /* pat pat */
-function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const PAP={ryoma:['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）'],fuji:['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。'],akaya:['哇啊别突然拍我！','干嘛干嘛！','嘿嘿，怎么了？','前辈？！','吓我一跳！'],marui:['天才被拍了~','嗯？干嘛~','别打扰天才吃东西。','哈？','泡泡糖差点吞了！'],niou:['Puri♪','……嗯？','你拍的是真的我吗？','Puri。','有趣。'],atobe:['你在对本大爷做什么。','……哼。','大胆。','嗯？本大爷允许了吗。','……算了，本大爷不跟你计较。'],tezuka:['……别闹。','嗯。','……','油断するな。','注意场合。'],shiraishi:['嗯？怎么了？','啊哈哈，怎么突然拍我。','エクスタシー……不是，你干嘛。','被你拍到了。']};const rs=PAP[_curChatId]||['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}sv();rm();uab()},800+Math.random()*1500)}
+function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const PAP={ryoma:['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）'],fuji:['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。'],akaya:['哇啊别突然拍我！','干嘛干嘛！','嘿嘿，怎么了？','前辈？！','吓我一跳！'],marui:['天才被拍了~','嗯？干嘛~','别打扰天才吃东西。','哈？','泡泡糖差点吞了！'],niou:['Puri♪','……嗯？','你拍的是真的我吗？','Puri。','有趣。'],atobe:['你在对本大爷做什么。','……哼。','大胆。','嗯？本大爷允许了吗。','……算了，本大爷不跟你计较。'],tezuka:['……别闹。','嗯。','……','油断するな。','注意场合。'],shiraishi:['嗯？怎么了？','啊哈哈，怎么突然拍我。','エクスタシー……不是，你干嘛。','被你拍到了。']};const rs=PAP[_curChatId]||['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});addAff(_curChatId,1);sv();rm();uab()},800+Math.random()*1500)}
 
 /* quick actions */
 function toggleQuickActions(){
@@ -563,7 +592,7 @@ function sendSticker(emoji){
   const replies=(replyMap[_curChatId]||STICKER_REPLIES_YUKI)[emoji]||['嗯。','看到了。'];
   setTimeout(()=>{
     msgs.push({id:rid(),sender:'c',text:replies[Math.floor(Math.random()*replies.length)],time:Date.now(),type:'txt'});
-    if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}
+    addAff(_curChatId,1);
     sv();rm();uab();
   },800+Math.random()*1500);
 }
@@ -584,7 +613,7 @@ function doDice(){
     const comments=myDice>hisDice?winC:myDice<hisDice?loseC:drawC;
     setTimeout(()=>{
       msgs.push({id:rid(),sender:'c',text:comments[Math.floor(Math.random()*comments.length)],time:Date.now(),type:'txt'});
-      if(_curChatId==='yukimura')S.aff=(S.aff||0)+1;else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+1;}
+      addAff(_curChatId,1);
       sv();rm();uab();
     },600);
   },1200);
@@ -608,8 +637,7 @@ function playRPS(my){
   const comments=win?['……你赢了。','嗯，运气好。','不会有下次了。']:lose?['正常。','这种事我不会输。','嗯。']:['再来。','打平了。'];
   setTimeout(()=>{
     msgs.push({id:rid(),sender:'c',text:comments[Math.floor(Math.random()*comments.length)],time:Date.now(),type:'txt'});
-    if(_curChatId==='yukimura'){if(win)S.aff=(S.aff||0)+2;else S.aff=(S.aff||0)+1;}
-    else{if(!S.princeAff)S.princeAff={};S.princeAff[_curChatId]=(S.princeAff[_curChatId]||0)+(win?2:1);}
+    addAff(_curChatId,win?2:1);
     sv();rm();uab();
   },1000);
 }
@@ -620,8 +648,8 @@ function sendhb(){const a=parseFloat(document.getElementById('ha').value)||6.66;
 function yhb(){const ns=['给你的','拿去，别客气','小心意','想给你'];const as=[1,2,3.33,5,6.66,8.88,13.14,52];const msgs=getChatMsgs(_curChatId);msgs.push({id:rid(),sender:'c',type:'hb',amount:as[Math.floor(Math.random()*as.length)],note:ns[Math.floor(Math.random()*ns.length)],ob:[],time:Date.now()});sv();rm()}
 
 /* transfer */
-function dotf(){document.getElementById('cm').classList.remove('open');const ch=CHAR_PACKS[_curChatId];os('转账',`<div class="shi">💰</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">转账给 ${ch.name}</div><div class="shar"><span class="shyp">¥</span><input class="sham p" id="ta" type="number" min="0.01" max="99999" step="0.01" value="100.00"/></div><input class="shno" id="tn" placeholder="转账备注（可选）" maxlength="20"/><button class="shbtn p" onclick="sendtf()">确认转账 💰</button>`)}
-function sendtf(){const a=parseFloat(document.getElementById('ta').value)||100;const n=document.getElementById('tn').value||'';if((S.wallet||200)<a){toast('余额不足！');return}S.wallet=+(S.wallet-a).toFixed(2);const msgs=getChatMsgs(_curChatId);const m={id:rid(),sender:'me',type:'tf',amount:a,note:n,ac:null,time:Date.now()};msgs.push(m);sv();rm();uwb();cs();setTimeout(()=>{m.ac=true;msgs.push({id:rid(),sender:'c',text:'收到了。',time:Date.now(),type:'txt'});sv();rm()},2000+Math.random()*2000)}
+function dotf(){document.getElementById('cm').classList.remove('open');const ch=CHAR_PACKS[_curChatId];os('转账',`<div class="shi">💰</div><div style="font-size:12px;color:var(--muted);margin-bottom:8px">转账给 ${ch.name}</div><div class="shar"><span class="shyp">¥</span><input class="sham p" id="ta" type="number" min="0.01" max="99999" step="0.01" value="10.00"/></div><input class="shno" id="tn" placeholder="转账备注（可选）" maxlength="20"/><button class="shbtn p" onclick="sendtf()">确认转账 💰</button>`)}
+function sendtf(){const a=parseFloat(document.getElementById('ta').value)||10;const n=document.getElementById('tn').value||'';if((S.wallet||200)<a){toast('余额不足！');return}S.wallet=+(S.wallet-a).toFixed(2);const msgs=getChatMsgs(_curChatId);const m={id:rid(),sender:'me',type:'tf',amount:a,note:n,ac:null,time:Date.now()};msgs.push(m);sv();rm();uwb();cs();setTimeout(()=>{m.ac=true;msgs.push({id:rid(),sender:'c',text:'收到了。',time:Date.now(),type:'txt'});sv();rm()},2000+Math.random()*2000)}
 
 /* sheet */
 function os(t,h){document.getElementById('sht').textContent=t;document.getElementById('shb').innerHTML=h;document.getElementById('sho').classList.add('open');document.getElementById('sh').classList.add('open')}
@@ -640,7 +668,7 @@ function renderGallery(){
   all.forEach(ch=>{
     const unlocked=S.unlockedChars.includes(ch.id);
     const aff=ch.id==='yukimura'?(S.aff||0):(S.princeAff?.[ch.id]||0);
-    const affLv=aff>=50?'💖 亲密':aff>=30?'❤️ 喜欢':aff>=15?'🧡 熟悉':aff>=5?'💛 友好':'🤍 初识';
+    const affLv=aff>=500?'💎 灵魂伴侣':aff>=300?'💖 挚爱':aff>=200?'❤️ 恋人':aff>=100?'🧡 亲密':aff>=50?'💛 好感':aff>=20?'💚 熟悉':aff>=5?'🤍 认识':'⚪ 初见';
     const d=document.createElement('div');
     d.style.cssText='background:white;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border);'+(!unlocked?'opacity:.6':'');
     d.innerHTML=`<div style="display:flex;gap:12px;padding:14px;position:relative">
@@ -658,7 +686,7 @@ function renderGallery(){
         <div style="font-size:11px;color:var(--text);margin-top:3px;line-height:1.5;opacity:.7">${ch.bio}</div>
         ${unlocked?`<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
           <span style="font-size:11px">${affLv}</span>
-          <div style="flex:1;height:4px;background:var(--p100);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(aff,100)}%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:2px"></div></div>
+          <div style="flex:1;height:4px;background:var(--p100);border-radius:2px;overflow:hidden"><div style="height:100%;width:${Math.min(aff/5,100)}%;background:linear-gradient(90deg,var(--p400),var(--p600));border-radius:2px"></div></div>
           <span style="font-size:10px;color:var(--p500);font-weight:700">Lv${aff}</span>
         </div>`:ch.active?'<div style="font-size:10px;color:#FF9800;margin-top:6px">🔑 输入激活码解锁</div>':'<div style="font-size:10px;color:var(--muted);margin-top:6px">🔒 角色包未安装</div>'}
       </div>
