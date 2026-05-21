@@ -167,6 +167,20 @@ async function getPhoneAudio(logTs) {
   return getAudio('phone_' + logTs);
 }
 
+/* ── 语音缓存辅助（voice专用key格式: voice_<msgId>） ── */
+async function saveVoiceAudio(msgId, audioB64) {
+  const key = 'voice_' + msgId;
+  return saveAudio(key, audioB64);
+}
+
+async function getVoiceAudio(msgId) {
+  return getAudio('voice_' + msgId);
+}
+
+async function deleteVoiceAudio(msgId) {
+  return deleteAudio('voice_' + msgId);
+}
+
 /* ── 数据迁移：把旧版 phoneLogs 里的 audioB64 搬到 IndexedDB ── */
 async function migrateAudioData() {
   if (!S.phoneLogs || S._audioMigrated) return;
@@ -200,8 +214,10 @@ function updateStorageInfo() {
   /* 同时显示IndexedDB音频条数 */
   listAudioKeys().then(function(keys){
     var audioCount = keys.length;
+    var phoneCount = keys.filter(function(k){return k.startsWith('phone_');}).length;
+    var voiceCount = keys.filter(function(k){return k.startsWith('voice_');}).length;
     el.innerHTML = '文字存储：' + kb + 'KB / 5120KB (' + pct + '%)<br/>' +
-      '<span style="font-size:11px">语音存储（IndexedDB）：' + audioCount + ' 条录音</span>';
+      '<span style="font-size:11px">语音存储（IndexedDB）：' + phoneCount + ' 条通话 · ' + voiceCount + ' 条语音缓存</span>';
     el.style.color = pct > 80 ? '#C62828' : pct > 50 ? '#F57F17' : 'var(--muted)';
   }).catch(function(){
     el.textContent = '存储使用：' + kb + 'KB / 5120KB (' + pct + '%)';

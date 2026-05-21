@@ -170,41 +170,11 @@ function openCharChat(cid){
       const unlockSrc=actx.createBufferSource();
       unlockSrc.buffer=unlock;unlockSrc.connect(actx.destination);unlockSrc.start(0);
 
-      /* 有缓存：直接解码播放 */
-      if(m._audioB64){
-        const raw=atob(m._audioB64);const arr=new Uint8Array(raw.length);
-        for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-        actx.decodeAudioData(arr.buffer).then(buf=>{
-          if(!buf){actx.close();return;}
-          const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start(0);
-          btn.textContent='⏸';
-          src.onended=()=>{btn.textContent='▶ 语音';actx.close();};
-        }).catch(e=>{toast('❌ '+e.message);btn.textContent='▶ 语音';actx.close();});
-        return;
-      }
-
-      /* 无缓存：翻译→TTS→播放 */
-      if(!hasVoiceAccess()){toast('🎧 语音额度已用完');btn.textContent='▶ 语音';actx.close();return;}
       btn.textContent='⏳';
-      translateToJP(m.text).then(jp=>{
-        return fetch('/.netlify/functions/tts',{method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body:JSON.stringify(ttsBody(jp,vid))});
-      }).then(r=>r.json()).then(d=>{
-        if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.textContent='▶ 语音';actx.close();return;}
-        deductVoiceCredit(1);
-        m._audioB64=d.data.audio;
-        const raw=atob(d.data.audio);
-        const arr=new Uint8Array(raw.length);
-        for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-        return actx.decodeAudioData(arr.buffer);
-      }).then(buf=>{
-        if(!buf){actx.close();return;}
-        const src=actx.createBufferSource();
-        src.buffer=buf;src.connect(actx.destination);src.start(0);
-        btn.textContent='⏸';
-        src.onended=()=>{btn.textContent='▶ 语音';actx.close();};
-      }).catch(e=>{toast('❌ '+e.message);btn.textContent='▶ 语音';try{actx.close();}catch(_){}});
+      playVoiceCached(mid, m, vid, actx,
+        ()=>{btn.textContent='⏸';},
+        ()=>{btn.textContent='▶ 语音';}
+      );
     });
   }
 }
@@ -546,13 +516,159 @@ async function umem(){
   }catch(e){}
 }
 
-/* auto init — 标记为auto类型，不会混入AI对话上下文 */
-setInterval(()=>{try{
-  if(!document.getElementById('co').classList.contains('open'))return;
-  const msgs=getChatMsgs(_curChatId);
-  const imPool=CHAR_IM[_curChatId]||CHAR_IM.yukimura;
-  msgs.push({id:rid(),sender:'c',text:imPool[Math.floor(Math.random()*imPool.length)],time:Date.now(),type:'auto'});sv();rm();
-}catch(e){}},120000+Math.random()*180000);
+/* ══════════════════════════════════════════
+   主动对话系统（AI生成 · 时间/天气感知）
+   ══════════════════════════════════════════ */
+
+/* ── 天气获取（open-meteo免费API，无需key） ── */
+let _wxCache=null, _wxTs=0, _geoCoords=null, _geoDenied=false;
+
+function _getGeo(){
+  return new Promise(resolve=>{
+    if(_geoDenied||!navigator.geolocation){resolve(null);return;}
+    if(_geoCoords){resolve(_geoCoords);return;}
+    navigator.geolocation.getCurrentPosition(
+      pos=>{_geoCoords={lat:pos.coords.latitude,lon:pos.coords.longitude};resolve(_geoCoords);},
+      ()=>{_geoDenied=true;resolve(null);},
+      {timeout:8000,enableHighAccuracy:false}
+    );
+  });
+}
+
+function _wxDesc(code){
+  if(code===0)return'晴天';if(code<=3)return'多云';if(code<=48)return'有雾';
+  if(code<=55)return'小雨';if(code<=65)return'中雨';if(code<=67)return'冻雨';
+  if(code<=75)return'下雪';if(code<=77)return'雪粒';if(code<=82)return'阵雨';
+  if(code>=95)return'雷暴';return'阴天';
+}
+
+async function _getWeather(){
+  if(_wxCache&&Date.now()-_wxTs<7200000)return _wxCache;
+  try{
+    const geo=await _getGeo();if(!geo)return null;
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&current=temperature_2m,weather_code&timezone=auto`);
+    const d=await r.json();
+    _wxCache={temp:Math.round(d.current.temperature_2m),desc:_wxDesc(d.current.weather_code),code:d.current.weather_code};
+    _wxTs=Date.now();
+    return _wxCache;
+  }catch(e){return null;}
+}
+
+/* ── 获取角色当前日程上下文 ── */
+function _getScheduleCtx(cid){
+  const h=new Date().getHours()+new Date().getMinutes()/60;
+  const isWE=[0,6].includes(new Date().getDay());
+  /* 日程表映射 */
+  const schMap={yukimura:typeof WEEKDAY_SCHEDULE!=='undefined'?WEEKDAY_SCHEDULE:null,
+    fuji:typeof FUJI_SCHEDULE!=='undefined'?FUJI_SCHEDULE:null,
+    ryoma:typeof RYOMA_SCHEDULE!=='undefined'?RYOMA_SCHEDULE:null};
+  /* 周末活动映射 */
+  const weMap={yukimura:typeof WEEKEND_EVENTS!=='undefined'?WEEKEND_EVENTS:null,
+    fuji:typeof FUJI_WEEKEND_EVENTS!=='undefined'?FUJI_WEEKEND_EVENTS:null,
+    ryoma:typeof RYOMA_WEEKEND_EVENTS!=='undefined'?RYOMA_WEEKEND_EVENTS:null};
+
+  if(isWE){
+    const evts=weMap[cid];
+    if(evts&&evts.length){
+      const ev=evts[Math.floor(Math.random()*evts.length)];
+      return ev.label+'：'+(typeof ev.detail==='function'?ev.detail():ev.detail);
+    }
+  }
+  const sch=schMap[cid];
+  if(sch){
+    for(const slot of sch){
+      if(h>=slot.s&&h<slot.e){
+        const detail=typeof slot.detail==='function'?slot.detail():slot.detail;
+        return slot.label+'：'+detail;
+      }
+    }
+  }
+  return null;
+}
+
+/* ── AI生成主动消息 ── */
+async function _genProactiveMsg(cid){
+  const s=S.set;if(!s.key)return null;
+  const pc=PC[s.prov];if(!pc)return null;
+  const ch=CHAR_PACKS[cid];if(!ch)return null;
+
+  const now=new Date();
+  const h=now.getHours();
+  const timeStr=now.toLocaleTimeString('zh-CN',{hour:'2-digit',minute:'2-digit'});
+  const dayStr=['日','一','二','三','四','五','六'][now.getDay()];
+  const aff=getAff(cid);
+  const affDesc=aff>=300?'热恋中，极度亲密':aff>=200?'恋人关系，温柔体贴':
+    aff>=100?'关系亲密，说话自然':aff>=50?'有好感，友好温和':
+    aff>=20?'比较熟悉':aff>=5?'有点熟悉':'普通朋友';
+
+  const schedCtx=_getScheduleCtx(cid);
+  const wx=await _getWeather();
+
+  /* 构建情境 */
+  let ctx='现在是'+timeStr+'，星期'+dayStr+'。';
+  if(schedCtx)ctx+='\n你现在的状态：'+schedCtx;
+  if(wx)ctx+='\n当前天气：'+wx.desc+'，气温'+wx.temp+'°C。';
+  ctx+='\n你和对方的好感度等级：'+aff+'（'+affDesc+'）。';
+
+  /* 情境提示 */
+  if(h>=23||h<4)ctx+='\n现在已经很晚了，你可以关心对方是不是在熬夜，或者叫她早点睡。';
+  else if(h>=6&&h<8)ctx+='\n早上好，可以道早安或者提醒吃早餐。';
+  else if(h>=12&&h<13)ctx+='\n午饭时间，可以关心对方有没有好好吃饭。';
+  if(wx){
+    if(wx.code>=51&&wx.code<=82)ctx+='\n在下雨，可以提醒对方带伞或注意安全。';
+    if(wx.temp<=5)ctx+='\n天气很冷，可以提醒对方注意保暖。';
+    if(wx.temp>=35)ctx+='\n天气很热，可以提醒对方注意防暑多喝水。';
+  }
+
+  const charSys=(S.charPrompts&&S.charPrompts[cid])?S.charPrompts[cid]:(ch.sys||SYS);
+  const prompt=ctx+'\n\n请主动给对方发一条消息，1-2句话。要求：\n- 贴合当前时间、天气和你正在做的事\n- 自然亲切，像随手发消息\n- 不要自我介绍，不要用"嗨""你好"开场\n- 直接说话';
+
+  try{
+    const r=await fetch(pc.url(s.model,s.key),{method:'POST',headers:pc.hd(s.key),
+      body:JSON.stringify(pc.body(charSys,[{role:'user',content:prompt}]))});
+    const d=await r.json();
+    const result=pc.parse(d);
+    return result?result.trim():null;
+  }catch(e){console.warn('[proactive] gen failed:',e);return null;}
+}
+
+/* ── 主动对话调度器 ── */
+let _proactiveTimer=null;
+
+function _scheduleProactive(){
+  if(_proactiveTimer)clearTimeout(_proactiveTimer);
+  /* 100~140分钟随机间隔 */
+  const delay=6000000+Math.random()*2400000;
+  _proactiveTimer=setTimeout(async()=>{
+    try{
+      /* 必须聊天窗口打开状态 */
+      if(!document.getElementById('co').classList.contains('open')){_scheduleProactive();return;}
+      const msgs=getChatMsgs(_curChatId);
+      /* 距离上一条消息至少30分钟，避免打断正在聊天 */
+      const last=msgs.length?msgs[msgs.length-1]:null;
+      if(last&&Date.now()-last.time<1800000){_scheduleProactive();return;}
+
+      let text=null;
+      /* 有API key → AI生成 */
+      if(S.set.key){
+        text=await _genProactiveMsg(_curChatId);
+      }
+      /* 无key或生成失败 → fallback到消息池 */
+      if(!text){
+        const imPool=CHAR_IM[_curChatId]||CHAR_IM.yukimura;
+        text=imPool[Math.floor(Math.random()*imPool.length)];
+      }
+
+      /* 推入消息（type:auto 不混入AI上下文） */
+      msgs.push({id:rid(),sender:'c',text:text,time:Date.now(),type:'auto'});
+      sv();rm();
+    }catch(e){console.warn('[proactive]',e);}
+    _scheduleProactive();
+  },delay);
+}
+
+/* 启动主动对话 */
+_scheduleProactive();
 
 /* pat pat */
 function dopp(){document.getElementById('cm').classList.remove('open');const msgs=getChatMsgs(_curChatId);const ch=CHAR_PACKS[_curChatId];msgs.push({id:rid(),sender:'sys',text:'👋 你拍了拍'+ch.name,time:Date.now(),type:'sys'});sv();rm();const PAP={ryoma:['……干嘛。','别碰我。','……哦。','切。','……（拉低帽檐）'],fuji:['呐，怎么了？','嗯？……（微笑）','你拍我做什么呢。','……有趣。','被你发现了。'],akaya:['哇啊别突然拍我！','干嘛干嘛！','嘿嘿，怎么了？','前辈？！','吓我一跳！'],marui:['天才被拍了~','嗯？干嘛~','别打扰天才吃东西。','哈？','泡泡糖差点吞了！'],niou:['Puri♪','……嗯？','你拍的是真的我吗？','Puri。','有趣。'],atobe:['你在对本大爷做什么。','……哼。','大胆。','嗯？本大爷允许了吗。','……算了，本大爷不跟你计较。'],tezuka:['……别闹。','嗯。','……','油断するな。','注意场合。'],shiraishi:['嗯？怎么了？','啊哈哈，怎么突然拍我。','エクスタシー……不是，你干嘛。','被你拍到了。']};const rs=PAP[_curChatId]||['……你干嘛。','被你拍到了。','嗯？','……','又来。','手感怎么样。','……（微微笑了一下）','别闹。','嗯，你在。','拍够了？'];setTimeout(()=>{msgs.push({id:rid(),sender:'c',text:rs[Math.floor(Math.random()*rs.length)],time:Date.now(),type:'txt'});addAff(_curChatId,1);sv();rm();uab()},800+Math.random()*1500)}
@@ -720,6 +836,51 @@ function unlockCard(idx){
 function vc(i){const c=CARDS[i];os(c.t,`<div style="text-align:center"><img src="${c.i}" style="width:100%;border-radius:14px;margin-bottom:12px;aspect-ratio:3/2;object-fit:cover" onerror="this.outerHTML='<div style=&quot;width:100%;aspect-ratio:3/2;background:linear-gradient(135deg,var(--p200),var(--p400));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:60px;margin-bottom:12px&quot;>${c.ico}</div>'"/><div style="font-size:10px;font-weight:700;background:linear-gradient(135deg,#FFD700,#FF8C00);color:white;border-radius:8px;padding:2px 10px;display:inline-block;margin-bottom:10px">${c.r}</div><div style="font-size:13px;color:var(--muted);line-height:1.8;font-style:italic">${c.d}</div></div>`)}
 
 
+/* ── 语音缓存播放辅助 ── */
+function _decodeAndPlay(actx, b64, onStart, onEnd){
+  const raw=atob(b64);const arr=new Uint8Array(raw.length);
+  for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
+  actx.decodeAudioData(arr.buffer).then(buf=>{
+    if(!buf){actx.close();onEnd&&onEnd();return;}
+    const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start(0);
+    onStart&&onStart();
+    src.onended=()=>{onEnd&&onEnd();actx.close();};
+  }).catch(e=>{toast('❌ '+e.message);onEnd&&onEnd();actx.close();});
+}
+
+/* 统一语音播放入口：内存→IndexedDB→生成并缓存 */
+async function playVoiceCached(mid, m, vid, actx, onStart, onEnd){
+  /* 1. 内存缓存 */
+  if(m._audioB64){
+    _decodeAndPlay(actx, m._audioB64, onStart, onEnd);
+    return;
+  }
+  /* 2. IndexedDB缓存 */
+  try{
+    const cached = await getVoiceAudio(mid);
+    if(cached){
+      m._audioB64 = cached;
+      _decodeAndPlay(actx, cached, onStart, onEnd);
+      return;
+    }
+  }catch(e){/* IndexedDB失败，继续生成 */}
+  /* 3. 无缓存：翻译→TTS→缓存→播放 */
+  if(!hasVoiceAccess()){toast('🎧 语音额度已用完');onEnd&&onEnd();actx.close();return;}
+  try{
+    const jp = await translateToJP(m.text);
+    const r = await fetch('/.netlify/functions/tts',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(ttsBody(jp,vid))});
+    const d = await r.json();
+    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));onEnd&&onEnd();actx.close();return;}
+    deductVoiceCredit(1);
+    m._audioB64 = d.data.audio;
+    /* 存入IndexedDB持久缓存 */
+    saveVoiceAudio(mid, d.data.audio).catch(()=>{});
+    _decodeAndPlay(actx, d.data.audio, onStart, onEnd);
+  }catch(e){toast('❌ '+e.message);onEnd&&onEnd();try{actx.close();}catch(_){}}
+}
+
 /* ── MiniMax TTS ── */
 async function translateToJP(text){
   const s=S.set;if(!s.key){console.warn('[translateToJP] 无API Key，跳过翻译');return text;}
@@ -807,26 +968,17 @@ function makeAudioBubble(b, audioB64, jpText, cnText, mine){
 async function playMsgVoice(m, btn){
   if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   btn.innerHTML='⏳';
-  try{
-    const cid=m._chatId||_curChatId;
-    const ch=CHAR_PACKS[cid];
-    const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
-    const jp=await translateToJP(m.text);
-    const s=S.set;const hasOwnKey=s.mmkey&&s.mmgid;
-    const body={text:jp,voiceId:vid,site:hasOwnKey?(s.mmSite||'intl'):'intl'};
-    if(hasOwnKey){body.apiKey=s.mmkey;body.groupId=s.mmgid;}
-    const r=await fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const d=await r.json();
-    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频失败'));btn.innerHTML='▶';return;}
-    deductVoiceCredit(1);
-    const audio=new Audio('data:audio/mp3;base64,'+d.data.audio);
-    btn.innerHTML='⏸';
-    audio.addEventListener('ended',()=>{btn.innerHTML='▶';});
-    audio.play();
-  }catch(e){
-    toast('❌ '+e.message);
-    btn.innerHTML='▶';
-  }
+  const cid=m._chatId||_curChatId;
+  const ch=CHAR_PACKS[cid];
+  const vid=ch&&ch.voiceId?ch.voiceId:VOICE_ID;
+  const mid=m.id||'tmp_'+Date.now();
+  const actx=new(window.AudioContext||window.webkitAudioContext)();
+  const unlock=actx.createBuffer(1,1,22050);
+  const us=actx.createBufferSource();us.buffer=unlock;us.connect(actx.destination);us.start(0);
+  playVoiceCached(mid, m, vid, actx,
+    ()=>{btn.innerHTML='⏸';},
+    ()=>{btn.innerHTML='▶';}
+  );
 }
 
 /* ── 气泡菜单 ── */
@@ -855,7 +1007,6 @@ function bmPlayVoice(){
   closeBubbleMenu();
   const m=window._vm&&window._vm[_curMid];
   if(!m){toast('找不到消息');return;}
-  const s=S.set;
   if(!hasVoiceAccess()){toast('🎧 语音额度已用完');return;}
   const chatId=m._chatId||_curChatId;
   const ch=CHAR_PACKS[chatId];
@@ -864,32 +1015,11 @@ function bmPlayVoice(){
   const unlock=actx.createBuffer(1,1,22050);
   const us=actx.createBufferSource();us.buffer=unlock;us.connect(actx.destination);us.start(0);
 
-  /* 有缓存直接播 */
-  if(m._audioB64){
-    const raw=atob(m._audioB64);const arr=new Uint8Array(raw.length);
-    for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-    actx.decodeAudioData(arr.buffer).then(buf=>{
-      const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start(0);
-      toast('▶ 播放中');src.onended=()=>actx.close();
-    }).catch(()=>actx.close());
-    return;
-  }
-
-  toast('🎙️ 生成语音中…');
-  translateToJP(m.text).then(jp=>{
-    return fetch('/.netlify/functions/tts',{method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(ttsBody(jp,vid))});
-  }).then(r=>r.json()).then(d=>{
-    if(!d.data?.audio){toast('❌ '+(d.base_resp?.status_msg||'音频为空'));actx.close();return;}
-    m._audioB64=d.data.audio;
-    const raw=atob(d.data.audio);const arr=new Uint8Array(raw.length);
-    for(let i=0;i<raw.length;i++) arr[i]=raw.charCodeAt(i);
-    return actx.decodeAudioData(arr.buffer);
-  }).then(buf=>{
-    if(!buf){actx.close();return;}
-    const src=actx.createBufferSource();src.buffer=buf;src.connect(actx.destination);src.start(0);
-    toast('▶ 播放中');src.onended=()=>actx.close();
-  }).catch(e=>{toast('❌ '+e.message);try{actx.close();}catch(_){}});
+  toast('🎙️ 加载语音…');
+  playVoiceCached(_curMid, m, vid, actx,
+    ()=>{toast('▶ 播放中');},
+    ()=>{}
+  );
 }
 
 /* toast */
@@ -911,6 +1041,7 @@ async function bmRegen(){
   msgs[idx].text=rep;
   msgs[idx].time=Date.now();
   delete msgs[idx]._audioB64; /* 清除语音缓存 */
+  deleteVoiceAudio(_curMid).catch(()=>{}); /* 清除IndexedDB缓存 */
   sv();rm();
   toast('✅ 已重新生成');
 }
@@ -925,6 +1056,7 @@ function bmDelete(){
   const idx=msgs.findIndex(x=>x.id===_curMid);
   if(idx<0)return;
   msgs.splice(idx,1);
+  deleteVoiceAudio(_curMid).catch(()=>{}); /* 清除IndexedDB缓存 */
   if(cid==='yukimura')S.msgs=msgs;
   sv();rm();
   toast('🗑️ 已删除');
