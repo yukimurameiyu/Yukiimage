@@ -85,8 +85,7 @@ const DEFAULT_STATE = {
   princeAff: {}, shop: {},
   phoneReady: [], unlockedChars: [], actTokens: [],
   phoneLogs: [], _phoneCardGiven: true, voiceCredits: 0,
-  signIn: { day: 0, lastDate: '', claimed: [] },
-  work: { done: [], lastDate: '', cooldownEnd: 0, todayJobs: null }
+  signIn: { day: 0, lastDate: '', claimed: [] }
 };
 
 function ls() {
@@ -97,7 +96,6 @@ function ls() {
       if (!d.actTokens) d.actTokens = [];
       if (!d.phoneLogs) d.phoneLogs = [];
       if (d.voiceCredits === undefined) d.voiceCredits = 0;
-      if (!d.work) d.work = { done: [], lastDate: '', cooldownEnd: 0, todayJobs: null };
       /* 一次性发放5张测试电话卡 */
       if (!d._phoneCardGiven) {
         if (!d.bag) d.bag = {};
@@ -105,6 +103,12 @@ function ls() {
         d.bag.cards.phoneCard = (d.bag.cards.phoneCard || 0) + 5;
         d._phoneCardGiven = true;
       }
+      /* 确保bag结构完整 */
+      if (!d.bag) d.bag = {};
+      if (!d.bag.merch) d.bag.merch = [];
+      if (!d.bag.seeds) d.bag.seeds = [];
+      if (!d.bag.gifts) d.bag.gifts = [];
+      if (!d.bag.cards) d.bag.cards = {};
       return d;
     }
   } catch (e) { /* ignore */ }
